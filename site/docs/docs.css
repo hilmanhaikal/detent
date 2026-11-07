@@ -979,11 +979,11 @@
   transform: rotateX(-90deg) translateZ(var(--half));
 }
 
-/* A box 180 wide, 130 tall and 110 deep. */
+/* A box 180 wide, 130 tall and 170 deep, so the side panels hold their words too. */
 .c3-box {
   --w: 180px;
   --h: 130px;
-  --d: 110px;
+  --d: 170px;
   width: var(--w);
   height: var(--h);
 }
