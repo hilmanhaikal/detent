@@ -14,11 +14,11 @@ A detent is the small notch a knob clicks into as you turn it. `detent` gives th
 This is an early version. The API will change before 1.0.
 
 ```sh
-npm install detentjs
+npm install @hlmnhkl/detent
 ```
 
 ```js
-import { createScrub } from 'detentjs'
+import { createScrub } from '@hlmnhkl/detent'
 
 const marks = [0, 25, 50, 75, 100]
 const nearest = (v) => marks.reduce((a, b) => (Math.abs(b - v) < Math.abs(a - v) ? b : a))

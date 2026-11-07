@@ -1,5 +1,5 @@
 {
-  "name": "detentjs",
+  "name": "@hlmnhkl/detent",
   "version": "0.0.1",
   "description": "Controls that click into place. Magnetic marks, a glide that never flies past, and a settle with no bounce. Keyboard steps and reduced motion built in.",
   "type": "module",
@@ -12,6 +12,9 @@
     }
   },
   "files": ["dist"],
+  "publishConfig": {
+    "access": "public"
+  },
   "sideEffects": false,
   "scripts": {
     "build": "tsc -p tsconfig.json",
