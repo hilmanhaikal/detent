@@ -1,0 +1,322 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font);
+  font-size: 17px;
+  line-height: 1.5;
+  overflow-x: clip;
+  -webkit-font-smoothing: antialiased;
+}
+h1,
+h2,
+h3,
+p,
+ul,
+figure {
+  margin: 0;
+}
+ul {
+  padding: 0;
+  list-style: none;
+}
+a {
+  color: inherit;
+}
+button {
+  font: inherit;
+  color: inherit;
+}
+pre,
+code,
+.mono {
+  font-family: var(--mono);
+}
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 4px;
+}
+.vh {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.readout {
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Install line: the same 12px inset round the text and the button, and a 16px gap between them.
+   When the box is too narrow for both, the button wraps under the text instead of touching it. */
+.install {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 16px;
+  max-width: 100%;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  padding: 12px;
+}
+.install code {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: 15px;
+  white-space: nowrap;
+  overflow-x: auto;
+}
+.install button {
+  flex: none;
+  min-width: 76px;
+  min-height: 44px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: calc(var(--radius) - 8px);
+  background: var(--ink);
+  color: var(--bg);
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+/* Slider */
+.sl {
+  position: relative;
+  height: 56px;
+  padding: 0 14px;
+  touch-action: pan-y;
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.sl[data-held] {
+  cursor: grabbing;
+}
+.sl-rail,
+.sl-ticks {
+  position: absolute;
+  inset: 0 14px;
+}
+.sl-rail::before,
+.sl-fill {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 4px;
+  margin-top: -2px;
+  border-radius: 2px;
+  background: var(--line);
+}
+.sl-fill {
+  right: auto;
+  width: calc(var(--v) * 100%);
+  background: var(--ink);
+}
+.sl-ticks i {
+  position: absolute;
+  left: calc(var(--at) * 100%);
+  top: 50%;
+  width: 2px;
+  height: calc(6px + var(--pull, 0) * 8px);
+  margin-left: -1px;
+  transform: translateY(calc(-100% - 10px));
+  background: var(--tick);
+  border-radius: 1px;
+}
+.sl-ticks i.strong {
+  width: 3px;
+  margin-left: -1.5px;
+  height: calc(12px + var(--pull, 0) * 10px);
+  background: var(--ink);
+}
+.sl-thumb {
+  position: absolute;
+  top: 50%;
+  left: calc(14px + var(--v) * (100% - 28px));
+  width: 28px;
+  height: 28px;
+  margin: -14px 0 0 -14px;
+  border-radius: 50%;
+  background: var(--bg);
+  border: 2px solid var(--ink);
+  box-shadow: 0 2px 6px rgb(0 0 0 / 0.18);
+}
+
+/* Dial */
+.dl {
+  position: relative;
+  width: 200px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  touch-action: none;
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.dl-ticks i {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 2px;
+  height: 10px;
+  margin: -5px 0 0 -1px;
+  background: var(--tick);
+  border-radius: 1px;
+  transform: rotate(calc(var(--at) * 27deg - 135deg)) translateY(-94px) scaleY(calc(1 + var(--pull, 0) * 0.6));
+}
+.dl-ticks i.strong {
+  width: 3px;
+  height: 14px;
+  background: var(--ink);
+}
+.dl-cap {
+  position: absolute;
+  inset: 18%;
+  border-radius: 50%;
+  background: var(--knob, var(--surface));
+  box-shadow: var(--knob-shadow, 0 6px 16px rgb(0 0 0 / 0.2));
+  rotate: var(--turn);
+}
+.dl-cap b {
+  position: absolute;
+  left: 50%;
+  top: 10%;
+  width: 4px;
+  height: 22%;
+  margin-left: -2px;
+  border-radius: 2px;
+  background: var(--accent);
+}
+
+/* Wheel */
+.wh {
+  --row: 44px;
+  position: relative;
+  height: calc(var(--row) * 5);
+  overflow: hidden;
+  touch-action: none;
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.wh-rows {
+  position: absolute;
+  inset: 0;
+  perspective: 600px;
+}
+.wh-rows span {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: var(--row);
+  margin-top: calc(var(--row) / -2);
+  display: grid;
+  place-items: center;
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 22px;
+  opacity: var(--o);
+  transform: translateY(calc(var(--y) * var(--row))) rotateX(calc(var(--y) * -18deg));
+}
+.wh-lens {
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  top: 50%;
+  height: var(--row);
+  margin-top: calc(var(--row) / -2);
+  border-radius: calc(var(--radius) - 4px);
+  background: var(--lens, rgb(127 127 127 / 0.14));
+  pointer-events: none;
+}
+
+/* Sheet */
+.sh-frame {
+  position: relative;
+  height: 360px;
+  overflow: hidden;
+  border-radius: var(--radius);
+  background: var(--sheet-behind, var(--line));
+}
+.sh-behind {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  padding: 14px;
+}
+.sh-behind i {
+  height: 64px;
+  border-radius: calc(var(--radius) - 6px);
+  background: var(--surface);
+  opacity: 0.6;
+}
+.sh {
+  position: absolute;
+  inset: 0;
+  background: var(--sheet, var(--bg));
+  border-radius: var(--radius) var(--radius) 0 0;
+  box-shadow: 0 -8px 24px rgb(0 0 0 / 0.16);
+  transform: translateY(calc((1 - var(--h)) * 100%));
+  padding: 0 18px;
+}
+.sh-handle {
+  height: 44px;
+  margin: 0 -18px;
+  display: grid;
+  place-items: center;
+  touch-action: none;
+  cursor: grab;
+  border-radius: var(--radius) var(--radius) 0 0;
+}
+.sh-handle b {
+  width: 40px;
+  height: 5px;
+  border-radius: 3px;
+  background: var(--tick);
+}
+.sh-title {
+  font-weight: 600;
+}
+.sh-name {
+  color: var(--muted);
+  font-size: 14px;
+}
+.sh ul {
+  display: grid;
+  gap: 10px;
+  margin-top: 16px;
+}
+.sh li {
+  height: 14px;
+  border-radius: 7px;
+  background: var(--line);
+}
+.sh li:nth-child(2n) {
+  width: 70%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0s !important;
+    animation-duration: 0s !important;
+    scroll-behavior: auto !important;
+  }
+}

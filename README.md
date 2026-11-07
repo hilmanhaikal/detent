@@ -18,8 +18,9 @@ npm install @hlmnhkl/detent
 ```
 
 ```js
-import { createScrub } from '@hlmnhkl/detent'
+import { createScrub, stepKey } from '@hlmnhkl/detent'
 
+const knob = document.querySelector('.knob')
 const marks = [0, 25, 50, 75, 100]
 const nearest = (v) => marks.reduce((a, b) => (Math.abs(b - v) < Math.abs(a - v) ? b : a))
 
@@ -30,14 +31,45 @@ const scrub = createScrub({
   land: nearest,
   period: () => (matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 280),
   onFrame: (v) => (knob.style.rotate = `${v * 2.7 - 135}deg`),
-  onSettle: (v) => console.log('landed on', v),
+  onSettle: (v) => knob.setAttribute('aria-valuenow', v),
 })
 
-// Feed it the hand: grab() on press, drag(delta) with how far it moved, release() on let-go.
-// Keys: go(value) lands on a value with the same glide.
+// The hand: grab on press, drag by how far it moved, release on let-go.
+let x = null
+knob.addEventListener('pointerdown', (e) => {
+  knob.setPointerCapture(e.pointerId)
+  x = e.clientX
+  scrub.grab()
+})
+knob.addEventListener('pointermove', (e) => {
+  if (x === null) return
+  scrub.drag((e.clientX - x) * 0.5)
+  x = e.clientX
+})
+knob.addEventListener('pointerup', () => {
+  x = null
+  scrub.release()
+})
+
+// Keys land where a drag would.
+knob.addEventListener('keydown', (e) => {
+  const v = stepKey(e.key, scrub.target, { min: 0, max: 100, step: 25, marks })
+  if (v === null) return
+  e.preventDefault()
+  scrub.go(v)
+})
 ```
 
 Made by Hilman Haikal. It powers the Dial, RulerScrubber and PickerWheel in [hlmnhkl/ui](https://ui.hlmnhkl.my).
+
+## Site
+
+The homepage lives in `site/`. It runs on this repo's own source.
+
+```sh
+./node_modules/.bin/vite site --port 5182                              # work on it
+./node_modules/.bin/vite build site --outDir ../site-dist --emptyOutDir  # static files in site-dist/
+```
 
 ## Licence
 

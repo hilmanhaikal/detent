@@ -1,0 +1,115 @@
+/* Parked: the live maths panel, kept to become a component later. Not imported by the site.
+   It needs the site's tokens (--c-*, --ink, --bg, --muted, --line, --tick) and the .eq surface mixes. */
+.maths {
+  --bg: var(--c-dark);
+  --ink: var(--c-paper);
+  --muted: var(--c-muted-dark);
+  --focus: var(--c-accent);
+}
+/* Maths: real formulas as type, filled with live numbers. */
+.maths {
+  padding: clamp(40px, 6vw, 80px) var(--pad);
+  background: var(--ink-0);
+  color: var(--paper);
+}
+.maths-head {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  gap: 12px 48px;
+  align-items: end;
+}
+.maths h2 {
+  font-size: clamp(32px, 4vw, 56px);
+  letter-spacing: -0.03em;
+  line-height: 1;
+  font-weight: 700;
+}
+.maths-head p {
+  color: color-mix(in srgb, var(--paper) 88%, var(--ink-0));
+}
+.eqs {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 32px;
+}
+.eq {
+  --bg: var(--c-paper);
+  --ink: var(--c-ink);
+  --muted: var(--c-muted);
+  --line: var(--c-quiet);
+  --focus: var(--c-ink);
+  display: grid;
+  align-content: start;
+  gap: 10px;
+  padding: 22px;
+  border-radius: var(--radius);
+  background: var(--bg);
+  color: var(--ink);
+  min-width: 0;
+}
+.eq h3 {
+  font-size: 17px;
+  font-weight: 700;
+}
+.f {
+  font-family: 'STIX Two Text', 'Times New Roman', serif;
+  font-size: clamp(20px, 1.9vw, 26px);
+  line-height: 1.35;
+}
+.f.small {
+  font-size: 17px;
+  color: var(--muted);
+}
+.f var,
+.vals var {
+  font-family: 'STIX Two Text', 'Times New Roman', serif;
+  font-style: italic;
+}
+.note {
+  font-family: var(--font);
+  font-size: 14px;
+}
+.vals {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  margin-top: 4px;
+  font-size: 17px;
+}
+.vals b {
+  font-family: var(--mono);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  padding: 1px 6px;
+  border-radius: 6px;
+  background: var(--ink-0);
+  color: var(--paper);
+}
+.state {
+  font-weight: 700;
+}
+.state[data-done] {
+  padding: 1px 8px;
+  border-radius: 6px;
+  background: var(--ink-0);
+  color: var(--paper);
+}
+.plot {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 64px;
+  margin-top: 6px;
+}
+.plot i {
+  flex: 1;
+  height: calc(4px + var(--h) * 60px);
+  border-radius: 2px;
+  background: var(--tick);
+}
+.plot i[data-on] {
+  background: var(--signal);
+  box-shadow: 0 0 0 1px var(--c-ink);
+}
+

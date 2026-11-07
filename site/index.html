@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light" />
+    <meta name="theme-color" content="#e8eddf" />
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+    <title>detent: controls that click into place</title>
+    <meta name="description" content="A tiny JavaScript engine for sliders, dials, wheels and sheets that feel magnetic. Keys and reduced motion built in." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@200..800&family=Spline+Sans+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./shared/base.css" />
+    <link rel="stylesheet" href="./home/style.css" />
+  </head>
+  <body>
+    <header class="top">
+      <a class="brand" href="#top" aria-label="detent, back to the top">
+        <span class="word">detent</span>
+        <span class="notch" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><b></b></span>
+      </a>
+      <span class="ver" data-version></span>
+      <nav class="links" aria-label="Main">
+        <a href="#start">Get started</a>
+        <a href="#price">Examples</a>
+        <a href="https://github.com/hilmanhaikal/detent">GitHub <span class="stars" data-stars></span></a>
+        <a href="https://www.npmjs.com/package/@hlmnhkl/detent">npm</a>
+      </nav>
+      <button class="chip" type="button" data-copy="npm i @hlmnhkl/detent" aria-label="Copy the install command, npm i @hlmnhkl/detent"><code>npm i @hlmnhkl/detent</code></button>
+      <button class="menu-open" type="button" aria-haspopup="dialog" aria-controls="menu">Menu</button>
+    </header>
+    <dialog class="menu" id="menu" aria-label="Menu">
+      <div class="menu-sheet">
+        <div class="menu-head"><span>detent <span data-version></span></span><button type="button" class="menu-close">Close</button></div>
+        <nav aria-label="Main">
+          <a href="#start">Get started</a>
+          <a href="#price">Examples</a>
+          <a href="https://github.com/hilmanhaikal/detent">GitHub</a>
+          <a href="https://www.npmjs.com/package/@hlmnhkl/detent">npm</a>
+        </nav>
+        <div class="install">
+          <code>npm install @hlmnhkl/detent</code>
+          <button type="button" data-copy="npm install @hlmnhkl/detent">Copy</button>
+        </div>
+      </div>
+    </dialog>
+
+    <main>
+      <section class="hero" id="top" data-mark="strong" data-name="Top">
+        <div class="pitch">
+          <h1>Controls that click into place.</h1>
+          <div class="side">
+            <p class="lede">Make your web app's sliders, pickers and sheets feel native. Marks pull, flicks glide, nothing bounces. Keyboard, screen readers and reduced motion are already done.</p>
+            <div class="install">
+              <code>npm install @hlmnhkl/detent</code>
+              <button type="button" data-copy="npm install @hlmnhkl/detent">Copy</button>
+            </div>
+          </div>
+        </div>
+        <div class="ruler" role="slider" tabindex="0" aria-label="Ruler" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50" aria-valuetext="50">
+          <div class="track" aria-hidden="true"></div>
+          <i class="pin" aria-hidden="true"></i>
+        </div>
+        <p class="hint">Go on, give it a shove. It always lands on a number, and 0, 25, 50, 75 and 100 pull harder.</p>
+      </section>
+
+      <div>
+        <section class="block tint" id="price" data-mark data-name="Price filter" aria-labelledby="h-price">
+          <div class="say">
+            <h2 id="h-price">A price filter for a shop</h2>
+            <p>Two thumbs, one track. RM 100, 250 and 500 pull harder, because that is where people stop.</p>
+            <pre data-code="price"></pre>
+          </div>
+          <div class="stage" data-demo="price"></div>
+        </section>
+        <section class="block" id="time" data-mark data-name="Time picker" aria-labelledby="h-time">
+          <div class="say">
+            <h2 id="h-time">A booking time picker</h2>
+            <p>Quarter hours, with whole hours pulling harder. Flick it and it still stops on a slot.</p>
+            <pre data-code="time"></pre>
+          </div>
+          <div class="stage" data-demo="time"></div>
+        </section>
+        <section class="block tint" id="sheet" data-mark data-name="Order sheet" aria-labelledby="h-sheet">
+          <div class="say">
+            <h2 id="h-sheet">An order sheet that rests</h2>
+            <p>Peek, half or full, never in between. Drag the handle, flick it, or tap it.</p>
+            <pre data-code="sheet"></pre>
+          </div>
+          <div class="stage" data-demo="sheet"></div>
+        </section>
+        <section class="block dark" id="tip" data-mark data-name="Tip dial" aria-labelledby="h-tip">
+          <div class="say">
+            <h2 id="h-tip">A tip dial</h2>
+            <p>One click per percent. 10, 15 and 20 pull harder, so the common tips are one easy turn.</p>
+            <pre data-code="tip"></pre>
+          </div>
+          <div class="stage" data-demo="tip"></div>
+        </section>
+      </div>
+
+      <section class="block start" id="start" data-mark="strong" data-name="Get started" aria-labelledby="start-h">
+        <div class="say">
+          <h2 id="start-h">Get started</h2>
+          <p>Install it, then give it a value, the marks to land on, and the hand. detent moves the number. You draw it.</p>
+          <div class="install">
+            <code>npm install @hlmnhkl/detent</code>
+            <button type="button" data-copy="npm install @hlmnhkl/detent">Copy</button>
+          </div>
+          <pre data-start></pre>
+        </div>
+        <figure class="stage">
+          <div class="knob-well">
+            <i style="--at: 0"></i><i style="--at: 25"></i><i style="--at: 50"></i><i style="--at: 75"></i><i style="--at: 100"></i>
+            <div class="knob" role="slider" tabindex="0" aria-label="Example knob" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50"><b></b></div>
+          </div>
+          <figcaption>This knob runs the code beside it. Drag sideways, or use the arrow keys.</figcaption>
+        </figure>
+      </section>
+
+      <section class="why" id="why" data-mark data-name="Why" aria-labelledby="why-h">
+        <h2 id="why-h">Why it is worth 4 KB</h2>
+        <ul>
+          <li class="tint"><b>Native feel</b><span>Marks pull, flicks glide, nothing bounces. Like the pickers on a phone.</span></li>
+          <li><b>Accessible by default</b><span>Arrow, Page, Home and End land where a drag would. One settled value for screen readers. Reduced motion lands at once.</span></li>
+          <li class="dark"><b>About 4 KB</b><span>Gzipped, the whole engine.</span></li>
+          <li><b>No dependencies</b><span>Plain TypeScript, nothing else to install.</span></li>
+          <li><b>Any framework</b><span>React, Vue, Svelte or none. You keep your markup and your styles.</span></li>
+        </ul>
+      </section>
+    </main>
+
+    <nav class="rail" aria-label="Sections"></nav>
+
+    <footer class="foot">
+      <div class="close">
+        <p class="last">Click into place.</p>
+        <p class="last-sub">Native feeling controls for the web, in about 4 KB.</p>
+        <div class="install">
+          <code>npm install @hlmnhkl/detent</code>
+          <button type="button" data-copy="npm install @hlmnhkl/detent">Copy</button>
+        </div>
+      </div>
+      <div class="cols">
+        <div>
+          <h2>Learn</h2>
+          <ul>
+            <li><a href="https://github.com/hilmanhaikal/detent#readme">Docs</a></li>
+            <li><a href="#price">Examples</a></li>
+            <li><a href="https://github.com/hilmanhaikal/detent/releases">Changelog</a></li>
+          </ul>
+        </div>
+        <div>
+          <h2>Get it</h2>
+          <ul>
+            <li><a href="https://github.com/hilmanhaikal/detent">GitHub</a></li>
+            <li><a href="https://www.npmjs.com/package/@hlmnhkl/detent">npm</a></li>
+            <li><a href="https://github.com/hilmanhaikal/detent/blob/main/LICENSE">Licence, MIT</a></li>
+          </ul>
+        </div>
+        <div>
+          <h2>Made by</h2>
+          <ul>
+            <li><span class="plain">Hilman Haikal</span></li>
+            <li><a href="https://ui.hlmnhkl.my">Powers hlmnhkl/ui</a></li>
+            <li><span class="plain">Version <span data-version></span></span></li>
+          </ul>
+        </div>
+      </div>
+      <div class="sign">
+        <a class="up" href="#top"><span class="up-rail" aria-hidden="true"><i></i></span>Back to the top</a>
+        <p class="tiny">Every move on this page, the scroll included, runs on detent.</p>
+      </div>
+    </footer>
+    <script type="module" src="./home/main.ts"></script>
+  </body>
+</html>
