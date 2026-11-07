@@ -7,3 +7,4 @@ export { detentThrow, type Throw, type ThrowOptions, type ThrowEventMap, type Th
 export { detentPull, type Pull, type PullOptions, type PullEventMap } from './pull.js'
 export { detentHold, type Hold, type HoldOptions, type HoldEventMap } from './hold.js'
 export type { Haptics } from './haptics.js'
+export { detent3d, type Detent3d, type Detent3dOptions, type Detent3dEventMap, type Face, type Rotation, type Quaternion } from './detent3d.js'

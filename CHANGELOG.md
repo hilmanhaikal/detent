@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.3.0
+
+Objects you turn.
+
+- **`detent3d(el, options)`** lets you spin or tilt an object, and it clicks into the nearest face. A flick carries it on, then it lands with no bounce. Strong faces pull from further away.
+- **Faces your way.** List your own, each with yaw, pitch, roll and a name, or use `faces: 'cube'` (six sides) or `faces: 'turntable'` (8 views round, or any number with `views`). `axes` keeps the drag to one axis or lets it turn freely.
+- **For CSS 3D and three.js.** It gives yaw, pitch and roll in degrees for CSS, and a quaternion in three.js axes for `model.quaternion.set(...q)`. It draws nothing. Free turns never lock up over the top and always take the short way.
+- **Keys and screen readers.** On one axis it is a slider: arrows go one face, Page Up and Page Down a quarter turn, and the value is the face's name. Turning freely, the arrows turn it to the next face that way, and it says the face's name when it lands.
+- Reduced motion lands at once on the same face. Haptics are off by default, as everywhere.
+- Every 0.2.0 function and low-level export is unchanged.
+
+### Fixed
+
+- `detent2d`: calling `set()` while it glides no longer drops the change event, and new points take effect at once.
+
+
 ## 0.2.0
 
 Three new ways to cross a line and make something happen.

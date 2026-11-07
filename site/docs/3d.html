@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light" />
+    <meta name="theme-color" content="#e8eddf" />
+    <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
+    <title>detent3d() · detent docs</title>
+    <meta property="og:description" content="A tiny JavaScript engine that makes sliders, pickers and sheets feel like native apps: magnetic, calm, and accessible by default." />
+    <meta name="description" content="Spin or tilt an object, and it clicks into set orientations. For CSS 3D and three.js, with keys and a screen reader." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@200..800&family=Spline+Sans+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../shared/base.css" />
+    <link rel="stylesheet" href="../home/style.css" />
+    <link rel="stylesheet" href="./docs.css" />
+  </head>
+  <body>
+    <!-- @header -->
+    <div class="docs">
+      <aside class="docs-side"><!-- @sidebar --></aside>
+      <main class="docs-main" id="main">
+        <section data-mark="strong" id="top">
+          <p class="crumb">Docs</p>
+          <h1>detent3d()</h1>
+          <p class="lede">Spin or tilt an object, and it clicks into the nearest face. A flick carries it on, then it lands with no bounce. It hands you the rotation for CSS 3D or three.js, and draws nothing.</p>
+        </section>
+        <section data-mark id="demo">
+          <h2 id="demo-h">A cube that clicks onto its faces</h2>
+          <div class="stage" data-run="demos/cube.js">
+            <div class="c3" id="cube" aria-label="Cube">
+              <div class="c3-tilt" aria-hidden="true">
+                <div class="c3-cube">
+                  <p class="c3-face c3-front"><b>Front</b><span>yaw 0</span></p>
+                  <p class="c3-face c3-right"><b>Right</b><span>yaw -90</span></p>
+                  <p class="c3-face c3-back"><b>Back</b><span>yaw 180</span></p>
+                  <p class="c3-face c3-left"><b>Left</b><span>yaw 90</span></p>
+                  <p class="c3-face c3-top"><b>Top</b><span>pitch -90</span></p>
+                  <p class="c3-face c3-bottom"><b>Bottom</b><span>pitch 90</span></p>
+                </div>
+              </div>
+            </div>
+            <p class="d-out small">Resting on: <span id="cube-out">Front</span>. Screen readers hear: <span data-voice-echo>nothing yet</span>.</p>
+          </div>
+          <figure class="code"><figcaption>demos/cube.js</figcaption><pre data-src="demos/cube.js"></pre></figure>
+          <p>The cube reads the three variables. CSS applies them right to left: roll, then pitch, then yaw.</p>
+          <pre class="static" data-lang="css"><code>.cube { transform: rotateY(calc(var(--yaw) * 1deg)) rotateX(calc(var(--pitch) * 1deg)) rotateZ(calc(var(--roll) * 1deg)); }</code></pre>
+          <p>Drag it any way, or tab to it and press the arrow keys. A drag to the right turns the front to the right, so the left side comes round. Free turns use quaternions, so it never locks up over the top and always takes the short way to a face.</p>
+        </section>
+        <section data-mark id="turntable">
+          <h2 id="turntable-h">A product turntable</h2>
+          <p>Eight views of a box, every 45 degrees round its upright axis. On one axis it is a slider, so a screen reader hears the view's name as its value.</p>
+          <div class="stage" data-run="demos/turntable.js">
+            <div class="c3 c3-wide" id="lamp" aria-label="Lamp box">
+              <div class="c3-tilt" aria-hidden="true">
+                <div class="c3-box">
+                  <div class="c3-side c3-front"><b>Arc desk lamp</b><span>Warm white, 8 W</span></div>
+                  <div class="c3-side c3-right"><b>Dimmable</b><span>5 steps, one touch</span></div>
+                  <div class="c3-side c3-back"><b>In the box</b><span>Lamp, clamp, USB-C cable</span></div>
+                  <div class="c3-side c3-left"><b>Long life</b><span>25,000 h LED</span></div>
+                  <div class="c3-side c3-lid"><span>This side up</span></div>
+                </div>
+              </div>
+            </div>
+            <dl class="aria-dl" data-aria-of=".stage[data-run='demos/turntable.js']"></dl>
+          </div>
+          <figure class="code"><figcaption>demos/turntable.js</figcaption><pre data-src="demos/turntable.js"></pre></figure>
+          <p>The arrow keys go one view, Page Up and Page Down a quarter turn, Home and End to the first and last. It goes round: past the last view comes the first, the short way.</p>
+        </section>
+        <section data-mark id="three">
+          <h2 id="three-h">With three.js</h2>
+          <p><code>onInput</code> gives a quaternion as <code>[x, y, z, w]</code> in three.js axes, with y up. Pass it straight on: <code>model.quaternion.set(...q)</code>. There is a full example in <a href="recipes.html#three">Recipes</a>.</p>
+          <p>The degrees are for CSS: <code>yaw</code> turns round the upright axis, positive to the right. <code>pitch</code> tilts, positive tilts the front up, so <code>-90</code> shows the top. <code>roll</code> turns round the line of sight, clockwise like CSS <code>rotate</code>. On one axis the angle keeps counting past a full turn, so it never jumps.</p>
+        </section>
+        <section data-mark id="aria">
+          <h2 id="aria-h">Keys and screen readers</h2>
+          <div class="table" tabindex="0" role="region" aria-label="Keys and screen readers"><table><thead><tr><th></th><th>One axis (<code>'yaw'</code> or <code>'pitch'</code>)</th><th>Free (<code>'both'</code>)</th></tr></thead><tbody>
+            <tr><td>Role</td><td><code>slider</code>, only if none</td><td><code>group</code>, described as rotatable, only if none</td></tr>
+            <tr><td>Values</td><td><code>aria-valuenow</code> is the face's place in turning order, <code>aria-valuetext</code> its name</td><td>none</td></tr>
+            <tr><td>Speaks</td><td>the face's name, through the slider</td><td>the face's name, in the shared polite live region, when it lands</td></tr>
+            <tr><td>Keys</td><td>arrows one face (Right and Up forward), Page Up and Down a quarter turn, Home, End; it goes round</td><td>arrows turn it to the next face that way, Home, End</td></tr>
+            <tr><td>Reduced motion</td><td>same face, no glide</td><td>same face, no glide</td></tr>
+          </tbody></table></div>
+          <p>Name it with <code>aria-label</code>, as you would any control. Mark the drawn faces <code>aria-hidden="true"</code>, so a screen reader does not read all six at once. It sets <code>touch-action: none</code> on the element only, so the page still scrolls everywhere else.</p>
+        </section>
+        <section data-mark id="options">
+          <h2 id="options-h">Options</h2>
+          <!-- @props src/detent3d.ts Detent3dOptions -->
+          <h3>A face</h3>
+          <!-- @props src/detent3d.ts Face -->
+        </section>
+        <section data-mark id="result">
+          <h2 id="result-h">What it gives back</h2>
+          <!-- @api src/detent3d.ts Detent3d -->
+        </section>
+        <section data-mark id="events">
+          <h2 id="events-h">Events</h2>
+          <!-- @events src/detent3d.ts Detent3dEventMap -->
+        </section>
+        <nav class="pager" aria-label="Next and previous"><a href="hold.html" rel="prev"><span>Previous</span>detentHold()</a><a href="low-level.html" rel="next"><span>Next</span>Low level</a></nav>
+      </main>
+      <aside class="docs-toc"><!-- @toc --></aside>
+    </div>
+    <!-- @footer -->
+    <script type="module" src="./docs.ts"></script>
+  </body>
+</html>

@@ -880,3 +880,199 @@
   background: var(--c-ink);
   color: var(--c-paper);
 }
+
+/* detent3d: the element stays still and takes the hand, the object inside it turns. */
+.c3 {
+  display: grid;
+  place-items: center;
+  width: 220px;
+  height: 220px;
+  perspective: 800px;
+  border-radius: 18px;
+  cursor: grab;
+  -webkit-user-select: none;
+  user-select: none;
+}
+.c3[data-held] {
+  cursor: grabbing;
+}
+.c3-wide {
+  width: min(320px, 100%);
+}
+.c3-tilt {
+  transform-style: preserve-3d;
+  transform: rotateX(-12deg) rotateY(-16deg);
+}
+.c3-wide .c3-tilt {
+  transform: rotateX(-14deg);
+}
+.c3-cube,
+.c3-box,
+.r-card {
+  position: relative;
+  transform-style: preserve-3d;
+  transform: rotateY(calc(var(--yaw, 0) * 1deg)) rotateX(calc(var(--pitch, 0) * 1deg)) rotateZ(calc(var(--roll, 0) * 1deg));
+}
+.c3-cube {
+  --half: 70px;
+  width: 140px;
+  height: 140px;
+}
+.c3-face {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  gap: 2px;
+  text-align: center;
+  background: var(--c-paper);
+  border: 2px solid var(--c-ink);
+  border-radius: 6px;
+  backface-visibility: hidden;
+}
+.c3-face b,
+.c3-side b {
+  font-size: 22px;
+  line-height: 1.1;
+}
+.c3-face span,
+.c3-side span {
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--muted);
+}
+.c3-cube .c3-front {
+  background: var(--c-accent);
+  transform: translateZ(var(--half));
+}
+.c3-cube .c3-right {
+  transform: rotateY(90deg) translateZ(var(--half));
+}
+.c3-cube .c3-back {
+  transform: rotateY(180deg) translateZ(var(--half));
+}
+.c3-cube .c3-left {
+  transform: rotateY(-90deg) translateZ(var(--half));
+}
+.c3-cube .c3-top {
+  transform: rotateX(90deg) translateZ(var(--half));
+}
+.c3-cube .c3-bottom {
+  transform: rotateX(-90deg) translateZ(var(--half));
+}
+
+/* A box 180 wide, 130 tall and 110 deep. */
+.c3-box {
+  --w: 180px;
+  --h: 130px;
+  --d: 110px;
+  width: var(--w);
+  height: var(--h);
+}
+.c3-side {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--w);
+  height: var(--h);
+  display: grid;
+  align-content: end;
+  gap: 4px;
+  padding: 14px;
+  background: var(--c-dark);
+  color: var(--c-paper);
+  border-radius: 4px;
+  backface-visibility: hidden;
+}
+.c3-side span {
+  color: var(--c-muted-dark);
+}
+.c3-box .c3-front {
+  background: var(--c-accent);
+  color: var(--c-ink);
+  transform: translateZ(calc(var(--d) / 2));
+}
+.c3-box .c3-front span {
+  color: var(--c-ink);
+}
+.c3-box .c3-back {
+  transform: rotateY(180deg) translateZ(calc(var(--d) / 2));
+}
+.c3-box .c3-right,
+.c3-box .c3-left {
+  width: var(--d);
+  left: calc((var(--w) - var(--d)) / 2);
+}
+.c3-box .c3-right {
+  transform: rotateY(90deg) translateZ(calc(var(--w) / 2));
+}
+.c3-box .c3-left {
+  transform: rotateY(-90deg) translateZ(calc(var(--w) / 2));
+}
+.c3-box .c3-lid {
+  height: var(--d);
+  top: calc((var(--h) - var(--d)) / 2);
+  place-content: center;
+  background: var(--c-quiet);
+  transform: rotateX(90deg) translateZ(calc(var(--h) / 2));
+}
+.c3-box .c3-lid span {
+  color: var(--c-ink);
+}
+
+/* Card flip recipe */
+.r-flip {
+  display: grid;
+  justify-items: center;
+  gap: 14px;
+  width: min(300px, 100%);
+}
+.r-card-frame {
+  width: 100%;
+  perspective: 900px;
+  border-radius: 16px;
+  cursor: grab;
+  -webkit-user-select: none;
+  user-select: none;
+}
+.r-card-frame[data-held] {
+  cursor: grabbing;
+}
+.r-card {
+  height: 180px;
+}
+.r-card > div {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  align-content: center;
+  gap: 6px;
+  padding: 22px;
+  border-radius: 16px;
+  backface-visibility: hidden;
+}
+.r-card-front {
+  background: var(--c-paper);
+  border: 2px solid var(--c-ink);
+}
+.r-card-front b {
+  font-size: 30px;
+  line-height: 1.1;
+}
+.r-card-back {
+  background: var(--c-dark);
+  color: var(--c-paper);
+  transform: rotateY(180deg);
+}
+.r-card-back b {
+  font-size: 20px;
+  line-height: 1.3;
+}
+.r-card span {
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--muted);
+}
+.r-card-back span {
+  color: var(--c-muted-dark);
+}

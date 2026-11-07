@@ -14,6 +14,7 @@
       .list { width: 300px; height: 200px; overflow: auto; background: #eee; }
       .list p { height: 40px; margin: 0; }
       .hold { width: 200px; height: 48px; }
+      .box { width: 160px; height: 160px; background: #999; margin: 8px; }
     </style>
   </head>
   <body>
@@ -24,6 +25,8 @@
       <div class="card" id="card"><button type="button" id="inside">Open</button></div>
       <div class="list" id="list"></div>
       <button type="button" class="hold" id="hold">Delete</button>
+      <div class="box" id="cube" aria-label="Dice"></div>
+      <div class="box" id="table" aria-label="Kettle"></div>
     </div>
     <main id="page" hidden>
       <section class="sec" data-mark id="a"><h2>A</h2><a href="#c" id="toc">To C</a></section>
@@ -32,7 +35,7 @@
       <section class="sec" data-mark id="d"><h2>D</h2></section>
     </main>
     <script type="module">
-      import { detent, detent2d, detentScroll, detentThrow, detentPull, detentHold } from '/src/index.ts'
+      import { detent, detent2d, detent3d, detentScroll, detentThrow, detentPull, detentHold } from '/src/index.ts'
       const log = (window.log = [])
       const on = (el, type) => el.addEventListener(type, (e) => log.push([el.id, type, e.detail]))
       for (const id of ['slider', 'loop', 'pip']) for (const t of ['detent:change', 'detent2d:change']) on(document.getElementById(id), t)
@@ -70,7 +73,11 @@
         throw: (o = {}) => (window.t = detentThrow(document.getElementById('card'), { cssVar: ['--x', '--y'], ...o })),
         pull: (o = {}) => (window.pl = detentPull(document.getElementById('list'), { cssVar: '--pull', ...o })),
         hold: (o = {}) => (window.h = detentHold(document.getElementById('hold'), { cssVar: '--progress', ...o })),
+        cube: (o = {}) => (window.c3 = detent3d(document.getElementById('cube'), { faces: 'cube', cssVar: ['--yaw', '--pitch'], ...o })),
+        table: (o = {}) => (window.t3 = detent3d(document.getElementById('table'), { faces: 'turntable', ...o })),
       })
+      listen('cube', ['detent3d:change'])
+      listen('table', ['detent3d:change'])
       window.detentScrollEmpty = () => detentScroll({ marks: [] })
       window.ready = true
     </script>

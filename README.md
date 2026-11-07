@@ -2,7 +2,7 @@
 
 Controls that click into place.
 
-A detent is the small notch a knob clicks into as you turn it. `detent` gives that feel to anything you drag on the web: a slider, a dial, a picker wheel, a sheet, the page scroll, a floating video, a card you throw, a list you pull and a button you hold.
+A detent is the small notch a knob clicks into as you turn it. `detent` gives that feel to anything you drag on the web: a slider, a dial, a picker wheel, a sheet, the page scroll, a floating video, a card you throw, a list you pull, a button you hold and an object you turn.
 
 - **One call per control.** Finger, mouse, keys and screen reader are wired for you.
 - **Magnetic marks.** Values are drawn onto marks. A strong mark pulls from further away.
@@ -207,9 +207,39 @@ hold.reset() // after onConfirm it stays done until you call this
 
 It fills at an even speed. Let go early and it runs back in about 140 ms. A finger that slides 16 px off, a page scroll or a blur cancels. Holding Enter or Space works too, but holding a key must never be the only way, so a tap calls `onTap` for your confirm step. `onConfirm` fires once. The events are `detenthold:input`, `detenthold:tap`, `detenthold:confirm` and `detenthold:cancel`.
 
+## Turn it: `detent3d()`
+
+Spin or tilt an object, and it clicks into the nearest face. A flick carries it on, capped, then it lands with no bounce.
+
+```js
+import { detent3d } from '@hlmnhkl/detent'
+
+// A cube: front, right, back, left, top, bottom.
+const cube = detent3d(el, { faces: 'cube', cssVar: ['--yaw', '--pitch', '--roll'] })
+
+// A product turntable: 8 views round the upright axis.
+detent3d(box, { faces: 'turntable', views: 8, names: ['Front', 'Front and left side' /* ... */] })
+
+// Your own faces, and three.js.
+detent3d(view, {
+  faces: [{ yaw: 0, name: 'Front' }, { yaw: 180, pitch: -30, name: 'Back, from above', strong: true }],
+  onInput: (rotation, q) => model.quaternion.set(...q),
+})
+```
+
+```css
+.cube { transform-style: preserve-3d; transform: rotateY(calc(var(--yaw) * 1deg)) rotateX(calc(var(--pitch) * 1deg)) rotateZ(calc(var(--roll) * 1deg)); }
+```
+
+A face is `{ yaw, pitch, roll, name, strong }` in degrees. `yaw` turns round the upright axis, positive to the right. `pitch` tilts, positive tilts the front up, so `-90` shows the top. `roll` is clockwise, like CSS `rotate`. `axes` limits the drag to `'yaw'`, `'pitch'` or `'both'` (a turntable is `'yaw'`, the rest `'both'`). `degreesPerPx` sets how far a drag turns it (0.5). Strong faces pull from further away. On a cube, the top and bottom rest in any of four quarter turns, so they can be reached from every side.
+
+`onInput(rotation, quaternion)` gives `{ yaw, pitch, roll }` for CSS and a quaternion `[x, y, z, w]` in three.js axes (y up). Free turns use quaternions and slerp, so it never locks up over the top and always takes the short way. On one axis it is a plain angle that goes round the short way and keeps counting past a full turn, so it never jumps. `cube.index`, `cube.rotation`, `cube.quaternion`, `cube.go(i)`, `cube.set()` and `cube.destroy()` work as above. The events are `detent3d:input` and `detent3d:change`.
+
+On one axis it is a `slider`: the value is the face's place in turning order, the text its name. Arrows go one face, Page Up and Page Down a quarter turn, Home and End to the ends, and it goes round. Free, it is a `group` described as rotatable: the arrows turn it to the next face that way, and the shared polite live region says the face's name when it lands. Mark the faces you draw `aria-hidden="true"`.
+
 ## Haptics
 
-`detent()`, `detent2d()`, `detentThrow()`, `detentPull()` and `detentHold()` take `haptics`, off by default. `true` ticks only on strong marks and key moments: a pull that arms, a hold that completes, a throw past its line. `'all'` also ticks every plain value, for wheels with few rows. A tick is about 8 ms, a strong one about 12 ms, at most one every 80 ms, and only for the person's own moves, never for `go()`. It works on Android, not on iPhone, because Safari has no vibration API. Use it for the clicks that matter, not every step.
+`detent()`, `detent2d()`, `detent3d()`, `detentThrow()`, `detentPull()` and `detentHold()` take `haptics`, off by default. `true` ticks only on strong marks and key moments: a pull that arms, a hold that completes, a throw past its line. `'all'` also ticks every plain value, for wheels with few rows. A tick is about 8 ms, a strong one about 12 ms, at most one every 80 ms, and only for the person's own moves, never for `go()`. It works on Android, not on iPhone, because Safari has no vibration API. Use it for the clicks that matter, not every step.
 
 ## Accessibility
 
@@ -230,8 +260,10 @@ What you must still do:
 - **Give it a name** with `aria-label` or `aria-labelledby`. detent warns once in the console if there is none.
 - **Write good words.** Pass `text`, so a screen reader says "RM 250" or "19:30", not "250".
 - **Show focus.** Style `:focus-visible`. detent draws nothing.
-- **Check `touch-action`.** If your CSS sets none, detent sets `pan-y` on a horizontal control, `pan-x` on a vertical one and `none` on a turn or in 2D, so the page still scrolls past it.
+- **Check `touch-action`.** If your CSS sets none, detent sets `pan-y` on a horizontal control, `pan-x` on a vertical one and `none` on a turn, in 2D or in 3D, on that element only, so the page still scrolls past it.
 - **Give every gesture another way.** `detentThrow`, `detentPull` and `detentHold` add no role. Wire buttons to `throw()`, `undo()` and `trigger()`, and use `onTap` for a confirm step. Say results in your own polite live region.
+
+`detent3d()` is a `slider` on one axis and a rotatable `group` when it turns freely. See [Turn it](#turn-it-detent3d).
 
 `destroy()` puts every attribute back the way it was.
 
@@ -270,7 +302,9 @@ Minified and gzipped, with tree-shaking. 1 KB is 1,024 bytes.
 | `detentHold` | 1.6 KB |
 | `detentThrow`, `detentPull` and `detentHold` | 4.5 KB |
 | All six | 9.7 KB |
-| Everything, low level included | 10.0 KB |
+| `detent3d` | 4.2 KB |
+| All seven | 11.9 KB |
+| Everything, low level included | 12.2 KB |
 | Only the low level (`createScrub` and `stepKey`) | 1.6 KB |
 
 ## Low level

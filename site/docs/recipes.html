@@ -8,7 +8,7 @@
     <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
     <title>Recipes · detent docs</title>
     <meta property="og:description" content="A tiny JavaScript engine that makes sliders, pickers and sheets feel like native apps: magnetic, calm, and accessible by default." />
-    <meta name="description" content="Product controls built with detent: a price filter, a booking time picker, a bottom sheet, a tip dial, a floating video, a notification you swipe away, a list you pull to refresh and a hold to delete." />
+    <meta name="description" content="Product controls built with detent: a price filter, a booking time picker, a bottom sheet, a tip dial, a floating video, a notification you swipe away, a list you pull to refresh, a hold to delete, a card that flips and a three.js model you turn." />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@200..800&family=Spline+Sans+Mono:wght@400;500&display=swap" rel="stylesheet" />
@@ -191,6 +191,59 @@
   )
 }</code></pre></div>
           </div>
+        </section>
+        <section data-mark id="flip">
+          <h2 id="flip-h">A card that flips</h2>
+          <p>A word on the front, its meaning on the back. Drag it over, flick it, or press Flip. It always lands face up, never on its edge.</p>
+          <div class="stage" data-run="recipes/flip.js"><div class="r-flip"><div class="r-card-frame" id="r-flip" aria-label="Flash card"><div class="r-card" aria-hidden="true"><div class="r-card-front"><span>Word</span><b>Ephemeral</b></div><div class="r-card-back"><span>Meaning</span><b>Lasting a very short time.</b></div></div></div><button type="button" class="toggle" id="r-flip-button">Flip</button></div></div>
+          <div class="tabs"><div role="tablist" aria-label="A card that flips, code"><button type="button" role="tab" id="t-flip-js" aria-controls="p-flip-js" aria-selected="true">Plain JS</button><button type="button" role="tab" id="t-flip-react" aria-controls="p-flip-react" aria-selected="false">React</button></div>
+            <div role="tabpanel" id="p-flip-js" aria-labelledby="t-flip-js">          <figure class="code"><figcaption>recipes/flip.js</figcaption><pre data-src="recipes/flip.js"></pre></figure>
+          <pre class="static" data-lang="css"><code>.card { transform-style: preserve-3d; transform: rotateY(calc(var(--yaw) * 1deg)); }
+.card &gt; div { position: absolute; inset: 0; backface-visibility: hidden; }
+.card .back { transform: rotateY(180deg); }</code></pre></div>
+            <div role="tabpanel" id="p-flip-react" aria-labelledby="t-flip-react" hidden><pre class="static" data-lang="tsx"><code>function FlashCard({ word, meaning }) {
+  const ref = useRef(null)
+  const card = useRef(null)
+  useEffect(() =&gt; {
+    const faces = [{ yaw: 0, name: `Word: ${word}` }, { yaw: 180, name: `Meaning: ${meaning}` }]
+    card.current = detent3d(ref.current, { faces, axes: 'yaw', cssVar: ['--yaw', '--pitch'] })
+    return card.current.destroy
+  }, [word, meaning])
+  return (
+    &lt;&gt;
+      &lt;div ref={ref} aria-label="Flash card" className="frame"&gt;
+        &lt;div className="card" aria-hidden="true"&gt;&lt;div&gt;{word}&lt;/div&gt;&lt;div className="back"&gt;{meaning}&lt;/div&gt;&lt;/div&gt;
+      &lt;/div&gt;
+      &lt;button type="button" onClick={() =&gt; card.current.go(1 - card.current.index)}&gt;Flip&lt;/button&gt;
+    &lt;/&gt;
+  )
+}</code></pre></div>
+          </div>
+        </section>
+        <section data-mark id="three">
+          <h2 id="three-h">A three.js model you turn</h2>
+          <p>detent3d gives the quaternion in three.js axes, so the model takes it as it is. The canvas sits inside the element detent3d holds, and three.js draws on each <code>onInput</code>.</p>
+          <figure class="code"><figcaption>three.js, shown only: needs three</figcaption><pre class="static" data-lang="js"><code>import * as THREE from 'three'
+import { detent3d } from '@hlmnhkl/detent'
+
+const view = document.querySelector('#model') // has aria-label="Speaker"
+const renderer = new THREE.WebGLRenderer({ antialias: true })
+renderer.setSize(view.clientWidth, view.clientHeight)
+view.append(renderer.domElement)
+
+const scene = new THREE.Scene()
+const camera = new THREE.PerspectiveCamera(35, view.clientWidth / view.clientHeight, 0.1, 100)
+camera.position.z = 6
+const model = new THREE.Mesh(new THREE.BoxGeometry(1.6, 2.4, 1.2), new THREE.MeshNormalMaterial())
+scene.add(model)
+
+detent3d(view, {
+  faces: 'cube',
+  onInput: (rotation, q) =&gt; {
+    model.quaternion.set(...q)
+    renderer.render(scene, camera)
+  },
+})</code></pre></figure>
         </section>
         <nav class="pager" aria-label="Next and previous"><a href="low-level.html" rel="prev"><span>Previous</span>Low level</a><a href="accessibility.html" rel="next"><span>Next</span>Accessibility</a></nav>
       </main>

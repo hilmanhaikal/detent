@@ -37,6 +37,18 @@
             <tr><td>Reduced motion</td><td>same value, no glide</td><td>same point, no glide</td><td>no settle, links jump</td></tr>
           </tbody></table></div>
         </section>
+        <section data-mark id="turn">
+          <h2 id="turn-h">Objects you turn</h2>
+          <div class="table" tabindex="0" role="region" aria-label="Objects you turn"><table><thead><tr><th></th><th><code>detent3d()</code> on one axis</th><th><code>detent3d()</code> free</th></tr></thead><tbody>
+            <tr><td>Role</td><td><code>slider</code>, only if none</td><td><code>group</code>, described as rotatable, only if none</td></tr>
+            <tr><td>Focus</td><td><code>tabindex="0"</code> if missing</td><td><code>tabindex="0"</code> if missing</td></tr>
+            <tr><td>Values</td><td>now is the face's place, text is its name</td><td>none; it says the face's name instead</td></tr>
+            <tr><td>Speaks</td><td>the face's name, through the slider</td><td>the face's name, in one polite live region</td></tr>
+            <tr><td>Keys</td><td>arrows one face, Page Up and Down a quarter turn, Home, End; it goes round</td><td>arrows to the next face that way, Home, End</td></tr>
+            <tr><td>Reduced motion</td><td>same face, no glide</td><td>same face, no glide</td></tr>
+          </tbody></table></div>
+          <p>The faces you draw are pictures of one control, so mark them <code>aria-hidden="true"</code>. Otherwise a screen reader reads every side at once.</p>
+        </section>
         <section data-mark id="gestures">
           <h2 id="gestures-h">Throw, pull and hold</h2>
           <p>These three are gestures on your own elements, so they add no role. Each one has a path that needs no gesture, and you wire it:</p>
@@ -64,7 +76,7 @@
             <li><b>Write good words</b> with <code>text</code>: "RM 250" or "19:30", not "250".</li>
             <li><b>Show focus</b> with a <code>:focus-visible</code> style that passes 3:1 against what is around it.</li>
             <li><b>Make the target big enough:</b> at least 44 by 44 px for the part people grab.</li>
-            <li><b>Check <code>touch-action</code>.</b> If your CSS sets none, detent sets <code>pan-y</code> on a horizontal control, <code>pan-x</code> on a vertical one and <code>none</code> on a turn or in 2D, so the page still scrolls past it.</li>
+            <li><b>Check <code>touch-action</code>.</b> If your CSS sets none, detent sets <code>pan-y</code> on a horizontal control, <code>pan-x</code> on a vertical one and <code>none</code> on a turn, in 2D or in 3D, on that element only, so the page still scrolls past it.</li>
             <li><b>Test with keys only,</b> then with a screen reader, then with reduced motion on.</li>
           </ul>
         </section>

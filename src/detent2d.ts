@@ -289,8 +289,10 @@ export function detent2d(el: HTMLElement, options: Detent2dOptions): Detent2d {
     set(next) {
       o = { ...o, ...next }
       measure()
-      index = rested = fitIndex(index)
+      rested = fitIndex(rested)
+      index = fitIndex(index)
       if (!moving) place()
+      else if ('points' in next || 'bounds' in next || 'inset' in next) go(index)
     },
     destroy,
   }

@@ -14,6 +14,7 @@ const pages = [
   { file: 'throw.html', title: 'detentThrow()' },
   { file: 'pull.html', title: 'detentPull()' },
   { file: 'hold.html', title: 'detentHold()' },
+  { file: '3d.html', title: 'detent3d()' },
   { file: 'low-level.html', title: 'Low level' },
   { file: 'recipes.html', title: 'Recipes' },
   { file: 'accessibility.html', title: 'Accessibility' },
