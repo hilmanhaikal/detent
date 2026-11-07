@@ -307,6 +307,11 @@ npm run test:browser   # in a second shell; add webkit with: node test/browser.m
 `test/browser.mjs` loads Playwright from `node_modules/playwright`. To use a copy from somewhere else, set `PLAYWRIGHT` to its `index.mjs`.
 ```
 
+## Security
+
+detent has no dependencies and no install scripts, and a check runs before every publish. To report a
+problem privately, see [SECURITY.md](SECURITY.md).
+
 ## Licence
 
 [MIT](LICENSE)

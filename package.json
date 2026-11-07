@@ -11,7 +11,9 @@
       "default": "./dist/index.js"
     }
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "publishConfig": {
     "access": "public"
   },
@@ -20,9 +22,26 @@
     "build": "tsc -p tsconfig.json",
     "test": "tsc -p tsconfig.json && node --test test/core.test.mjs test/rules.test.mjs",
     "test:browser": "node test/browser.mjs chromium,firefox",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build && node scripts/check-publish.mjs"
   },
-  "keywords": ["magnetic", "swipe", "pull-to-refresh", "hold-to-confirm", "haptics", "snap", "spring", "gesture", "slider", "dial", "picker", "accessibility", "reduced-motion", "scroll-snap", "drag", "detent"],
+  "keywords": [
+    "magnetic",
+    "swipe",
+    "pull-to-refresh",
+    "hold-to-confirm",
+    "haptics",
+    "snap",
+    "spring",
+    "gesture",
+    "slider",
+    "dial",
+    "picker",
+    "accessibility",
+    "reduced-motion",
+    "scroll-snap",
+    "drag",
+    "detent"
+  ],
   "author": "Hilman Haikal",
   "license": "MIT",
   "repository": {
