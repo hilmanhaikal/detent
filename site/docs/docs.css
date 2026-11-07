@@ -881,13 +881,14 @@
   color: var(--c-paper);
 }
 
-/* detent3d: the element stays still and takes the hand, the object inside it turns. */
+/* detent3d: the element stays still and takes the hand, the object inside it turns. It is seen straight on
+   with only a small tilt from above, so it stays symmetric left to right. */
 .c3 {
   display: grid;
   place-items: center;
   width: 220px;
   height: 220px;
-  perspective: 800px;
+  perspective: 1400px;
   border-radius: 18px;
   cursor: grab;
   -webkit-user-select: none;
@@ -901,10 +902,27 @@
 }
 .c3-tilt {
   transform-style: preserve-3d;
-  transform: rotateX(-12deg) rotateY(-16deg);
+  transform: rotateX(-10deg);
 }
-.c3-wide .c3-tilt {
-  transform: rotateX(-14deg);
+/* Seen edge-on, a label squashes into noise, so each face's words fade in only as that face turns toward
+   you: --toward is how squarely it faces you, from the same angles the cube turns by. */
+.c3-cube,
+.c3-box {
+  --cy: cos(calc(var(--yaw, 0) * 1deg));
+  --sy: sin(calc(var(--yaw, 0) * 1deg));
+  --cp: cos(calc(var(--pitch, 0) * 1deg));
+  --sp: sin(calc(var(--pitch, 0) * 1deg));
+}
+.c3-front { --toward: calc(var(--cy) * var(--cp)); }
+.c3-back { --toward: calc(var(--cy) * var(--cp) * -1); }
+.c3-right { --toward: calc(var(--sy) * var(--cp) * -1); }
+.c3-left { --toward: calc(var(--sy) * var(--cp)); }
+.c3-top,
+.c3-lid { --toward: calc(var(--sp) * -1); }
+.c3-bottom { --toward: var(--sp); }
+.c3-face > *,
+.c3-side > * {
+  opacity: clamp(0, calc((var(--toward, 1) - 0.45) * 3), 1);
 }
 .c3-cube,
 .c3-box,
