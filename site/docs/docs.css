@@ -939,15 +939,21 @@
 .c3-face {
   position: absolute;
   inset: 0;
+  /* Faces are paragraphs, so the page's "space between paragraphs" must not push them off the cube. */
+  margin: 0 !important;
   display: grid;
   place-content: center;
   gap: 2px;
   text-align: center;
-  background: var(--c-paper);
-  border: 2px solid var(--c-ink);
-  border-radius: 6px;
+  /* No outlines: like a real box, each side is a shade lighter or darker, so every edge reads the same. */
+  background: color-mix(in srgb, var(--c-ink) var(--shade, 0%), var(--c-paper));
   backface-visibility: hidden;
 }
+.c3-cube .c3-top { --shade: 0%; }
+.c3-cube .c3-right,
+.c3-cube .c3-left { --shade: 12%; }
+.c3-cube .c3-back { --shade: 7%; }
+.c3-cube .c3-bottom { --shade: 22%; }
 .c3-face b,
 .c3-side b {
   font-size: 22px;
@@ -999,7 +1005,6 @@
   padding: 14px;
   background: var(--c-dark);
   color: var(--c-paper);
-  border-radius: 4px;
   backface-visibility: hidden;
 }
 .c3-side span {
