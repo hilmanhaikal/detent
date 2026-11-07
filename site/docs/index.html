@@ -24,7 +24,7 @@
         <section data-mark="strong" id="top">
           <p class="crumb">Docs</p>
           <h1>Getting started</h1>
-          <p class="lede">detent makes the things people drag feel like they click into place: sliders, dials, wheels, sheets, the page scroll and a floating video. Plain JavaScript, no dependencies, about 4 KB for a control.</p>
+          <p class="lede">detent makes the things people drag feel like they click into place: sliders, dials, wheels, sheets, the page scroll, a floating video, cards you throw, lists you pull and buttons you hold. Plain JavaScript, no dependencies, about 4 KB for a control.</p>
         </section>
         <section data-mark id="why">
           <h2 id="why-h">Why detent</h2>
@@ -54,17 +54,25 @@
           <p>Drag it, flick it, or tab to it and press the arrow keys. 50 is strong, so it pulls from further away. Page Up and Page Down jump to it.</p>
         </section>
         <section data-mark id="glance">
-          <h2 id="glance-h">The three functions at a glance</h2>
+          <h2 id="glance-h">The functions at a glance</h2>
           <div class="glance">
             <a href="detent.html"><code>detent(el, options)</code><span>One value under a hand: sliders, dials, picker wheels, rulers and sheets.</span></a>
             <a href="scroll.html"><code>detentScroll(options)</code><span>The page settles onto its sections when the wheel or finger stops.</span></a>
             <a href="detent2d.html"><code>detent2d(el, options)</code><span>Drag something anywhere, and it settles onto the nearest point or corner.</span></a>
+            <a href="throw.html"><code>detentThrow(el, options)</code><span>Drag a card past a line and it flies off that way. Short of it, it springs back.</span></a>
+            <a href="pull.html"><code>detentPull(el, options)</code><span>Pull past a line to trigger, as in pull to refresh, without fighting the scroll.</span></a>
+            <a href="hold.html"><code>detentHold(el, options)</code><span>Press and hold to confirm, on a fair clock. A tap asks for a confirm step.</span></a>
           </div>
           <p>Under them, every building block is public too. See <a href="low-level.html">Low level</a>.</p>
         </section>
         <section data-mark id="motion">
           <h2 id="motion-h">Reduced motion</h2>
           <p>With reduced motion turned on in the system, every control lands on the same value with no glide, and the page never settles by itself. It is read live, so a change applies at once.</p>
+        </section>
+        <section data-mark id="haptics">
+          <h2 id="haptics-h">Haptics</h2>
+          <p>Every function that takes a hand can tick on phones that vibrate. It is off by default. <code>haptics: true</code> ticks only on strong marks and key moments: a pull that arms, a hold that completes, a throw past its line. <code>haptics: 'all'</code> also ticks every plain value, for wheels with few rows.</p>
+          <p>A tick is about 8 ms, a strong one about 12 ms, and never more than one every 80 ms. It ticks only for the person's own moves, never for <code>go()</code>. It works on Android, not on iPhone, because Safari has no vibration API. Use it for the clicks that matter, not every step.</p>
         </section>
         <nav class="pager" aria-label="Next and previous"><span></span><a href="detent.html" rel="next"><span>Next</span>detent()</a></nav>
       </main>

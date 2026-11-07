@@ -9,12 +9,22 @@
       .slider { width: 200px; height: 40px; background: #ddd; margin: 20px; }
       .pip { position: fixed; left: 0; top: 0; width: 100px; height: 60px; background: #333; translate: calc(var(--x, 0) * 1px) calc(var(--y, 0) * 1px); }
       .sec { height: 70vh; border-top: 1px solid #000; }
+      .lab { position: absolute; left: 300px; top: 100px; display: grid; gap: 20px; }
+      .card { width: 300px; height: 160px; background: #bbb; translate: calc(var(--x, 0) * 1px) calc(var(--y, 0) * 1px); }
+      .list { width: 300px; height: 200px; overflow: auto; background: #eee; }
+      .list p { height: 40px; margin: 0; }
+      .hold { width: 200px; height: 48px; }
     </style>
   </head>
   <body>
     <div class="slider" id="slider" aria-label="Volume"></div>
     <div class="slider" id="loop" aria-label="Hour"></div>
     <div class="pip" id="pip" aria-label="Video"></div>
+    <div class="lab">
+      <div class="card" id="card"><button type="button" id="inside">Open</button></div>
+      <div class="list" id="list"></div>
+      <button type="button" class="hold" id="hold">Delete</button>
+    </div>
     <main id="page" hidden>
       <section class="sec" data-mark id="a"><h2>A</h2><a href="#c" id="toc">To C</a></section>
       <section class="sec" data-mark="strong" id="b"><h2>B</h2></section>
@@ -22,7 +32,7 @@
       <section class="sec" data-mark id="d"><h2>D</h2></section>
     </main>
     <script type="module">
-      import { detent, detent2d, detentScroll } from '/src/index.ts'
+      import { detent, detent2d, detentScroll, detentThrow, detentPull, detentHold } from '/src/index.ts'
       const log = (window.log = [])
       const on = (el, type) => el.addEventListener(type, (e) => log.push([el.id, type, e.detail]))
       for (const id of ['slider', 'loop', 'pip']) for (const t of ['detent:change', 'detent2d:change']) on(document.getElementById(id), t)
@@ -45,6 +55,22 @@
           window.dispatchEvent(e)
         },
       }
+      document.getElementById('list').innerHTML = Array.from({ length: 30 }, (_, i) => `<p>Row ${i + 1}</p>`).join('')
+      window.buzz = []
+      navigator.vibrate = (ms) => (buzz.push(ms), true)
+      addEventListener('pointerdown', (e) => (window.lastPointer = e.pointerId), true)
+      window.ev = []
+      const listen = (id, types) => types.forEach((t) => document.getElementById(id).addEventListener(t, (e) => ev.push([t, e.detail])))
+      listen('card', ['detentthrow:throw'])
+      listen('list', ['detentpull:arm', 'detentpull:pull'])
+      listen('hold', ['detenthold:tap', 'detenthold:confirm', 'detenthold:cancel'])
+      window.seen = (type) => ev.filter((e) => e[0] === type).length
+      document.getElementById('inside').addEventListener('click', () => ev.push(['inside:click']))
+      Object.assign(T, {
+        throw: (o = {}) => (window.t = detentThrow(document.getElementById('card'), { cssVar: ['--x', '--y'], ...o })),
+        pull: (o = {}) => (window.pl = detentPull(document.getElementById('list'), { cssVar: '--pull', ...o })),
+        hold: (o = {}) => (window.h = detentHold(document.getElementById('hold'), { cssVar: '--progress', ...o })),
+      })
       window.detentScrollEmpty = () => detentScroll({ marks: [] })
       window.ready = true
     </script>

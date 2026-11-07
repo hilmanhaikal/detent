@@ -2,6 +2,7 @@ import { attract, clamp, createScrub, lastStep, nearestMark, roundTo, stepKey, w
 import { attrs, needsName } from './aria.js'
 import { hand, turned, type Pt } from './hand.js'
 import { reduced, type Motion } from './motion.js'
+import { haptics, type Haptics } from './haptics.js'
 
 /** A number is a plain mark. */
 export type MarkInput = number | Mark
@@ -48,6 +49,8 @@ type Base = {
   role?: 'slider' | 'spinbutton'
   /** The drag moves the content, not a thumb: a drag to the right lowers the value. */
   invert?: boolean
+  /** A short tick on phones that vibrate, only while the person moves it. true: strong marks only. 'all': every value. Default false. */
+  haptics?: Haptics
   /** Aborting it is the same as destroy(). */
   signal?: AbortSignal
   /** Every frame while it moves, and once at the start so you can draw it. */
@@ -150,6 +153,21 @@ export function detent(el: HTMLElement, options: DetentOptions): Detent {
 
   let quiet = true
   let last = NaN
+  // Ticks belong to the person's own moves: while the hand drags, and once where their move lands.
+  const buzz = haptics(() => o.haptics)
+  let held = false
+  let person = false
+  let from = NaN
+  let ticked = NaN
+  const feel = (v: number) => {
+    const strong = marks.some((m) => m.strong && Math.abs(m.at - v) < 1e-9)
+    if (v !== ticked && buzz.tick(strong)) ticked = v
+  }
+  const byPerson = () => {
+    person = true
+    from = out(scrub.target)
+    ticked = NaN
+  }
   const range = () => ({ min: o.loop ? undefined : lo(), max: o.loop ? undefined : hi(), edge: o.edge ?? step() * 0.6, coast: o.coast, maxSpeed: o.maxSpeed })
   const scrub = createScrub({
     value: 0,
@@ -165,11 +183,14 @@ export function detent(el: HTMLElement, options: DetentOptions): Detent {
     },
     onMoving: (m) => el.toggleAttribute('data-moving', m),
     onMark: (v) => {
+      if (held) feel(out(v))
       o.onMark?.(out(v))
       fire('detent:mark', { value: out(v) })
     },
     onSettle: (to) => {
       const v = out(to)
+      if (person && v !== from) feel(v)
+      person = false
       a.set('aria-valuenow', String(v))
       a.set('aria-valuetext', o.text ? o.text(v) : String(v))
       if (quiet || v === last) return
@@ -197,6 +218,10 @@ export function detent(el: HTMLElement, options: DetentOptions): Detent {
   // In a loop, a value is reached the short way round from where it is now.
   const near = (v: number) => (o.loop ? v + Math.round((scrub.at - v) / o.count!) * o.count! : clamp(v, lo(), hi()))
   const go = (v: number, opts?: { instant?: boolean }) => (opts?.instant ? scrub.place(near(v)) : scrub.go(near(v)))
+  const goBy = (v: number, opts?: { instant?: boolean }) => {
+    person = false
+    go(v, opts)
+  }
 
   const toward = (key: string, v: number) => {
     const ats = marks.map((m) => m.at)
@@ -221,6 +246,7 @@ export function detent(el: HTMLElement, options: DetentOptions): Detent {
       const v = keyFor(e.key, out(scrub.target))
       if (v === null) return
       e.preventDefault()
+      byPerson()
       go(v)
     },
     { signal },
@@ -235,12 +261,17 @@ export function detent(el: HTMLElement, options: DetentOptions): Detent {
   hand(
     el,
     {
-      grab: () => scrub.grab(),
+      grab: () => {
+        scrub.grab()
+        byPerson()
+        held = true
+      },
       move: (p, q) => {
         const d = units(p, q)
         if (d) scrub.drag(d)
       },
       end: (how) => {
+        held = false
         if (how === 'cancel') return scrub.cancel()
         if (how === 'tap' && o.onTap) {
           scrub.cancel()
@@ -256,6 +287,7 @@ export function detent(el: HTMLElement, options: DetentOptions): Detent {
   const destroy = () => {
     if (signal.aborted) return
     ac.abort()
+    buzz.off()
     scrub.stop()
     a.restore()
     el.removeAttribute('data-moving')
@@ -274,8 +306,9 @@ export function detent(el: HTMLElement, options: DetentOptions): Detent {
     get moving() {
       return scrub.moving
     },
-    go,
+    go: goBy,
     set(next) {
+      person = false
       o = { ...o, ...next } as Loose
       readMarks()
       writeRange()

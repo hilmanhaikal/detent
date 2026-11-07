@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light" />
+    <meta name="theme-color" content="#e8eddf" />
+    <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
+    <title>detentPull() · detent docs</title>
+    <meta property="og:description" content="A tiny JavaScript engine that makes sliders, pickers and sheets feel like native apps: magnetic, calm, and accessible by default." />
+    <meta name="description" content="Pull past a line to trigger: pull to refresh or pull to reveal, without fighting the native scroll." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@200..800&family=Spline+Sans+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../shared/base.css" />
+    <link rel="stylesheet" href="../home/style.css" />
+    <link rel="stylesheet" href="./docs.css" />
+  </head>
+  <body>
+    <!-- @header -->
+    <div class="docs">
+      <aside class="docs-side"><!-- @sidebar --></aside>
+      <main class="docs-main" id="main">
+        <section data-mark="strong" id="top">
+          <p class="crumb">Docs</p>
+          <h1>detentPull()</h1>
+          <p class="lede">Pull down past a line and let go to trigger, as in pull to refresh. It gets heavier as you pull, holds while your work runs, and never fights the native scroll.</p>
+        </section>
+        <section data-mark id="demo">
+          <h2 id="demo-h">Pull to load</h2>
+          <div class="stage" data-run="demos/pull.js">
+            <div class="p-box" id="pull-box"><p class="p-cue" id="pull-cue" aria-hidden="true">Pull down to load</p><div class="p-sheet"><b>Drag down from here</b><span>Past the line it arms. Let go to load.</span></div></div>
+            <button type="button" class="toggle" id="pull-button">Load now</button>
+            <p class="d-out small" id="pull-out" aria-live="polite">Nothing loaded yet.</p>
+          </div>
+          <figure class="code"><figcaption>demos/pull.js</figcaption><pre data-src="demos/pull.js"></pre></figure>
+          <pre class="static" data-lang="css"><code>.content { translate: 0 calc(var(--pull) * 1px); }
+.box[data-armed] .cue { font-weight: 700; }</code></pre>
+        </section>
+        <section data-mark id="rules">
+          <h2 id="rules-h">How it pulls</h2>
+          <ul class="rules">
+            <li>It follows the hand at first, then gets heavier, and never passes <code>max</code>. With the defaults it arms 64 px down, after about 89 px of hand.</li>
+            <li>At the line it arms: <code>onArm(true)</code>, <code>data-armed</code> on the element, and a tick with <code>haptics</code>. Back above the line, it disarms.</li>
+            <li>Let go while armed and <code>onPull</code> fires once. It holds at <code>rest</code>, with <code>data-busy</code> and <code>aria-busy="true"</code>, until you call <code>done()</code>. Pulls while busy are ignored.</li>
+            <li>Let go short of the line and it springs back, with no bounce.</li>
+            <li>On a scroll container it pulls only when the container is at its top, and only downward. Anything else is the native scroll, left alone.</li>
+            <li>A finger and a mouse can pull. A pen pulls where the browser sends touch events for it, as on an iPad; elsewhere it scrolls natively.</li>
+            <li>With reduced motion it jumps to rest or back, with the same result.</li>
+          </ul>
+          <p>On a phone, a pull on the whole page can start the browser's own refresh. Pull an inner list, or set <code>overscroll-behavior-y: contain</code> on the page.</p>
+        </section>
+        <section data-mark id="keys">
+          <h2 id="keys-h">Keys and screen readers</h2>
+          <p>A pull is never the only way. Add a button that calls <code>trigger()</code>, as the demo does: it goes to rest and fires <code>onPull</code>, just like a pull.</p>
+          <p>While it is busy the element has <code>aria-busy="true"</code>, so screen readers wait for the new content. Say the result in your own polite live region, such as "Two new orders." <code>destroy()</code> puts every attribute back.</p>
+          <p><code>haptics: true</code> ticks once when the pull arms. It works on Android, not on iPhone, because Safari has no vibration API. Use it for the clicks that matter, not every step.</p>
+        </section>
+        <section data-mark id="options">
+          <h2 id="options-h">Options</h2>
+          <!-- @props src/pull.ts PullOptions -->
+        </section>
+        <section data-mark id="result">
+          <h2 id="result-h">What it gives back</h2>
+          <!-- @api src/pull.ts Pull -->
+        </section>
+        <section data-mark id="events">
+          <h2 id="events-h">Events</h2>
+          <!-- @events src/pull.ts PullEventMap -->
+        </section>
+        <nav class="pager" aria-label="Next and previous"><a href="throw.html" rel="prev"><span>Previous</span>detentThrow()</a><a href="hold.html" rel="next"><span>Next</span>detentHold()</a></nav>
+      </main>
+      <aside class="docs-toc"><!-- @toc --></aside>
+    </div>
+    <!-- @footer -->
+    <script type="module" src="./docs.ts"></script>
+  </body>
+</html>

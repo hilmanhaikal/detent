@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.2.0
+
+Three new ways to cross a line and make something happen.
+
+- **`detentThrow(el, options)`** lets you throw a card or sheet. Past 35% of its width, or with a quick flick, it flies off and tells you once. Short of that it springs back. `throw()` and `undo()` are there for your buttons.
+- **`detentPull(el, options)`** is pull to refresh. It gets heavier as you pull, shows when it is armed, and holds while your work runs until you call `done()`. On a list it only pulls at the top, so normal scrolling is never in the way. `trigger()` does the same from a button.
+- **`detentHold(el, options)`** is hold to confirm, on a fair clock. Let go early and it runs back. A tap, Enter or Space never confirms by itself: it calls `onTap`, so you can show a confirm step.
+- **Haptics.** Every control that takes a hand can tick on phones that vibrate, with `haptics: true` (strong marks and key moments) or `'all'`. Off by default, short and gentle, Android only (iPhone Safari has no vibration API).
+- Every 0.1.0 function and low-level export is unchanged.
+
+
 ## 0.1.0
 
 One call now does what took 40 lines.

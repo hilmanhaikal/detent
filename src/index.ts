@@ -3,3 +3,7 @@ export { detent, type Detent, type DetentOptions, type DetentEventMap, type Mark
 export { detentScroll, type ScrollDetent, type ScrollOptions } from './scroll.js'
 export { detent2d, type Detent2d, type Detent2dEventMap, type Detent2dOptions, type Point } from './detent2d.js'
 export type { Motion } from './motion.js'
+export { detentThrow, type Throw, type ThrowOptions, type ThrowEventMap, type ThrowDirection } from './throw.js'
+export { detentPull, type Pull, type PullOptions, type PullEventMap } from './pull.js'
+export { detentHold, type Hold, type HoldOptions, type HoldEventMap } from './hold.js'
+export type { Haptics } from './haptics.js'

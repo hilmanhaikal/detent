@@ -2,7 +2,7 @@
 
 Controls that click into place.
 
-A detent is the small notch a knob clicks into as you turn it. `detent` gives that feel to anything you drag on the web: a slider, a dial, a picker wheel, a sheet, the page scroll, a floating video.
+A detent is the small notch a knob clicks into as you turn it. `detent` gives that feel to anything you drag on the web: a slider, a dial, a picker wheel, a sheet, the page scroll, a floating video, a card you throw, a list you pull and a button you hold.
 
 - **One call per control.** Finger, mouse, keys and screen reader are wired for you.
 - **Magnetic marks.** Values are drawn onto marks. A strong mark pulls from further away.
@@ -112,6 +112,7 @@ The callbacks `onInput`, `onChange` and `onMark` carry the same numbers as the e
 | `text` | `String(v)` | The words for `aria-valuetext`. |
 | `keys` | built in | Your own key map: `(key, value) => value or null`. |
 | `onTap` | none | A press that barely moved. |
+| `haptics` | false | A tick on phones that vibrate. `true` for strong marks only, `'all'` for every value. See [Haptics](#haptics). |
 
 While the hand holds it, the element has `data-held`. While it moves, it has `data-moving`.
 
@@ -152,6 +153,64 @@ video { position: fixed; left: 0; top: 0; translate: calc(var(--x) * 1px) calc(v
 
 Points can be your own: `points: [{ x, y, name: 'Dock', strong: true }]`, in px from the bounds' top-left. Arrow keys move to the next point that way. Home and End go to the first and last. `pip.index`, `pip.at`, `pip.go(i)`, `pip.set()` and `pip.destroy()` work as above. The events are `detent2d:input` and `detent2d:change`.
 
+## Throw it: `detentThrow()`
+
+Drag a card past a line and let go: it flies off that way. Short of the line it springs back, with no bounce.
+
+```js
+import { detentThrow } from '@hlmnhkl/detent'
+
+const card = detentThrow(el, {
+  directions: 'x', // or 'y', 'both', or a list such as ['left']
+  cssVar: ['--x', '--y', '--tilt'],
+  onThrow: (way) => dismiss(way),
+})
+
+passButton.onclick = () => card.throw('left') // buttons are yours: a gesture is never the only way
+undoButton.onclick = () => card.undo() // plays the throw backwards
+```
+
+The rule: past 35% of its width (`line`), or a flick over 600 px/s (`flick`) that has moved at least 40 px (`flickMin`). `onThrow` fires once per throw. A `throw()` during a throw is ignored; one during an undo plays once, when the undo ends. Past the line the element has `data-armed` with the way; once gone, `data-thrown`. The events are `detentthrow:input` and `detentthrow:throw`.
+
+## Pull it: `detentPull()`
+
+Pull down past a line and let go to trigger, as in pull to refresh.
+
+```js
+import { detentPull } from '@hlmnhkl/detent'
+
+const refresh = detentPull(list, {
+  cssVar: '--pull', // px, for your content's translate
+  onArm: (armed) => (cue.textContent = armed ? 'Let go to refresh' : 'Pull to refresh'),
+  onPull: () => load().finally(() => refresh.done()),
+})
+refreshButton.onclick = () => refresh.trigger() // the same pull, for keys and screen readers
+```
+
+It follows the hand, then gets heavier, and never passes `max`. At the `line` (64 px) it arms: `onArm(true)` and `data-armed`. Let go while armed and `onPull` fires once; it holds at `rest` with `aria-busy="true"` until you call `done()`. Short of the line it springs back. On a scroll container it only pulls at the top and only downward, so the native scroll is never fought. The events are `detentpull:input`, `detentpull:arm` and `detentpull:pull`.
+
+## Hold it: `detentHold()`
+
+Press and hold to confirm, on a fair clock.
+
+```js
+import { detentHold } from '@hlmnhkl/detent'
+
+const hold = detentHold(button, {
+  time: 1500,
+  cssVar: '--progress', // 0 to 1, for your fill
+  onTap: () => openConfirmStep(), // a tap, Enter or Space never confirms by itself
+  onConfirm: () => remove(),
+})
+hold.reset() // after onConfirm it stays done until you call this
+```
+
+It fills at an even speed. Let go early and it runs back in about 140 ms. A finger that slides 16 px off, a page scroll or a blur cancels. Holding Enter or Space works too, but holding a key must never be the only way, so a tap calls `onTap` for your confirm step. `onConfirm` fires once. The events are `detenthold:input`, `detenthold:tap`, `detenthold:confirm` and `detenthold:cancel`.
+
+## Haptics
+
+`detent()`, `detent2d()`, `detentThrow()`, `detentPull()` and `detentHold()` take `haptics`, off by default. `true` ticks only on strong marks and key moments: a pull that arms, a hold that completes, a throw past its line. `'all'` also ticks every plain value, for wheels with few rows. A tick is about 8 ms, a strong one about 12 ms, at most one every 80 ms, and only for the person's own moves, never for `go()`. It works on Android, not on iPhone, because Safari has no vibration API. Use it for the clicks that matter, not every step.
+
 ## Accessibility
 
 What detent does for you:
@@ -172,6 +231,7 @@ What you must still do:
 - **Write good words.** Pass `text`, so a screen reader says "RM 250" or "19:30", not "250".
 - **Show focus.** Style `:focus-visible`. detent draws nothing.
 - **Check `touch-action`.** If your CSS sets none, detent sets `pan-y` on a horizontal control, `pan-x` on a vertical one and `none` on a turn or in 2D, so the page still scrolls past it.
+- **Give every gesture another way.** `detentThrow`, `detentPull` and `detentHold` add no role. Wire buttons to `throw()`, `undo()` and `trigger()`, and use `onTap` for a confirm step. Say results in your own polite live region.
 
 `destroy()` puts every attribute back the way it was.
 
@@ -201,11 +261,16 @@ Minified and gzipped, with tree-shaking. 1 KB is 1,024 bytes.
 
 | You import | Size |
 | --- | --- |
-| `detent` | 4.0 KB |
+| `detent` | 4.2 KB |
 | `detentScroll` | 2.1 KB |
-| `detent2d` | 2.7 KB |
-| All three | 6.5 KB |
-| Everything, low level included | 6.9 KB |
+| `detent2d` | 2.9 KB |
+| `detent`, `detentScroll` and `detent2d` | 6.9 KB |
+| `detentThrow` | 2.9 KB |
+| `detentPull` | 2.0 KB |
+| `detentHold` | 1.6 KB |
+| `detentThrow`, `detentPull` and `detentHold` | 4.5 KB |
+| All six | 9.7 KB |
+| Everything, low level included | 10.0 KB |
 | Only the low level (`createScrub` and `stepKey`) | 1.6 KB |
 
 ## Low level

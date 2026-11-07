@@ -7,10 +7,17 @@ export type Hand = {
   end: (how: 'release' | 'cancel' | 'tap') => void
 }
 
+export type HandOptions = {
+  /** Turns some pointers away. */
+  only?: (e: PointerEvent) => boolean
+  /** Holds the pointer only once it moves, so a tap still clicks a button inside. */
+  late?: boolean
+}
+
 /** Feeds one pointer at a time on `el` to `on`, until `signal` aborts. */
-export function hand(el: HTMLElement, on: Hand, signal: AbortSignal, touchAction: string) {
+export function hand(el: HTMLElement, on: Hand, signal: AbortSignal, touchAction: string, { only, late }: HandOptions = {}) {
   // Without this the browser takes the finger for a page scroll. A value set in CSS wins.
-  if (getComputedStyle(el).touchAction === 'auto') {
+  if (touchAction && getComputedStyle(el).touchAction === 'auto') {
     el.style.touchAction = touchAction
     signal.addEventListener('abort', () => (el.style.touchAction = ''))
   }
@@ -21,9 +28,9 @@ export function hand(el: HTMLElement, on: Hand, signal: AbortSignal, touchAction
   el.addEventListener(
     'pointerdown',
     (e) => {
-      if (e.button !== 0 || last) return
+      if (e.button !== 0 || last || (only && !only(e))) return
       id = e.pointerId
-      el.setPointerCapture(id)
+      if (!late) el.setPointerCapture(id)
       last = { x: e.clientX, y: e.clientY }
       travel = 0
       el.toggleAttribute('data-held', true)
@@ -37,6 +44,13 @@ export function hand(el: HTMLElement, on: Hand, signal: AbortSignal, touchAction
       if (!last || e.pointerId !== id) return
       const to = { x: e.clientX, y: e.clientY }
       travel += Math.hypot(to.x - last.x, to.y - last.y)
+      if (late && travel >= 4 && !el.hasPointerCapture(id)) {
+        try {
+          el.setPointerCapture(id)
+        } catch {
+          // A pointer the browser has let go of cannot be held, and needs no holding.
+        }
+      }
       on.move(last, to)
       last = to
     },

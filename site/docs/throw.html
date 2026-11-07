@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light" />
+    <meta name="theme-color" content="#e8eddf" />
+    <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
+    <title>detentThrow() · detent docs</title>
+    <meta property="og:description" content="A tiny JavaScript engine that makes sliders, pickers and sheets feel like native apps: magnetic, calm, and accessible by default." />
+    <meta name="description" content="Drag a card past a line and it flies off that way. Short of the line it springs back." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@200..800&family=Spline+Sans+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../shared/base.css" />
+    <link rel="stylesheet" href="../home/style.css" />
+    <link rel="stylesheet" href="./docs.css" />
+  </head>
+  <body>
+    <!-- @header -->
+    <div class="docs">
+      <aside class="docs-side"><!-- @sidebar --></aside>
+      <main class="docs-main" id="main">
+        <section data-mark="strong" id="top">
+          <p class="crumb">Docs</p>
+          <h1>detentThrow()</h1>
+          <p class="lede">Drag a card or a sheet past a line and let go: it flies off that way and tells you. Short of the line it springs back, with no bounce.</p>
+        </section>
+        <section data-mark id="demo">
+          <h2 id="demo-h">A card you throw</h2>
+          <div class="stage t-stage" data-run="demos/throw.js">
+            <div class="t-card" id="throw-card"><b>Drag me past the line</b><span>Or flick me left or right.</span></div>
+            <div class="t-bar"><button type="button" class="toggle" id="throw-left">Throw left</button><button type="button" class="toggle" id="throw-undo">Undo</button><button type="button" class="toggle" id="throw-right">Throw right</button></div>
+            <p class="d-out small" id="throw-out" aria-live="polite">In play.</p>
+          </div>
+          <figure class="code"><figcaption>demos/throw.js</figcaption><pre data-src="demos/throw.js"></pre></figure>
+          <pre class="static" data-lang="css"><code>.card { translate: calc(var(--x) * 1px) calc(var(--y) * 1px); rotate: calc(var(--tilt) * 1deg); }
+.card[data-armed] { outline: 3px solid; }</code></pre>
+        </section>
+        <section data-mark id="rules">
+          <h2 id="rules-h">When it throws</h2>
+          <ul class="rules">
+            <li>Let go past 35% of its width (or its height, up and down) and it is thrown that way.</li>
+            <li>A flick over 600 px a second throws it too, once it has moved at least 40 px. A quick short swipe stays.</li>
+            <li>Short of both, it springs back with no bounce. So does a drag the browser takes back for a page scroll.</li>
+            <li>Past the line the element gets <code>data-armed</code> with the way, so you can show it will go. Once gone it has <code>data-thrown</code>.</li>
+            <li><code>onThrow</code> fires once per throw. A second <code>throw()</code> during a throw is ignored; one during an undo plays once, when the undo ends.</li>
+            <li>A drag that ends on a button inside the card is not a click on it.</li>
+            <li>With reduced motion it is thrown or put back at once, with the same result.</li>
+          </ul>
+        </section>
+        <section data-mark id="keys">
+          <h2 id="keys-h">Keys and screen readers</h2>
+          <p>A drag is never the only way. Give people buttons that do the same, and call <code>throw('left')</code> or <code>undo()</code> from them, as the demo does. That way keys, switch control and screen readers all work, and nothing depends on a gesture.</p>
+          <p>detentThrow sets no role and takes no focus: the card is yours. Say what happened in your own polite live region, such as "Dismissed. Undo is available."</p>
+          <p><code>haptics: true</code> ticks once when the hand takes it past the line. It works on Android, not on iPhone, because Safari has no vibration API. Use it for the clicks that matter, not every step.</p>
+        </section>
+        <section data-mark id="options">
+          <h2 id="options-h">Options</h2>
+          <!-- @props src/throw.ts ThrowOptions -->
+        </section>
+        <section data-mark id="result">
+          <h2 id="result-h">What it gives back</h2>
+          <!-- @api src/throw.ts Throw -->
+        </section>
+        <section data-mark id="events">
+          <h2 id="events-h">Events</h2>
+          <!-- @events src/throw.ts ThrowEventMap -->
+        </section>
+        <nav class="pager" aria-label="Next and previous"><a href="detent2d.html" rel="prev"><span>Previous</span>detent2d()</a><a href="pull.html" rel="next"><span>Next</span>detentPull()</a></nav>
+      </main>
+      <aside class="docs-toc"><!-- @toc --></aside>
+    </div>
+    <!-- @footer -->
+    <script type="module" src="./docs.ts"></script>
+  </body>
+</html>

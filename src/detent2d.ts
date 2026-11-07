@@ -2,6 +2,7 @@ import { clamp, rubber, speedTracker, springTo } from './core.js'
 import { attrs, needsName, voice } from './aria.js'
 import { hand } from './hand.js'
 import { reduced, type Motion } from './motion.js'
+import { haptics, type Haptics } from './haptics.js'
 
 export type Point = {
   /** Where the element's top-left corner rests, in px from the bounds' top-left. */
@@ -44,6 +45,8 @@ export type Detent2dOptions = {
   announce?: boolean
   /** CSS custom properties that get the live x and y in px on each frame. Off unless you name them. */
   cssVar?: [`--${string}`, `--${string}`]
+  /** A short tick on phones that vibrate, when the person's move lands on a new point. true: strong points only. 'all': every point. Default false. */
+  haptics?: Haptics
   /** Aborting it is the same as destroy(). */
   signal?: AbortSignal
   /** Every frame while it moves, and once at the start so you can draw it. */
@@ -76,6 +79,8 @@ export function detent2d(el: HTMLElement, options: Detent2dOptions): Detent2d {
   const signal = ac.signal
   const a = attrs(el)
   const speak = o.announce === false ? null : voice()
+  const buzz = haptics(() => o.haptics)
+  let person = false
 
   let points: Point[] = []
   let W = 0
@@ -128,7 +133,10 @@ export function detent2d(el: HTMLElement, options: Detent2dOptions): Detent2d {
   const land = (i: number) => {
     setMoving(false)
     speak?.say(points[i].name)
+    const mine = person
+    person = false
     if (i === rested) return
+    if (mine) buzz.tick(!!points[i].strong)
     rested = i
     o.onChange?.(i, points[i])
     el.dispatchEvent(new CustomEvent('detent2d:change', { detail: { index: i, point: points[i] }, bubbles: true }))
@@ -181,6 +189,7 @@ export function detent2d(el: HTMLElement, options: Detent2dOptions): Detent2d {
     {
       grab: () => {
         halt()
+        person = true
         raw = { ...at }
         sx.reset()
         sy.reset()
@@ -223,6 +232,7 @@ export function detent2d(el: HTMLElement, options: Detent2dOptions): Detent2d {
       }
       if (to < 0) return
       e.preventDefault()
+      person = true
       go(to)
     },
     { signal },
@@ -252,6 +262,7 @@ export function detent2d(el: HTMLElement, options: Detent2dOptions): Detent2d {
   const destroy = () => {
     if (signal.aborted) return
     ac.abort()
+    buzz.off()
     halt()
     speak?.off()
     a.restore()
@@ -271,7 +282,10 @@ export function detent2d(el: HTMLElement, options: Detent2dOptions): Detent2d {
     get moving() {
       return moving
     },
-    go: (i, opts) => go(i, opts),
+    go: (i, opts) => {
+      person = false
+      go(i, opts)
+    },
     set(next) {
       o = { ...o, ...next }
       measure()

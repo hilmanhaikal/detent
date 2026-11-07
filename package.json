@@ -1,6 +1,6 @@
 {
   "name": "@hlmnhkl/detent",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Controls that click into place. A tiny JavaScript engine that makes sliders, pickers and sheets feel like native apps: magnetic, calm, and accessible by default.",
   "type": "module",
   "main": "./dist/index.js",
@@ -18,11 +18,11 @@
   "sideEffects": false,
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "test": "tsc -p tsconfig.json && node --test test/core.test.mjs",
+    "test": "tsc -p tsconfig.json && node --test test/core.test.mjs test/rules.test.mjs",
     "test:browser": "node test/browser.mjs chromium,firefox",
     "prepublishOnly": "npm run build"
   },
-  "keywords": ["magnetic", "snap", "spring", "gesture", "slider", "dial", "picker", "accessibility", "reduced-motion", "scroll-snap", "drag", "detent"],
+  "keywords": ["magnetic", "swipe", "pull-to-refresh", "hold-to-confirm", "haptics", "snap", "spring", "gesture", "slider", "dial", "picker", "accessibility", "reduced-motion", "scroll-snap", "drag", "detent"],
   "author": "Hilman Haikal",
   "license": "MIT",
   "repository": {

@@ -687,3 +687,196 @@
 .docs-main .beliefs li::before {
   line-height: 1.75;
 }
+
+/* detentThrow: the card leaves the stage, so the stage clips it. */
+.t-stage {
+  overflow: clip;
+}
+.t-card,
+.r-notice {
+  display: grid;
+  gap: 4px;
+  width: min(320px, 100%);
+  padding: 22px 20px;
+  border-radius: 16px;
+  background: var(--c-paper);
+  border: 2px solid var(--c-ink);
+  box-shadow: 0 calc(var(--near, 0) * 10px) 0 color-mix(in srgb, var(--c-ink) 18%, transparent);
+  cursor: grab;
+  touch-action: pan-y;
+  user-select: none;
+  translate: calc(var(--x, 0) * 1px) calc(var(--y, 0) * 1px);
+  rotate: calc(var(--tilt, 0) * 1deg);
+}
+.t-card span,
+.r-notice span {
+  color: var(--muted);
+  font-size: 15px;
+}
+.t-card[data-armed] {
+  background: var(--c-accent);
+}
+.t-card[data-held],
+.r-notice[data-held] {
+  cursor: grabbing;
+}
+.t-bar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+
+/* detentPull: the sheet moves down, the cue waits under it. */
+.p-box {
+  position: relative;
+  width: min(320px, 100%);
+  height: 200px;
+  overflow: hidden;
+  border-radius: 16px;
+  background: var(--c-paper);
+  border: 1px solid color-mix(in srgb, var(--c-ink) 22%, var(--c-quiet));
+  cursor: grab;
+  user-select: none;
+}
+.p-cue {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 64px;
+  display: grid;
+  place-items: center;
+  font-size: 15px;
+  font-weight: calc(500 + var(--near, 0) * 200);
+  opacity: calc(0.4 + var(--near, 0) * 0.6);
+}
+.p-sheet {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  align-content: start;
+  gap: 4px;
+  padding: 20px;
+  background: var(--c-paper);
+  border-top: 2px solid var(--c-ink);
+  translate: 0 calc(var(--pull, 0) * 1px);
+}
+.p-sheet span {
+  color: var(--muted);
+  font-size: 15px;
+}
+.p-box[data-armed] .p-sheet,
+.p-box[data-busy] .p-sheet {
+  border-top-color: var(--c-accent);
+  box-shadow: 0 -2px 0 var(--c-ink);
+}
+
+/* detentHold: the fill is the clock. */
+.h-button,
+.r-hold {
+  position: relative;
+  min-height: 48px;
+  padding: 0 24px;
+  overflow: hidden;
+  border: 2px solid var(--c-ink);
+  border-radius: 999px;
+  background: var(--c-paper);
+  font-weight: 700;
+  cursor: pointer;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+.h-button::before,
+.r-hold::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--c-accent);
+  scale: var(--progress, 0) 1;
+  transform-origin: left;
+}
+.h-button span,
+.r-hold span {
+  position: relative;
+}
+
+/* Recipes */
+.r-notice {
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  width: min(440px, 100%);
+}
+.r-notice p {
+  display: grid;
+  gap: 2px;
+}
+.r-notice[hidden],
+.r-toast[hidden] {
+  display: none;
+}
+.r-toast {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.r-orders {
+  position: relative;
+  width: min(360px, 100%);
+  height: 260px;
+  overflow: auto;
+  overscroll-behavior-y: contain;
+  border-radius: 16px;
+  background: var(--c-paper);
+  border: 1px solid color-mix(in srgb, var(--c-ink) 22%, var(--c-quiet));
+  user-select: none;
+}
+.r-orders::before {
+  content: attr(data-cue);
+  position: absolute;
+  inset: 0 0 auto;
+  height: 64px;
+  display: grid;
+  place-items: center;
+  font-size: 15px;
+  opacity: var(--near, 0);
+}
+.r-orders[data-busy]::before {
+  content: 'Refreshing';
+  opacity: 1;
+}
+.r-orders ul {
+  position: relative;
+  background: var(--c-paper);
+  translate: 0 calc(var(--pull, 0) * 1px);
+}
+.r-orders li {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 52px;
+  align-items: center;
+  padding: 0 16px;
+  border-bottom: 1px solid var(--c-quiet);
+}
+.r-orders li span {
+  color: var(--muted);
+  font-size: 15px;
+}
+.r-delete {
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+}
+.r-step {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+.r-step[hidden] {
+  display: none;
+}
+.r-danger {
+  background: var(--c-ink);
+  color: var(--c-paper);
+}

@@ -8,7 +8,7 @@
     <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
     <title>Recipes · detent docs</title>
     <meta property="og:description" content="A tiny JavaScript engine that makes sliders, pickers and sheets feel like native apps: magnetic, calm, and accessible by default." />
-    <meta name="description" content="Product controls built with detent: a price filter, a booking time picker, a bottom sheet, a tip dial and a floating video." />
+    <meta name="description" content="Product controls built with detent: a price filter, a booking time picker, a bottom sheet, a tip dial, a floating video, a notification you swipe away, a list you pull to refresh and a hold to delete." />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@200..800&family=Spline+Sans+Mono:wght@400;500&display=swap" rel="stylesheet" />
@@ -24,7 +24,7 @@
         <section data-mark="strong" id="top">
           <p class="crumb">Docs</p>
           <h1>Recipes</h1>
-          <p class="lede">Controls you would ship in a shop, a booking app or a delivery app. Each runs live here, with its plain JavaScript and a React version.</p>
+          <p class="lede">Controls you would ship in a shop, a booking app or a delivery app, from a price filter to a hold to delete. Each runs live here, with its plain JavaScript and a React version.</p>
         </section>
         <section data-mark id="price">
           <h2 id="price-h">A price range filter</h2>
@@ -120,6 +120,75 @@
   const ref = useRef(null)
   useEffect(() =&gt; detent2d(ref.current, { points: 'corners', inset: 16, cssVar: ['--x', '--y'] }).destroy, [])
   return &lt;video ref={ref} src={src} aria-label="Floating video" className="pip" /&gt;
+}</code></pre></div>
+          </div>
+        </section>
+        <section data-mark id="notice">
+          <h2 id="notice-h">Swipe to dismiss a notification</h2>
+          <p>Swipe it away either way, or press Dismiss. Undo brings it back the way it left.</p>
+          <div class="stage" data-run="recipes/notice.js"><div class="r-notice" id="r-notice"><p><b>Your parcel is out for delivery</b><span>Arriving today between 2 and 4 pm.</span></p><button type="button" class="toggle">Dismiss</button></div><p class="r-toast" id="r-notice-toast" role="status" hidden>Notification dismissed. <button type="button" class="toggle">Undo</button></p></div>
+          <div class="tabs"><div role="tablist" aria-label="Swipe to dismiss a notification, code"><button type="button" role="tab" id="t-notice-js" aria-controls="p-notice-js" aria-selected="true">Plain JS</button><button type="button" role="tab" id="t-notice-react" aria-controls="p-notice-react" aria-selected="false">React</button></div>
+            <div role="tabpanel" id="p-notice-js" aria-labelledby="t-notice-js">          <figure class="code"><figcaption>recipes/notice.js</figcaption><pre data-src="recipes/notice.js"></pre></figure></div>
+            <div role="tabpanel" id="p-notice-react" aria-labelledby="t-notice-react" hidden><pre class="static" data-lang="tsx"><code>function Notice({ text, onDismiss }) {
+  const ref = useRef(null)
+  const card = useRef(null)
+  useEffect(() =&gt; {
+    card.current = detentThrow(ref.current, { cssVar: ['--x', '--y', '--tilt'], tilt: 0, onThrow: onDismiss })
+    return card.current.destroy
+  }, [])
+  return (
+    &lt;div ref={ref} className="notice"&gt;
+      &lt;p&gt;{text}&lt;/p&gt;
+      &lt;button type="button" onClick={() =&gt; card.current.throw('right')}&gt;Dismiss&lt;/button&gt;
+    &lt;/div&gt;
+  )
+}</code></pre></div>
+          </div>
+        </section>
+        <section data-mark id="refresh">
+          <h2 id="refresh-h">Pull to refresh a list</h2>
+          <p>Pull the orders down at the top of the list. Scrolled down, it is a plain list. Refresh does the same for keys and screen readers.</p>
+          <div class="stage" data-run="recipes/refresh.js"><button type="button" class="toggle" id="r-orders-refresh">Refresh</button><div class="r-orders" id="r-orders" tabindex="0" role="region" aria-label="Orders" data-cue="Pull to refresh"><ul><li><b>Order 1042</b><span>Out for delivery</span></li><li><b>Order 1041</b><span>Delivered</span></li><li><b>Order 1040</b><span>Delivered</span></li><li><b>Order 1039</b><span>Delivered</span></li><li><b>Order 1038</b><span>Cancelled</span></li><li><b>Order 1037</b><span>Delivered</span></li><li><b>Order 1036</b><span>Delivered</span></li></ul></div><p class="d-out small" id="r-orders-said" aria-live="polite"></p></div>
+          <div class="tabs"><div role="tablist" aria-label="Pull to refresh a list, code"><button type="button" role="tab" id="t-refresh-js" aria-controls="p-refresh-js" aria-selected="true">Plain JS</button><button type="button" role="tab" id="t-refresh-react" aria-controls="p-refresh-react" aria-selected="false">React</button></div>
+            <div role="tabpanel" id="p-refresh-js" aria-labelledby="t-refresh-js">          <figure class="code"><figcaption>recipes/refresh.js</figcaption><pre data-src="recipes/refresh.js"></pre></figure></div>
+            <div role="tabpanel" id="p-refresh-react" aria-labelledby="t-refresh-react" hidden><pre class="static" data-lang="tsx"><code>function Orders({ load }) {
+  const ref = useRef(null)
+  const pull = useRef(null)
+  useEffect(() =&gt; {
+    pull.current = detentPull(ref.current, { cssVar: '--pull', onPull: () =&gt; load().finally(() =&gt; pull.current.done()) })
+    return pull.current.destroy
+  }, [])
+  return (
+    &lt;&gt;
+      &lt;button type="button" onClick={() =&gt; pull.current.trigger()}&gt;Refresh&lt;/button&gt;
+      &lt;div ref={ref} className="orders"&gt;{/* rows */}&lt;/div&gt;
+    &lt;/&gt;
+  )
+}</code></pre></div>
+          </div>
+        </section>
+        <section data-mark id="delete">
+          <h2 id="delete-h">Hold to delete</h2>
+          <p>Hold to delete a saved address. A tap opens a confirm step instead, so no one has to hold.</p>
+          <div class="stage" data-run="recipes/delete.js"><div class="r-delete" id="r-delete"><button type="button" class="r-hold" aria-expanded="false" aria-controls="r-delete-step" aria-describedby="r-delete-hint"><span>Delete this address</span></button><p class="d-out small" id="r-delete-hint">Hold to delete, or tap for a confirm step.</p><div class="r-step" id="r-delete-step" role="group" aria-labelledby="r-delete-hint" hidden><button type="button" class="toggle">Cancel</button><button type="button" class="toggle r-danger">Delete</button></div><p class="vh" aria-live="polite"></p></div></div>
+          <div class="tabs"><div role="tablist" aria-label="Hold to delete, code"><button type="button" role="tab" id="t-delete-js" aria-controls="p-delete-js" aria-selected="true">Plain JS</button><button type="button" role="tab" id="t-delete-react" aria-controls="p-delete-react" aria-selected="false">React</button></div>
+            <div role="tabpanel" id="p-delete-js" aria-labelledby="t-delete-js">          <figure class="code"><figcaption>recipes/delete.js</figcaption><pre data-src="recipes/delete.js"></pre></figure></div>
+            <div role="tabpanel" id="p-delete-react" aria-labelledby="t-delete-react" hidden><pre class="static" data-lang="tsx"><code>function DeleteAddress({ onDelete }) {
+  const ref = useRef(null)
+  const [step, setStep] = useState(false)
+  useEffect(() =&gt; detentHold(ref.current, { cssVar: '--progress', onTap: () =&gt; setStep(true), onConfirm: onDelete }).destroy, [])
+  return (
+    &lt;&gt;
+      &lt;button ref={ref} type="button" aria-expanded={step} aria-describedby="delete-hint"&gt;Delete this address&lt;/button&gt;
+      &lt;p id="delete-hint"&gt;Hold to delete, or tap for a confirm step.&lt;/p&gt;
+      {step &amp;&amp; (
+        &lt;div role="group" aria-labelledby="delete-hint"&gt;
+          &lt;button type="button" autoFocus onClick={() =&gt; setStep(false)}&gt;Cancel&lt;/button&gt;
+          &lt;button type="button" onClick={onDelete}&gt;Delete&lt;/button&gt;
+        &lt;/div&gt;
+      )}
+    &lt;/&gt;
+  )
 }</code></pre></div>
           </div>
         </section>

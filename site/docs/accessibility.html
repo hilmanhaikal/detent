@@ -37,6 +37,17 @@
             <tr><td>Reduced motion</td><td>same value, no glide</td><td>same point, no glide</td><td>no settle, links jump</td></tr>
           </tbody></table></div>
         </section>
+        <section data-mark id="gestures">
+          <h2 id="gestures-h">Throw, pull and hold</h2>
+          <p>These three are gestures on your own elements, so they add no role. Each one has a path that needs no gesture, and you wire it:</p>
+          <div class="table" tabindex="0" role="region" aria-label="Throw, pull and hold"><table><thead><tr><th></th><th><code>detentThrow()</code></th><th><code>detentPull()</code></th><th><code>detentHold()</code></th></tr></thead><tbody>
+            <tr><td>Without the gesture</td><td>your buttons call <code>throw()</code> and <code>undo()</code></td><td>your button calls <code>trigger()</code></td><td>a tap, Enter or Space calls <code>onTap</code>: show a confirm step</td></tr>
+            <tr><td>ARIA</td><td>none</td><td><code>aria-busy="true"</code> while busy</td><td>none; use a real button</td></tr>
+            <tr><td>State you can style</td><td><code>data-armed</code>, <code>data-thrown</code></td><td><code>data-armed</code>, <code>data-busy</code></td><td><code>data-held</code>, <code>data-done</code></td></tr>
+            <tr><td>Speaks</td><td>nothing; say the result in your live region</td><td>nothing; say the result in your live region</td><td>nothing; say the result in your live region</td></tr>
+            <tr><td>Reduced motion</td><td>thrown or put back at once</td><td>jumps to rest or back</td><td>the clock still runs, the rewind jumps</td></tr>
+          </tbody></table></div>
+        </section>
         <section data-mark id="hear">
           <h2 id="hear-h">What a screen reader hears</h2>
           <p>This control has only <code>aria-label="Delivery tip"</code> in its HTML. detent adds the rest:</p>
