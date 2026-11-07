@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light" />
+    <meta name="theme-color" content="#e8eddf" />
+    <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
+    <title>detentScroll() · detent docs</title>
+    <meta property="og:description" content="A tiny JavaScript engine that makes sliders, pickers and sheets feel like native apps: magnetic, calm, and accessible by default." />
+    <meta name="description" content="The page settles onto its sections when the wheel or finger stops, and never fights the hand." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@200..800&family=Spline+Sans+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../shared/base.css" />
+    <link rel="stylesheet" href="../home/style.css" />
+    <link rel="stylesheet" href="./docs.css" />
+  </head>
+  <body>
+    <!-- @header -->
+    <div class="docs">
+      <aside class="docs-side"><!-- @sidebar --></aside>
+      <main class="docs-main" id="main">
+        <section data-mark="strong" id="top">
+          <p class="crumb">Docs</p>
+          <h1>detentScroll()</h1>
+          <p class="lede">The page settles onto a section when the wheel, trackpad or finger stops. Strong sections pull harder, it never rests halfway between two close ones, and tall sections are free to read.</p>
+        </section>
+        <section data-mark id="try">
+          <h2 id="try-h">Try it on this page</h2>
+          <p>This docs page does not settle on its own, because you are reading it. Turn it on, then scroll a little and let go.</p>
+          <div class="stage stage-row" data-run="demos/scroll.js">
+            <button type="button" class="toggle" id="settle-toggle" aria-pressed="false">Let this page settle</button>
+            <p class="d-out small" id="settle-out" aria-live="polite">Off. The page scrolls as usual.</p>
+          </div>
+          <figure class="code"><figcaption>demos/scroll.js</figcaption><pre data-src="demos/scroll.js"></pre></figure>
+          <p>Mark the sections in your HTML. <code>data-mark="strong"</code> pulls harder.</p>
+          <pre class="static" data-lang="html"><code>&lt;section data-mark="strong" id="top"&gt;…&lt;/section&gt;
+&lt;section data-mark id="pricing"&gt;…&lt;/section&gt;</code></pre>
+        </section>
+        <section data-mark id="rules">
+          <h2 id="rules-h">It never fights you</h2>
+          <ul class="rules">
+            <li>It moves only after the hand stops: about 140 ms after the last wheel step, or once a finger's momentum ends.</li>
+            <li>Any wheel, touch, key or mouse press during a settle stops it at once.</li>
+            <li>Keys, the scrollbar, find in page and screen readers scroll natively, with no settle after them.</li>
+            <li>A section taller than the screen is free in the middle. Only its edges pull.</li>
+            <li>In-page links glide to their section, then move focus to its heading, with no second jump.</li>
+            <li>With reduced motion there is no settle at all, and links jump.</li>
+          </ul>
+        </section>
+        <section data-mark id="options">
+          <h2 id="options-h">Options</h2>
+          <!-- @props src/scroll.ts ScrollOptions -->
+        </section>
+        <section data-mark id="result">
+          <h2 id="result-h">What it gives back</h2>
+          <!-- @api src/scroll.ts ScrollDetent -->
+        </section>
+        <section data-mark id="reading">
+          <h2 id="reading-h">A page for reading</h2>
+          <p>This docs site wants links that glide but no settle, so it sets the wait after a wheel or finger so long it never comes:</p>
+          <pre class="static" data-lang="js"><code>const never = 2 ** 31 - 1
+detentScroll({ offset: header, idle: { wheel: never, touch: never } })</code></pre>
+        </section>
+        <nav class="pager" aria-label="Next and previous"><a href="detent.html" rel="prev"><span>Previous</span>detent()</a><a href="detent2d.html" rel="next"><span>Next</span>detent2d()</a></nav>
+      </main>
+      <aside class="docs-toc"><!-- @toc --></aside>
+    </div>
+    <!-- @footer -->
+    <script type="module" src="./docs.ts"></script>
+  </body>
+</html>

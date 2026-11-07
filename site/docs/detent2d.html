@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light" />
+    <meta name="theme-color" content="#e8eddf" />
+    <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
+    <title>detent2d() · detent docs</title>
+    <meta property="og:description" content="A tiny JavaScript engine that makes sliders, pickers and sheets feel like native apps: magnetic, calm, and accessible by default." />
+    <meta name="description" content="Drag anything onto the nearest point or corner, with keys and a polite announcement." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@200..800&family=Spline+Sans+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../shared/base.css" />
+    <link rel="stylesheet" href="../home/style.css" />
+    <link rel="stylesheet" href="./docs.css" />
+  </head>
+  <body>
+    <!-- @header -->
+    <div class="docs">
+      <aside class="docs-side"><!-- @sidebar --></aside>
+      <main class="docs-main" id="main">
+        <section data-mark="strong" id="top">
+          <p class="crumb">Docs</p>
+          <h1>detent2d()</h1>
+          <p class="lede">Drag something anywhere, and it settles onto the nearest point. A flick carries it toward where it was going. Arrow keys move it to the next point that way.</p>
+        </section>
+        <section data-mark id="demo">
+          <h2 id="demo-h">A box that snaps to corners</h2>
+          <div class="stage" data-run="demos/pip.js">
+            <div class="pip-stage" id="pip-stage"><div class="pip" id="pip" aria-label="Video player"><span>Video</span></div></div>
+            <p class="d-out small">Resting on: <span id="pip-out">Top left</span>. Screen readers hear: <span data-voice-echo>nothing yet</span>.</p>
+          </div>
+          <figure class="code"><figcaption>demos/pip.js</figcaption><pre data-src="demos/pip.js"></pre></figure>
+          <pre class="static" data-lang="css"><code>.pip { position: absolute; left: 0; top: 0; translate: calc(var(--x) * 1px) calc(var(--y) * 1px); }</code></pre>
+        </section>
+        <section data-mark id="keys">
+          <h2 id="keys-h">Keys and announcements</h2>
+          <p>Tab to the box. The arrow keys move it to the next point in that direction, Home and End go to the first and last. When it lands, detent says the point's name in one shared polite live region, made when it starts, so screen readers do not miss it. <code>announce: false</code> turns that off.</p>
+          <p>Points can be your own, in px from the top-left of the bounds: <code>points: [{ x, y, name: 'Dock', strong: true }]</code>.</p>
+        </section>
+        <section data-mark id="options">
+          <h2 id="options-h">Options</h2>
+          <!-- @props src/detent2d.ts Detent2dOptions -->
+          <h3>A point</h3>
+          <!-- @props src/detent2d.ts Point -->
+        </section>
+        <section data-mark id="result">
+          <h2 id="result-h">What it gives back</h2>
+          <!-- @api src/detent2d.ts Detent2d -->
+        </section>
+        <section data-mark id="events">
+          <h2 id="events-h">Events</h2>
+          <!-- @events src/detent2d.ts Detent2dEventMap -->
+        </section>
+        <nav class="pager" aria-label="Next and previous"><a href="scroll.html" rel="prev"><span>Previous</span>detentScroll()</a><a href="low-level.html" rel="next"><span>Next</span>Low level</a></nav>
+      </main>
+      <aside class="docs-toc"><!-- @toc --></aside>
+    </div>
+    <!-- @footer -->
+    <script type="module" src="./docs.ts"></script>
+  </body>
+</html>

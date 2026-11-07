@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light" />
+    <meta name="theme-color" content="#e8eddf" />
+    <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
+    <title>detent() · detent docs</title>
+    <meta property="og:description" content="A tiny JavaScript engine that makes sliders, pickers and sheets feel like native apps: magnetic, calm, and accessible by default." />
+    <meta name="description" content="One value under a hand: sliders, dials, wheels, rulers and sheets, with keys and screen readers wired." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@200..800&family=Spline+Sans+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../shared/base.css" />
+    <link rel="stylesheet" href="../home/style.css" />
+    <link rel="stylesheet" href="./docs.css" />
+  </head>
+  <body>
+    <!-- @header -->
+    <div class="docs">
+      <aside class="docs-side"><!-- @sidebar --></aside>
+      <main class="docs-main" id="main">
+        <section data-mark="strong" id="top">
+          <p class="crumb">Docs</p>
+          <h1>detent()</h1>
+          <p class="lede">One value under a hand. A slider, a dial, a picker wheel, a ruler and a sheet are all the same thing; only the path the hand takes changes.</p>
+          <pre class="static" data-lang="js"><code>import { detent } from '@hlmnhkl/detent'
+
+const control = detent(el, { min: 0, max: 100, step: 10, marks: [50] })</code></pre>
+        </section>
+        <section data-mark id="demos">
+          <h2 id="demos-h">Live demos</h2>
+          <p>Each tab runs the file under it.</p>
+          <div class="tabs" id="demo-tabs"><div role="tablist" aria-label="Demos"><button type="button" role="tab" id="tab-slider" aria-controls="panel-slider" aria-selected="true">Slider</button><button type="button" role="tab" id="tab-dial" aria-controls="panel-dial" aria-selected="false">Dial</button><button type="button" role="tab" id="tab-wheel" aria-controls="panel-wheel" aria-selected="false">Wheel</button><button type="button" role="tab" id="tab-ruler" aria-controls="panel-ruler" aria-selected="false">Ruler</button><button type="button" role="tab" id="tab-sheet" aria-controls="panel-sheet" aria-selected="false">Sheet</button></div><div role="tabpanel" id="panel-slider" aria-labelledby="tab-slider" data-run="demos/slider.js"><div class="stage"><div class="d-slider" id="demo-slider" aria-label="Volume"><div class="d-fill"></div><div class="d-thumb"></div></div><output id="demo-slider-out" class="d-out">0%</output></div>          <figure class="code"><figcaption>demos/slider.js</figcaption><pre data-src="demos/slider.js"></pre></figure></div><div role="tabpanel" id="panel-dial" aria-labelledby="tab-dial" data-run="demos/dial.js" hidden><div class="stage"><div class="d-dial" id="demo-dial" aria-label="Tip"><div class="d-ring"></div><div class="d-cap"><b></b></div></div><output id="demo-dial-out" class="d-out">15%</output></div>          <figure class="code"><figcaption>demos/dial.js</figcaption><pre data-src="demos/dial.js"></pre></figure></div><div role="tabpanel" id="panel-wheel" aria-labelledby="tab-wheel" data-run="demos/wheel.js" hidden><div class="stage"><div class="d-wheel" id="demo-wheel" aria-label="Alarm hour"><div class="d-band"></div><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div></div>          <figure class="code"><figcaption>demos/wheel.js</figcaption><pre data-src="demos/wheel.js"></pre></figure></div><div role="tabpanel" id="panel-ruler" aria-labelledby="tab-ruler" data-run="demos/ruler.js" hidden><div class="stage"><div class="d-ruler" id="demo-ruler" aria-label="Length"><div class="d-track"></div><i class="d-pin"></i></div><output id="demo-ruler-out" class="d-out">120 cm</output></div>          <figure class="code"><figcaption>demos/ruler.js</figcaption><pre data-src="demos/ruler.js"></pre></figure></div><div role="tabpanel" id="panel-sheet" aria-labelledby="tab-sheet" data-run="demos/sheet.js" hidden><div class="stage"><div class="d-phone" id="demo-sheet"><div class="d-behind"></div><div class="d-sheet"><div class="d-handle" aria-label="Sheet height"><b></b></div><p>Sheet</p><p class="muted">Drag the handle, flick it, or tap it.</p></div></div></div>          <figure class="code"><figcaption>demos/sheet.js</figcaption><pre data-src="demos/sheet.js"></pre></figure></div></div>
+          <div class="aria-live-view"><p>The attributes on the control in this tab, live:</p><dl data-aria-of="#demo-tabs"></dl></div>
+        </section>
+        <section data-mark id="options">
+          <h2 id="options-h">Options</h2>
+          <p>These tables are read from the types in <code>src/detent.ts</code>, so they match the code.</p>
+          <h3>Every control</h3>
+          <!-- @props src/detent.ts Base -->
+          <h3>On a line: <code>path: 'x'</code> or <code>'y'</code></h3>
+          <!-- @props src/detent.ts Line -->
+          <h3>On a turn: <code>path: 'turn'</code></h3>
+          <!-- @props src/detent.ts Turn -->
+          <h3>With ends</h3>
+          <!-- @props src/detent.ts Range -->
+          <h3>In a loop</h3>
+          <!-- @props src/detent.ts Loop -->
+        </section>
+        <section data-mark id="result">
+          <h2 id="result-h">What it gives back</h2>
+          <!-- @api src/detent.ts Detent -->
+          <p>While the hand holds it, the element has <code>data-held</code>. While it moves, it has <code>data-moving</code>.</p>
+        </section>
+        <section data-mark id="events">
+          <h2 id="events-h">Events</h2>
+          <!-- @events src/detent.ts DetentEventMap -->
+          <p>The events bubble. The callbacks <code>onInput</code>, <code>onMark</code> and <code>onChange</code> carry the same numbers.</p>
+          <div data-run="demos/events.js"></div>
+          <figure class="code"><figcaption>demos/events.js</figcaption><pre data-src="demos/events.js"></pre></figure>
+          <p>Change any control above and watch:</p>
+          <ul class="log" id="demo-log" aria-live="off"></ul>
+        </section>
+        <section data-mark id="aria">
+          <h2 id="aria-h">ARIA</h2>
+          <div class="table"><table><thead><tr><th>detent sets</th><th>You add</th></tr></thead><tbody>
+            <tr><td><code>role="slider"</code>, or <code>spinbutton</code> in a loop, only if the element has none</td><td>A name: <code>aria-label</code> or <code>aria-labelledby</code>. detent warns once in the console without one.</td></tr>
+            <tr><td><code>tabindex="0"</code> if missing</td><td>A visible <code>:focus-visible</code> style. detent draws nothing.</td></tr>
+            <tr><td><code>aria-valuemin</code> and <code>aria-valuemax</code>, kept in step, left out in a loop</td><td>Good words with <code>text</code>, so it says "RM 250", not "250".</td></tr>
+            <tr><td><code>aria-valuenow</code> and <code>aria-valuetext</code>, written when it rests</td><td>Nothing else. <code>destroy()</code> puts every attribute back.</td></tr>
+            <tr><td><code>aria-orientation</code> on a slider</td><td>Nothing; it follows <code>path</code>.</td></tr>
+          </tbody></table></div>
+          <p>Keys: the arrows move one step, Page Up and Page Down go to the next strong mark (or the next mark, or 10 steps), Home and End go to the ends. A loop goes round.</p>
+        </section>
+        <nav class="pager" aria-label="Next and previous"><a href="./" rel="prev"><span>Previous</span>Getting started</a><a href="scroll.html" rel="next"><span>Next</span>detentScroll()</a></nav>
+      </main>
+      <aside class="docs-toc"><!-- @toc --></aside>
+    </div>
+    <!-- @footer -->
+    <script type="module" src="./docs.ts"></script>
+  </body>
+</html>

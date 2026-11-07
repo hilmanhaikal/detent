@@ -98,23 +98,17 @@ html {
 /* The notch: one tick per section, and a marker that clicks a step as each section comes up. */
 .notch {
   position: relative;
-  width: 49px;
+  width: calc((var(--count, 7) - 1) * 8px + 1.5px);
   height: 14px;
 }
 .notch i {
   position: absolute;
   bottom: 0;
+  left: calc(var(--i) * 8px);
   width: 1.5px;
   height: 8px;
   background: var(--tick);
 }
-.notch i:nth-child(1) { left: 0; }
-.notch i:nth-child(2) { left: 8px; }
-.notch i:nth-child(3) { left: 16px; }
-.notch i:nth-child(4) { left: 24px; }
-.notch i:nth-child(5) { left: 32px; }
-.notch i:nth-child(6) { left: 40px; }
-.notch i:nth-child(7) { left: 48px; }
 .notch b {
   position: absolute;
   top: 0;
@@ -969,4 +963,76 @@ pre:focus-visible {
   color: var(--c-ink);
   font-size: 16px;
   font-weight: 700;
+}
+
+/* Why detent: vision, mission and beliefs, set as calm type. */
+.belief {
+  padding: clamp(56px, 9vw, 128px) var(--pad);
+  border-top: 1px solid var(--line);
+}
+.belief h2 {
+  font-size: clamp(34px, 4.4vw, 64px);
+  letter-spacing: -0.035em;
+  line-height: 0.98;
+  font-weight: 700;
+}
+.belief-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
+  gap: 32px clamp(32px, 6vw, 96px);
+  margin-top: 40px;
+}
+.label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+.vision {
+  font-size: clamp(26px, 2.8vw, 40px);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  font-weight: 600;
+  margin-bottom: 32px;
+  max-width: 24ch;
+}
+.mission {
+  font-size: 18px;
+  max-width: 52ch;
+}
+.beliefs {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: belief;
+  display: grid;
+  gap: 18px;
+}
+.beliefs li {
+  counter-increment: belief;
+  position: relative;
+  padding-left: 36px;
+}
+.beliefs li::before {
+  content: counter(belief);
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-family: var(--mono);
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--muted);
+}
+.beliefs b {
+  font-weight: 700;
+}
+.brandline {
+  margin-top: 48px;
+  font-size: clamp(20px, 2vw, 26px);
+  font-weight: 700;
+}
+@media (max-width: 860px) {
+  .belief-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }

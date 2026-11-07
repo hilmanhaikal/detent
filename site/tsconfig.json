@@ -12,5 +12,5 @@
     "types": ["vite/client"],
     "paths": { "@hlmnhkl/detent": ["../src/index.ts"] }
   },
-  "include": ["home", "shared", "../src", "../package.json"]
+  "include": ["home", "shared", "docs", "../src", "../package.json"]
 }

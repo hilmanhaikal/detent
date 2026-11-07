@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light" />
+    <meta name="theme-color" content="#e8eddf" />
+    <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
+    <title>Low level · detent docs</title>
+    <meta property="og:description" content="A tiny JavaScript engine that makes sliders, pickers and sheets feel like native apps: magnetic, calm, and accessible by default." />
+    <meta name="description" content="The building blocks under detent: createScrub, springTo, glide, attract, stepKey and more." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@200..800&family=Spline+Sans+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../shared/base.css" />
+    <link rel="stylesheet" href="../home/style.css" />
+    <link rel="stylesheet" href="./docs.css" />
+  </head>
+  <body>
+    <!-- @header -->
+    <div class="docs">
+      <aside class="docs-side"><!-- @sidebar --></aside>
+      <main class="docs-main" id="main">
+        <section data-mark="strong" id="top">
+          <p class="crumb">Docs</p>
+          <h1>Low level</h1>
+          <p class="lede">Everything detent is built from stays public. Use these when you wire the hand yourself, as hlmnhkl/ui does for its Dial, RulerScrubber and PickerWheel.</p>
+        </section>
+        <section data-mark id="scrub">
+          <h2 id="scrub-h">A knob with createScrub</h2>
+          <p>The scrub is one value under a hand: grab, drag, let go, or go to a value. You feed it the pointer and draw each frame.</p>
+          <div class="stage" data-run="demos/scrub.js">
+            <div class="d-dial small" id="scrub-knob" role="slider" tabindex="0" aria-label="Level" aria-valuemin="0" aria-valuemax="10" aria-valuenow="4"><div class="d-cap"><b></b></div></div>
+          </div>
+          <figure class="code"><figcaption>demos/scrub.js</figcaption><pre data-src="demos/scrub.js"></pre></figure>
+        </section>
+        <section data-mark id="exports">
+          <h2 id="exports-h">Every export</h2>
+          <p>Read from the comments in <code>src/core.ts</code>.</p>
+          <!-- @exports src/core.ts -->
+        </section>
+        <section data-mark id="scrub-options">
+          <h2 id="scrub-options-h">createScrub options</h2>
+          <!-- @props src/core.ts ScrubOptions -->
+        </section>
+        <section data-mark id="spring">
+          <h2 id="spring-h">springTo options</h2>
+          <!-- @props src/core.ts SpringOptions -->
+        </section>
+        <nav class="pager" aria-label="Next and previous"><a href="detent2d.html" rel="prev"><span>Previous</span>detent2d()</a><a href="recipes.html" rel="next"><span>Next</span>Recipes</a></nav>
+      </main>
+      <aside class="docs-toc"><!-- @toc --></aside>
+    </div>
+    <!-- @footer -->
+    <script type="module" src="./docs.ts"></script>
+  </body>
+</html>

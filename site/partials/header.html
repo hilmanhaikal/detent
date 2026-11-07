@@ -1,0 +1,30 @@
+    <header class="top">
+      <a class="brand" href="{{home}}#top" aria-label="detent, back to the top">
+        <span class="word">detent</span>
+        <span class="notch" aria-hidden="true"></span>
+      </a>
+      <span class="ver" data-version></span>
+      <nav class="links" aria-label="Main">
+        <a href="{{home}}docs/"{{docsCurrent}}>Docs</a>
+        <a href="{{home}}#price">Examples</a>
+        <a href="https://github.com/hilmanhaikal/detent">GitHub</a>
+        <a href="https://www.npmjs.com/package/@hlmnhkl/detent">npm</a>
+      </nav>
+      <button class="chip" type="button" data-copy="npm i @hlmnhkl/detent" aria-label="Copy the install command, npm i @hlmnhkl/detent"><code>npm i @hlmnhkl/detent</code></button>
+      <button class="menu-open" type="button" aria-haspopup="dialog" aria-controls="menu">Menu</button>
+    </header>
+    <dialog class="menu" id="menu" aria-label="Menu">
+      <div class="menu-sheet">
+        <div class="menu-head"><span>detent <span data-version></span></span><button type="button" class="menu-close">Close</button></div>
+{{menuDocs}}        <nav aria-label="Main">
+          <a href="{{home}}docs/">Docs</a>
+          <a href="{{home}}#price">Examples</a>
+          <a href="https://github.com/hilmanhaikal/detent">GitHub</a>
+          <a href="https://www.npmjs.com/package/@hlmnhkl/detent">npm</a>
+        </nav>
+        <div class="install">
+          <code>npm install @hlmnhkl/detent</code>
+          <button type="button" data-copy="npm install @hlmnhkl/detent">Copy</button>
+        </div>
+      </div>
+    </dialog>

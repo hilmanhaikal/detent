@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>detent test fixture</title>
+    <style>
+      body { margin: 0; font: 16px system-ui; }
+      .slider { width: 200px; height: 40px; background: #ddd; margin: 20px; }
+      .pip { position: fixed; left: 0; top: 0; width: 100px; height: 60px; background: #333; translate: calc(var(--x, 0) * 1px) calc(var(--y, 0) * 1px); }
+      .sec { height: 70vh; border-top: 1px solid #000; }
+    </style>
+  </head>
+  <body>
+    <div class="slider" id="slider" aria-label="Volume"></div>
+    <div class="slider" id="loop" aria-label="Hour"></div>
+    <div class="pip" id="pip" aria-label="Video"></div>
+    <main id="page" hidden>
+      <section class="sec" data-mark id="a"><h2>A</h2><a href="#c" id="toc">To C</a></section>
+      <section class="sec" data-mark="strong" id="b"><h2>B</h2></section>
+      <section class="sec" data-mark id="c"><h2>C</h2></section>
+      <section class="sec" data-mark id="d"><h2>D</h2></section>
+    </main>
+    <script type="module">
+      import { detent, detent2d, detentScroll } from '/src/index.ts'
+      const log = (window.log = [])
+      const on = (el, type) => el.addEventListener(type, (e) => log.push([el.id, type, e.detail]))
+      for (const id of ['slider', 'loop', 'pip']) for (const t of ['detent:change', 'detent2d:change']) on(document.getElementById(id), t)
+      const count = (window.count = { input: 0 })
+      document.getElementById('slider').addEventListener('detent:input', () => count.input++)
+      window.T = {
+        slider: (o = {}) => (window.s = detent(document.getElementById('slider'), { min: 0, max: 100, step: 10, marks: [0, 50, 100], ...o })),
+        loop: () => (window.l = detent(document.getElementById('loop'), { loop: true, count: 24, value: 23, size: 10 })),
+        pip: (o = {}) => (window.p = detent2d(document.getElementById('pip'), { points: 'corners', cssVar: ['--x', '--y'], ...o })),
+        scroll: (o = {}) => {
+          document.getElementById('page').hidden = false
+          document.querySelectorAll('.slider, .pip').forEach((n) => (n.hidden = true))
+          window.scrollLog = { input: 0, change: [] }
+          window.sc = detentScroll({ onInput: () => scrollLog.input++, onChange: (i) => scrollLog.change.push(i), ...o })
+        },
+        // A touch event with a given number of fingers still down.
+        touch: (type, fingers) => {
+          const e = new Event(type, { bubbles: true })
+          Object.defineProperty(e, 'touches', { value: { length: fingers } })
+          window.dispatchEvent(e)
+        },
+      }
+      window.detentScrollEmpty = () => detentScroll({ marks: [] })
+      window.ready = true
+    </script>
+  </body>
+</html>

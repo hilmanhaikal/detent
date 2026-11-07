@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light" />
+    <meta name="theme-color" content="#e8eddf" />
+    <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
+    <title>Accessibility · detent docs</title>
+    <meta property="og:description" content="A tiny JavaScript engine that makes sliders, pickers and sheets feel like native apps: magnetic, calm, and accessible by default." />
+    <meta name="description" content="What detent does for keyboards, screen readers and reduced motion, and the short list you still do." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@200..800&family=Spline+Sans+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../shared/base.css" />
+    <link rel="stylesheet" href="../home/style.css" />
+    <link rel="stylesheet" href="./docs.css" />
+  </head>
+  <body>
+    <!-- @header -->
+    <div class="docs">
+      <aside class="docs-side"><!-- @sidebar --></aside>
+      <main class="docs-main" id="main">
+        <section data-mark="strong" id="top">
+          <p class="crumb">Docs</p>
+          <h1>Accessibility</h1>
+          <p class="lede">Accessibility is the floor, not an extra. detent wires the keys, keeps the ARIA values in step and respects reduced motion. A few things are still yours.</p>
+        </section>
+        <section data-mark id="built">
+          <h2 id="built-h">Built in</h2>
+          <div class="table" tabindex="0" role="region" aria-label="Built in"><table><thead><tr><th></th><th><code>detent()</code></th><th><code>detent2d()</code></th><th><code>detentScroll()</code></th></tr></thead><tbody>
+            <tr><td>Role</td><td><code>slider</code>, or <code>spinbutton</code> in a loop, only if none</td><td><code>group</code>, described as movable, only if none</td><td>none</td></tr>
+            <tr><td>Focus</td><td><code>tabindex="0"</code> if missing</td><td><code>tabindex="0"</code> if missing</td><td>headings take focus after a link glide</td></tr>
+            <tr><td>Values</td><td>min, max, now and text, kept in step</td><td>none; it says the point's name instead</td><td>none; the page is not a value</td></tr>
+            <tr><td>Speaks</td><td>the value, through the slider</td><td>the point's name, in one polite live region</td><td>nothing; native scroll is left alone</td></tr>
+            <tr><td>Keys</td><td>arrows, Page Up and Down, Home, End; a loop goes round</td><td>arrows to the next point that way, Home, End</td><td>native</td></tr>
+            <tr><td>Reduced motion</td><td>same value, no glide</td><td>same point, no glide</td><td>no settle, links jump</td></tr>
+          </tbody></table></div>
+        </section>
+        <section data-mark id="hear">
+          <h2 id="hear-h">What a screen reader hears</h2>
+          <p>This control has only <code>aria-label="Delivery tip"</code> in its HTML. detent adds the rest:</p>
+          <div class="stage" data-run="demos/named.js">
+            <div class="d-slider twenty" id="named" aria-label="Delivery tip"><div class="d-fill"></div><div class="d-thumb"></div></div>
+            <dl class="aria-dl" data-aria-of=".stage[data-run='demos/named.js']"></dl>
+          </div>
+          <figure class="code"><figcaption>demos/named.js</figcaption><pre data-src="demos/named.js"></pre></figure>
+        </section>
+        <section data-mark id="checklist">
+          <h2 id="checklist-h">Your checklist</h2>
+          <ul class="check">
+            <li><b>Give it a name</b> with <code>aria-label</code> or <code>aria-labelledby</code>.</li>
+            <li><b>Write good words</b> with <code>text</code>: "RM 250" or "19:30", not "250".</li>
+            <li><b>Show focus</b> with a <code>:focus-visible</code> style that passes 3:1 against what is around it.</li>
+            <li><b>Make the target big enough:</b> at least 44 by 44 px for the part people grab.</li>
+            <li><b>Check <code>touch-action</code>.</b> If your CSS sets none, detent sets <code>pan-y</code> on a horizontal control, <code>pan-x</code> on a vertical one and <code>none</code> on a turn or in 2D, so the page still scrolls past it.</li>
+            <li><b>Test with keys only,</b> then with a screen reader, then with reduced motion on.</li>
+          </ul>
+        </section>
+        <nav class="pager" aria-label="Next and previous"><a href="recipes.html" rel="prev"><span>Previous</span>Recipes</a></nav>
+      </main>
+      <aside class="docs-toc"><!-- @toc --></aside>
+    </div>
+    <!-- @footer -->
+    <script type="module" src="./docs.ts"></script>
+  </body>
+</html>

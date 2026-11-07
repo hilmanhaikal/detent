@@ -1,4 +1,4 @@
-import { follow, springTo } from '../../src/index'
+import { follow, springTo } from '@hlmnhkl/detent'
 import pkg from '../../package.json'
 
 const reduced = matchMedia('(prefers-reduced-motion: reduce)')
@@ -7,21 +7,15 @@ const time = () => (reduced.matches ? 0 : 220)
 // The version comes from package.json, so the page never shows a stale one.
 document.querySelectorAll('[data-version]').forEach((el) => (el.textContent = `v${pkg.version}`))
 
-// Stars from the public GitHub API, no key. If it fails, nothing shows.
-fetch('https://api.github.com/repos/hilmanhaikal/detent')
-  .then((r) => (r.ok ? r.json() : null))
-  .then((d) => {
-    const n = d?.stargazers_count
-    // No count until there is one: "0 stars" says nothing useful.
-    if (typeof n !== 'number' || n < 1) return
-    document.querySelectorAll<HTMLElement>('[data-stars]').forEach((el) => (el.textContent = `${n.toLocaleString('en')} ${n === 1 ? 'star' : 'stars'}`))
-  })
-  .catch(() => {})
 
 // Calm on scroll: colour and a hairline only, the height never changes.
 const top = document.querySelector<HTMLElement>('.top')!
 // The notch clicks one step per section, eased by the engine. A time of 0 (reduced motion) just jumps.
 const sections = [...document.querySelectorAll<HTMLElement>('[data-mark]')]
+// One tick per section, so the notch fits any page.
+const notchEl = top.querySelector<HTMLElement>('.notch')
+if (notchEl) notchEl.innerHTML = sections.map((_, i) => `<i style="--i:${i}"></i>`).join('') + '<b></b>'
+notchEl?.style.setProperty('--count', String(Math.max(1, sections.length)))
 const notch = follow({ value: 0, time, onFrame: (n) => top.style.setProperty('--n', n.toFixed(3)) })
 let raf = 0
 const paint = () => {

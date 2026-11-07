@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light" />
+    <meta name="theme-color" content="#e8eddf" />
+    <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
+    <title>Recipes · detent docs</title>
+    <meta property="og:description" content="A tiny JavaScript engine that makes sliders, pickers and sheets feel like native apps: magnetic, calm, and accessible by default." />
+    <meta name="description" content="Product controls built with detent: a price filter, a booking time picker, a bottom sheet, a tip dial and a floating video." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@200..800&family=Spline+Sans+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../shared/base.css" />
+    <link rel="stylesheet" href="../home/style.css" />
+    <link rel="stylesheet" href="./docs.css" />
+  </head>
+  <body>
+    <!-- @header -->
+    <div class="docs">
+      <aside class="docs-side"><!-- @sidebar --></aside>
+      <main class="docs-main" id="main">
+        <section data-mark="strong" id="top">
+          <p class="crumb">Docs</p>
+          <h1>Recipes</h1>
+          <p class="lede">Controls you would ship in a shop, a booking app or a delivery app. Each runs live here, with its plain JavaScript and a React version.</p>
+        </section>
+        <section data-mark id="price">
+          <h2 id="price-h">A price range filter</h2>
+          <p>Two thumbs on one track. RM 100, 250 and 500 pull harder, because that is where people stop.</p>
+          <div class="stage" data-run="recipes/price.js"><div class="r-price" id="r-price"><div class="r-rail"><div class="r-fill"></div></div><div class="r-thumb" role="slider" aria-label="Lowest price"></div><div class="r-thumb hi" role="slider" aria-label="Highest price"></div><output class="d-out small">RM 100 to RM 500</output></div></div>
+          <div class="tabs"><div role="tablist" aria-label="A price range filter, code"><button type="button" role="tab" id="t-price-js" aria-controls="p-price-js" aria-selected="true">Plain JS</button><button type="button" role="tab" id="t-price-react" aria-controls="p-price-react" aria-selected="false">React</button></div>
+            <div role="tabpanel" id="p-price-js" aria-labelledby="t-price-js">          <figure class="code"><figcaption>recipes/price.js</figcaption><pre data-src="recipes/price.js"></pre></figure></div>
+            <div role="tabpanel" id="p-price-react" aria-labelledby="t-price-react" hidden><pre class="static" data-lang="tsx"><code>function PriceRange({ onChange }) {
+  const box = useRef(null)
+  useEffect(() =&gt; {
+    const [low, high] = box.current.querySelectorAll('[role="slider"]')
+    const marks = [100, 250, 500].map((at) =&gt; ({ at, strong: true }))
+    const lo = detent(low, { min: 0, max: 450, step: 10, value: 100, marks, onChange: (v) =&gt; (hi.set({ min: v + 50 }), onChange([v, hi.value])) })
+    const hi = detent(high, { min: 150, max: 1000, step: 10, value: 500, marks, onChange: (v) =&gt; (lo.set({ max: v - 50 }), onChange([lo.value, v])) })
+    return () =&gt; (lo.destroy(), hi.destroy())
+  }, [])
+  return (
+    &lt;div ref={box} className="price"&gt;
+      &lt;div aria-label="Lowest price" /&gt;
+      &lt;div aria-label="Highest price" /&gt;
+    &lt;/div&gt;
+  )
+}</code></pre></div>
+          </div>
+        </section>
+        <section data-mark id="time">
+          <h2 id="time-h">A booking time picker</h2>
+          <p>Quarter hours from 08:00 to 21:00. Whole hours pull harder, and a flick still stops on a slot.</p>
+          <div class="stage" data-run="recipes/time.js"><div class="d-wheel" id="r-time" aria-label="Booking time"><div class="d-band"></div><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div></div>
+          <div class="tabs"><div role="tablist" aria-label="A booking time picker, code"><button type="button" role="tab" id="t-time-js" aria-controls="p-time-js" aria-selected="true">Plain JS</button><button type="button" role="tab" id="t-time-react" aria-controls="p-time-react" aria-selected="false">React</button></div>
+            <div role="tabpanel" id="p-time-js" aria-labelledby="t-time-js">          <figure class="code"><figcaption>recipes/time.js</figcaption><pre data-src="recipes/time.js"></pre></figure></div>
+            <div role="tabpanel" id="p-time-react" aria-labelledby="t-time-react" hidden><pre class="static" data-lang="tsx"><code>function TimePicker({ onChange }) {
+  const ref = useRef(null)
+  const [rows, setRows] = useState(46)
+  useEffect(() =&gt; {
+    const marks = Array.from({ length: 14 }, (_, h) =&gt; ({ at: h * 4, strong: true }))
+    return detent(ref.current, { min: 0, max: 52, value: 46, marks, path: 'y', size: 44, coast: 0.3, text: time, onInput: setRows, onChange }).destroy
+  }, [])
+  return &lt;div ref={ref} aria-label="Booking time"&gt;{draw(rows)}&lt;/div&gt;
+}</code></pre></div>
+          </div>
+        </section>
+        <section data-mark id="sheet">
+          <h2 id="sheet-h">A bottom sheet with heights</h2>
+          <p>Peek, half or full, never in between. Drag the handle, flick it, or tap it.</p>
+          <div class="stage" data-run="recipes/sheet.js"><div class="d-phone" id="r-sheet"><div class="d-behind"></div><div class="d-sheet"><div class="d-handle" aria-label="Order sheet height"><b></b></div><p>Your rider is 6 min away</p><p class="muted">2 × Chicken rice, 1 × Iced lemon tea</p></div></div></div>
+          <div class="tabs"><div role="tablist" aria-label="A bottom sheet with heights, code"><button type="button" role="tab" id="t-sheet-js" aria-controls="p-sheet-js" aria-selected="true">Plain JS</button><button type="button" role="tab" id="t-sheet-react" aria-controls="p-sheet-react" aria-selected="false">React</button></div>
+            <div role="tabpanel" id="p-sheet-js" aria-labelledby="t-sheet-js">          <figure class="code"><figcaption>recipes/sheet.js</figcaption><pre data-src="recipes/sheet.js"></pre></figure></div>
+            <div role="tabpanel" id="p-sheet-react" aria-labelledby="t-sheet-react" hidden><pre class="static" data-lang="tsx"><code>function OrderSheet() {
+  const frame = useRef(null)
+  const handle = useRef(null)
+  useEffect(() =&gt; {
+    const heights = [0.24, 0.56, 0.92]
+    const sheet = detent(handle.current, {
+      min: 0.24, max: 0.92, step: 0.01, marks: heights, snap: 'marks',
+      path: 'y', size: () =&gt; frame.current.clientHeight,
+      onInput: (h) =&gt; frame.current.style.setProperty('--h', h),
+      onTap: (h) =&gt; sheet.go(heights[(heights.indexOf(h) + 1) % 3]),
+    })
+    return sheet.destroy
+  }, [])
+  return &lt;div ref={frame} className="phone"&gt;&lt;div className="sheet"&gt;&lt;div ref={handle} aria-label="Order sheet height" /&gt;&lt;/div&gt;&lt;/div&gt;
+}</code></pre></div>
+          </div>
+        </section>
+        <section data-mark id="tip">
+          <h2 id="tip-h">A tip dial</h2>
+          <p>One click per percent on a RM 48 bill. The common tips, 10, 15 and 20, are one easy turn.</p>
+          <div class="stage" data-run="recipes/tip.js"><div class="d-dial" id="r-tip" aria-label="Tip"><div class="d-ring"></div><div class="d-cap"><b></b></div></div><output class="d-out small" id="r-tip-out">10% tip, RM 4.80. Total RM 52.80</output></div>
+          <div class="tabs"><div role="tablist" aria-label="A tip dial, code"><button type="button" role="tab" id="t-tip-js" aria-controls="p-tip-js" aria-selected="true">Plain JS</button><button type="button" role="tab" id="t-tip-react" aria-controls="p-tip-react" aria-selected="false">React</button></div>
+            <div role="tabpanel" id="p-tip-js" aria-labelledby="t-tip-js">          <figure class="code"><figcaption>recipes/tip.js</figcaption><pre data-src="recipes/tip.js"></pre></figure></div>
+            <div role="tabpanel" id="p-tip-react" aria-labelledby="t-tip-react" hidden><pre class="static" data-lang="tsx"><code>function TipDial({ bill, onChange }) {
+  const ref = useRef(null)
+  useEffect(() =&gt; {
+    const marks = [10, 15, 20].map((at) =&gt; ({ at, strong: true }))
+    return detent(ref.current, {
+      min: 0, max: 25, value: 10, path: 'turn', marks, reach: { reach: 0.3, strong: 1.4 },
+      onInput: (v) =&gt; (ref.current.style.rotate = `${v * 10.8 - 135}deg`),
+      onChange,
+    }).destroy
+  }, [])
+  return &lt;div ref={ref} aria-label="Tip" className="dial" /&gt;
+}</code></pre></div>
+          </div>
+        </section>
+        <section data-mark id="video">
+          <h2 id="video-h">A floating video in the corners</h2>
+          <p>A small player that rests in a corner of the screen. Throw it to another corner, or use the arrow keys.</p>
+          <div class="stage" data-run="recipes/video.js"><button type="button" class="toggle" id="r-video-open" aria-pressed="false">Show the floating player</button><div class="r-video" id="r-video" aria-label="Floating video" hidden><span>Video</span></div></div>
+          <div class="tabs"><div role="tablist" aria-label="A floating video in the corners, code"><button type="button" role="tab" id="t-video-js" aria-controls="p-video-js" aria-selected="true">Plain JS</button><button type="button" role="tab" id="t-video-react" aria-controls="p-video-react" aria-selected="false">React</button></div>
+            <div role="tabpanel" id="p-video-js" aria-labelledby="t-video-js">          <figure class="code"><figcaption>recipes/video.js</figcaption><pre data-src="recipes/video.js"></pre></figure></div>
+            <div role="tabpanel" id="p-video-react" aria-labelledby="t-video-react" hidden><pre class="static" data-lang="tsx"><code>function FloatingVideo({ src }) {
+  const ref = useRef(null)
+  useEffect(() =&gt; detent2d(ref.current, { points: 'corners', inset: 16, cssVar: ['--x', '--y'] }).destroy, [])
+  return &lt;video ref={ref} src={src} aria-label="Floating video" className="pip" /&gt;
+}</code></pre></div>
+          </div>
+        </section>
+        <nav class="pager" aria-label="Next and previous"><a href="low-level.html" rel="prev"><span>Previous</span>Low level</a><a href="accessibility.html" rel="next"><span>Next</span>Accessibility</a></nav>
+      </main>
+      <aside class="docs-toc"><!-- @toc --></aside>
+    </div>
+    <!-- @footer -->
+    <script type="module" src="./docs.ts"></script>
+  </body>
+</html>

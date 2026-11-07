@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light" />
+    <meta name="theme-color" content="#e8eddf" />
+    <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
+    <title>Getting started · detent docs</title>
+    <meta property="og:description" content="A tiny JavaScript engine that makes sliders, pickers and sheets feel like native apps: magnetic, calm, and accessible by default." />
+    <meta name="description" content="Install detent and make a first slider that clicks into place." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@200..800&family=Spline+Sans+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../shared/base.css" />
+    <link rel="stylesheet" href="../home/style.css" />
+    <link rel="stylesheet" href="./docs.css" />
+  </head>
+  <body>
+    <!-- @header -->
+    <div class="docs">
+      <aside class="docs-side"><!-- @sidebar --></aside>
+      <main class="docs-main" id="main">
+        <section data-mark="strong" id="top">
+          <p class="crumb">Docs</p>
+          <h1>Getting started</h1>
+          <p class="lede">detent makes the things people drag feel like they click into place: sliders, dials, wheels, sheets, the page scroll and a floating video. Plain JavaScript, no dependencies, about 4 KB for a control.</p>
+        </section>
+        <section data-mark id="why">
+          <h2 id="why-h">Why detent</h2>
+          <p><b>Vision.</b> Every control on the web should feel as good as the best phone app, for everyone who uses it.</p>
+          <p><b>Mission.</b> detent gives developers the feel of real, physical controls in a few lines of code: values that click into place, motion that never overshoots, and keyboard and screen reader support from the start. Small, free and open, so anyone can use it.</p>
+          <h3>What we believe</h3>
+          <ol class="beliefs"><li><b>Feel is a feature.</b> A slider that lands where you meant is better than one that looks good.</li><li><b>Everyone, by default.</b> If it does not work with a keyboard, a screen reader or reduced motion, it is not done.</li><li><b>Never fight the hand.</b> detent follows you. It never pulls the page or a control away from where you put it.</li><li><b>No bounce for show.</b> Things settle calmly, like a real knob clicking into its notch.</li><li><b>Small enough to forget.</b> A few kilobytes and no dependencies, so adding it is never a hard choice.</li><li><b>Draw nothing.</b> detent is the feeling, not the look. Your design stays yours.</li></ol>
+          <p><b>Controls that click into place.</b></p>
+        </section>
+        <section data-mark id="install">
+          <h2 id="install-h">Install</h2>
+          <div class="install">
+            <code>npm install @hlmnhkl/detent</code>
+            <button type="button" data-copy="npm install @hlmnhkl/detent">Copy</button>
+          </div>
+          <p>It works with any framework, or none. Nothing runs on import, so server rendering is safe.</p>
+        </section>
+        <section data-mark id="first">
+          <h2 id="first-h">A first slider</h2>
+          <p>Give detent an element and a range. It wires the finger, the mouse, the keys and the screen reader. You draw it, here with one CSS variable.</p>
+          <div class="stage" data-run="demos/first.js">
+            <div class="d-slider" id="first" aria-label="Volume"><div class="d-fill"></div><div class="d-thumb"></div></div>
+          </div>
+          <figure class="code"><figcaption>demos/first.js</figcaption><pre data-src="demos/first.js"></pre></figure>
+          <p>The thumb reads the same variable:</p>
+          <pre class="static" data-lang="css"><code>.d-thumb { position: absolute; left: calc(var(--value) * 1%); translate: -50% 0; }</code></pre>
+          <p>Drag it, flick it, or tab to it and press the arrow keys. 50 is strong, so it pulls from further away. Page Up and Page Down jump to it.</p>
+        </section>
+        <section data-mark id="glance">
+          <h2 id="glance-h">The three functions at a glance</h2>
+          <div class="glance">
+            <a href="detent.html"><code>detent(el, options)</code><span>One value under a hand: sliders, dials, picker wheels, rulers and sheets.</span></a>
+            <a href="scroll.html"><code>detentScroll(options)</code><span>The page settles onto its sections when the wheel or finger stops.</span></a>
+            <a href="detent2d.html"><code>detent2d(el, options)</code><span>Drag something anywhere, and it settles onto the nearest point or corner.</span></a>
+          </div>
+          <p>Under them, every building block is public too. See <a href="low-level.html">Low level</a>.</p>
+        </section>
+        <section data-mark id="motion">
+          <h2 id="motion-h">Reduced motion</h2>
+          <p>With reduced motion turned on in the system, every control lands on the same value with no glide, and the page never settles by itself. It is read live, so a change applies at once.</p>
+        </section>
+        <nav class="pager" aria-label="Next and previous"><span></span><a href="detent.html" rel="next"><span>Next</span>detent()</a></nav>
+      </main>
+      <aside class="docs-toc"><!-- @toc --></aside>
+    </div>
+    <!-- @footer -->
+    <script type="module" src="./docs.ts"></script>
+  </body>
+</html>
