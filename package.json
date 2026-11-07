@@ -1,0 +1,30 @@
+{
+  "name": "detent",
+  "version": "0.0.1",
+  "description": "Controls that click into place. Magnetic marks, a glide that never flies past, and a settle with no bounce. Keyboard steps and reduced motion built in.",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": ["dist"],
+  "sideEffects": false,
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": ["magnetic", "snap", "spring", "gesture", "slider", "dial", "picker", "accessibility", "reduced-motion"],
+  "author": "Hilman Haikal",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hilmanhaikal/detent.git"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3"
+  }
+}
