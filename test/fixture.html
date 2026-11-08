@@ -15,6 +15,7 @@
       .list p { height: 40px; margin: 0; }
       .hold { width: 200px; height: 48px; }
       .box { width: 160px; height: 160px; background: #999; margin: 8px; }
+      .mover { position: absolute; left: 0; top: 400px; width: 40px; height: 40px; background: #555; }
     </style>
   </head>
   <body>
@@ -28,6 +29,9 @@
       <div class="box" id="cube" aria-label="Dice"></div>
       <div class="box" id="table" aria-label="Kettle"></div>
     </div>
+    <div class="mover" id="mover"></div>
+    <div class="mover" id="thumb" style="left: 600px; top: 500px; width: 20px; height: 20px"></div>
+    <div id="scene-zone" hidden><div id="scene-target" style="margin-top: 1000px; height: 600px"></div><div style="height: 2000px"></div></div>
     <main id="page" hidden>
       <section class="sec" data-mark id="a"><h2>A</h2><a href="#c" id="toc">To C</a></section>
       <section class="sec" data-mark="strong" id="b"><h2>B</h2></section>
@@ -35,7 +39,26 @@
       <section class="sec" data-mark id="d"><h2>D</h2></section>
     </main>
     <script type="module">
-      import { detent, detent2d, detent3d, detentScroll, detentThrow, detentPull, detentHold } from '/src/index.ts'
+      import { detent, detent2d, detent3d, detentScroll, detentThrow, detentPull, detentHold, animate, timeline, frame, frameBudget, scrollScene, morph } from '/src/index.ts'
+      Object.assign(window, { morph, animate, timeline, frame, frameBudget, scrollScene, detentScroll, mover: document.getElementById('mover') })
+      // Playwright cannot hide a tab, so the test sets document.hidden and sends the event itself.
+      // A scene over a tall page: 0 to 1 as #scene-target passes, with labels at a third and at the end.
+      window.makeScene = (o = {}) => {
+        document.getElementById('scene-zone').hidden = false
+        document.querySelectorAll('.slider, .pip, .lab, .mover').forEach((n) => (n.hidden = true))
+        window.box = { v: 0 }
+        window.tl = timeline({ paused: true }).add(box, { to: { v: 300 }, duration: 300, ease: 'linear' }, 0).label('third', 100).label('end', 300)
+        window.scene = scrollScene(tl, { target: document.getElementById('scene-target'), start: 'top bottom', end: 'bottom top', ...o })
+      }
+      window.rect = (el = mover) => {
+        const r = el.getBoundingClientRect()
+        return [r.left, r.top, r.width, r.height].map((n) => Math.round(n * 10) / 10)
+      }
+      window.nextFrame = () => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)))
+      window.setHidden = (hidden) => {
+        Object.defineProperty(document, 'hidden', { value: hidden, configurable: true })
+        document.dispatchEvent(new Event('visibilitychange'))
+      }
       const log = (window.log = [])
       const on = (el, type) => el.addEventListener(type, (e) => log.push([el.id, type, e.detail]))
       for (const id of ['slider', 'loop', 'pip']) for (const t of ['detent:change', 'detent2d:change']) on(document.getElementById(id), t)

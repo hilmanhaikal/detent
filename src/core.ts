@@ -3,6 +3,8 @@
 // stand on its own. Every time is passed in, so a period of 0 (reduced motion) keeps each result and
 // drops the motion.
 
+import { frame } from './frame.js'
+
 /** A place a moving value is drawn onto. A strong mark reaches further and wins over a plain one. */
 export type Mark = { at: number; strong?: boolean }
 
@@ -73,16 +75,16 @@ export function rubber(over: number, size: number) {
 /** The hand's speed when it lets go, in units per second, from its last moves inside `window` ms. */
 export function speedTracker(window = 100) {
   let samples: { t: number; x: number }[] = []
+  const recent = (t: number) => samples.filter((s) => t - s.t <= window)
   return {
     add(x: number, t = performance.now()) {
-      samples = [...samples.filter((s) => t - s.t <= window), { t, x }]
+      samples = [...recent(t), { t, x }]
     },
     speed(t = performance.now()) {
-      const recent = samples.filter((s) => t - s.t <= window)
-      if (recent.length < 2) return 0
-      const a = recent[0]
-      const b = recent[recent.length - 1]
-      return b.t > a.t ? ((b.x - a.x) / (b.t - a.t)) * 1000 : 0
+      const r = recent(t)
+      const a = r[0]
+      const b = r[r.length - 1]
+      return b && b.t > a.t ? ((b.x - a.x) / (b.t - a.t)) * 1000 : 0
     },
     reset() {
       samples = []
@@ -120,16 +122,12 @@ export function springTo({ from, to, velocity = 0, period, damping = 0.88, rest 
   let x = from
   let v = velocity
   let last = performance.now()
-  let raf = 0
   const finish = () => {
-    cancelAnimationFrame(raf)
-    clearTimeout(backstop)
+    raf()
     onFrame(to)
     onDone?.()
   }
-  // Frames can stall (a hidden tab, a slow phone), so a timer lands it in real time if they do.
-  const backstop = setTimeout(finish, period * 4)
-  raf = requestAnimationFrame(function step(now) {
+  let raf = frame(function step(now) {
     // Real elapsed time in small slices: a slow frame moves the spring as far as the clock did.
     let dt = Math.min(1, Math.max(0, now - last) / 1000)
     last = now
@@ -141,12 +139,9 @@ export function springTo({ from, to, velocity = 0, period, damping = 0.88, rest 
     }
     if (Math.abs(x - to) < rest && Math.abs(v) < rest * 13) return finish()
     onFrame(x)
-    raf = requestAnimationFrame(step)
+    raf = frame(step)
   })
-  return () => {
-    cancelAnimationFrame(raf)
-    clearTimeout(backstop)
-  }
+  return () => raf()
 }
 
 export type GlideOptions = Omit<SpringOptions, 'to' | 'onDone'> & {
@@ -184,25 +179,22 @@ export function glide({ from, velocity = 0, land, coast = 0.2, maxSpeed = Infini
   const end = T * Math.log(5)
   const t0 = performance.now()
   let stopSpring = () => {}
-  let raf = 0
+  let raf = () => {}
   const toSpring = () => {
-    cancelAnimationFrame(raf)
-    clearTimeout(backstop)
+    raf()
     const k = Math.exp(-end / T)
     stopSpring = settle(from + D * (1 - k), (D / T) * k)
   }
-  const backstop = setTimeout(toSpring, end * 1000 + period)
-  raf = requestAnimationFrame(function step(now) {
+  raf = frame(function step(now) {
     const t = (now - t0) / 1000
     if (t >= end) return toSpring()
     onFrame(from + D * (1 - Math.exp(-t / T)))
-    raf = requestAnimationFrame(step)
+    raf = frame(step)
   })
   return {
     to,
     stop: () => {
-      cancelAnimationFrame(raf)
-      clearTimeout(backstop)
+      raf()
       stopSpring()
     },
   }
@@ -212,7 +204,7 @@ export function glide({ from, velocity = 0, land, coast = 0.2, maxSpeed = Infini
 export function follow({ value = 0, time, onFrame }: { value?: number; time: () => number; onFrame: (value: number) => void }) {
   let at = value
   let to = value
-  let raf = 0
+  let raf: (() => void) | null = null
   let last = 0
   const step = (now: number) => {
     const tau = time() / 3
@@ -221,7 +213,7 @@ export function follow({ value = 0, time, onFrame }: { value?: number; time: () 
     at = tau ? to + (at - to) * Math.exp(-dt / tau) : to
     if (Math.abs(at - to) < 0.002) at = to
     onFrame(at)
-    raf = at === to ? 0 : requestAnimationFrame(step)
+    raf = at === to ? null : frame(step)
   }
   return {
     get value() {
@@ -236,11 +228,11 @@ export function follow({ value = 0, time, onFrame }: { value?: number; time: () 
         return
       }
       last = performance.now()
-      raf = requestAnimationFrame(step)
+      raf = frame(step)
     },
     stop() {
-      cancelAnimationFrame(raf)
-      raf = 0
+      raf?.()
+      raf = null
     },
   }
 }

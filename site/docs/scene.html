@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light" />
+    <meta name="theme-color" content="#e8eddf" />
+    <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
+    <title>scrollScene() · detent docs</title>
+    <meta property="og:description" content="A tiny JavaScript engine that makes sliders, pickers and sheets feel like native apps: magnetic, calm, and accessible by default." />
+    <meta name="description" content="A timeline whose time is the scroll. It only reads the scroll, never moves it, and it can settle on its labels." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@200..800&family=Spline+Sans+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../shared/base.css" />
+    <link rel="stylesheet" href="../home/style.css" />
+    <link rel="stylesheet" href="./docs.css" />
+  </head>
+  <body>
+    <!-- @header -->
+    <div class="docs">
+      <aside class="docs-side"><!-- @sidebar --></aside>
+      <main class="docs-main" id="main">
+        <section data-mark="strong" id="top">
+          <p class="crumb">Docs</p>
+          <h1>scrollScene()</h1>
+          <p class="lede">A scene is a <a href="timeline.html">timeline</a> whose time is the page's scroll through a range. It only reads the scroll and never moves it, so the wheel, the finger and the keys stay the reader's. Scroll back and it plays back.</p>
+        </section>
+        <section data-mark id="demo">
+          <h2 id="demo-h">Rows that come in as you scroll</h2>
+          <p>Scroll through the box below. Then turn on settling, scroll a little and stop: the page comes to rest on a row.</p>
+          <button type="button" class="toggle" id="sc-settle" aria-pressed="false">Settle on the rows</button>
+          <div class="sc-stage" id="sc-stage" data-run="demos/scene.js">
+            <div class="sc-sticky">
+              <div class="sc-box" id="sc-box"><i class="sc-bar" aria-hidden="true"></i><p>Order placed</p><p>Payment received</p><p>Packed and on its way</p><p>Delivered to your door</p></div>
+              <p class="d-out small" id="sc-out" aria-hidden="true">0% through the scene</p>
+            </div>
+          </div>
+          <figure class="code"><figcaption>demos/scene.js</figcaption><pre data-src="demos/scene.js"></pre></figure>
+        </section>
+        <section data-mark id="range">
+          <h2 id="range-h">The range</h2>
+          <p><code>start</code> and <code>end</code> each name the target's edge, then the screen's edge: <code>top</code>, <code>center</code>, <code>bottom</code> or a percentage. The default runs from <code>'top bottom'</code> (the target's top meets the screen's bottom) to <code>'bottom top'</code> (its bottom leaves the top). It is measured from the page, not the box on screen, so the timeline can move the target itself. Resizes are read again.</p>
+        </section>
+        <section data-mark id="a11y">
+          <h2 id="a11y-h">Accessible by default</h2>
+          <ul class="rules">
+            <li><b>Never hijacks.</b> It listens to the scroll and draws. It never stops the wheel, the finger or the keys, and it never scrolls the page by itself. Settling is yours to turn on, with <code>detentScroll</code>, and any hand stops a settle at once.</li>
+            <li><b>Never halfway.</b> Each frame works out the time from where the page is, never from the last step, so a fast fling past the scene still lands on its end or its start.</li>
+            <li><b>Reduced motion.</b> The scene jumps to its end as it comes in, and back to its start once it is gone above. Nothing moves with the scroll.</li>
+            <li><b>Content first.</b> The words are in the page from the start. The scene only moves them, so a screen reader and find in page get everything.</li>
+            <li><b>Cheap.</b> It reads the place of the target only on resize, and on scroll only reads <code>scrollY</code>, once per shared frame.</li>
+          </ul>
+        </section>
+        <section data-mark id="options">
+          <h2 id="options-h">Options</h2>
+          <!-- @props src/scene.ts SceneOptions -->
+        </section>
+        <section data-mark id="result">
+          <h2 id="result-h">What it gives back</h2>
+          <!-- @api src/scene.ts ScrollScene -->
+        </section>
+        <nav class="pager" aria-label="Next and previous"><a href="frame.html" rel="prev"><span>Previous</span>Frame budget</a><a href="low-level.html" rel="next"><span>Next</span>Low level</a></nav>
+      </main>
+      <aside class="docs-toc"><!-- @toc --></aside>
+    </div>
+    <!-- @footer -->
+    <script type="module" src="./docs.ts"></script>
+  </body>
+</html>

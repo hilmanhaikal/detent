@@ -60,6 +60,18 @@
             <tr><td>Reduced motion</td><td>thrown or put back at once</td><td>jumps to rest or back</td><td>the clock still runs, the rewind jumps</td></tr>
           </tbody></table></div>
         </section>
+        <section data-mark id="motion">
+          <h2 id="motion-h">Animations</h2>
+          <p><code>animate()</code> and <code>timeline()</code> move things people look at, not things they hold, so they add no role. What they do for you:</p>
+          <div class="table" tabindex="0" role="region" aria-label="Animations"><table><thead><tr><th></th><th><code>animate()</code></th><th><code>timeline()</code></th></tr></thead><tbody>
+            <tr><td>Reduced motion</td><td>lands on the end at once; <code>onUpdate</code> and <code>onDone</code> still run</td><td><code>play()</code> lands on the end at once; <code>seek()</code> still scrubs</td></tr>
+            <tr><td>Hidden tab</td><td>time stops, then goes on from the same place</td><td>the same</td></tr>
+            <tr><td>Low-end phones</td><td>only transform, opacity and custom properties, never layout</td><td>the same</td></tr>
+            <tr><td>A new target mid-flight</td><td>takes over from where it is, at its speed</td><td>every step is fixed in time, so seeking is exact</td></tr>
+            <tr><td>Bounce</td><td>none: a spring's damping is never below 1</td><td>the same</td></tr>
+            <tr><td>Speaks</td><td>nothing; say the result from <code>onDone</code></td><td>nothing; scrub it with a detent slider, which speaks</td></tr>
+          </tbody></table></div>
+        </section>
         <section data-mark id="hear">
           <h2 id="hear-h">What a screen reader hears</h2>
           <p>This control has only <code>aria-label="Delivery tip"</code> in its HTML. detent adds the rest:</p>
