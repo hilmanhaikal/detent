@@ -1,0 +1,340 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light" />
+    <title>detent: controls that click into place</title>
+    <meta name="description" content="detent is a tiny engine for the feel of real controls: values pull onto marks, a flick glides and lands, nothing bounces." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..900&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    <link rel="preload" href="./d/DetentMachined-Bold.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="icon" href="./logo/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="./d/d.css" />
+  </head>
+  <body>
+    <svg class="sheet" aria-hidden="true">
+      <defs>
+        <pattern id="sheet-fine" width="10" height="10" patternUnits="userSpaceOnUse">
+          <path class="sheet-fine" d="M 10 0 H 0 V 10" />
+        </pattern>
+        <pattern id="sheet-grid" width="50" height="50" patternUnits="userSpaceOnUse">
+          <rect width="50" height="50" fill="url(#sheet-fine)" />
+          <path class="sheet-major" d="M 50 0 H 0 V 50" />
+        </pattern>
+        <pattern id="sheet-ticks" width="12" height="50" patternUnits="userSpaceOnUse">
+          <path class="sheet-tick" d="M 0 0 H 12 M 0 10 H 5 M 0 20 H 5 M 0 30 H 5 M 0 40 H 5" />
+        </pattern>
+      </defs>
+      <rect width="100%" height="100%" fill="url(#sheet-grid)" />
+    </svg>
+    <svg class="sheet-edge left" aria-hidden="true">
+      <rect width="12" height="100%" fill="url(#sheet-ticks)" />
+      <line class="sheet-tick" x1="0.5" y1="0" x2="0.5" y2="100%" />
+    </svg>
+    <svg class="sheet-edge right" aria-hidden="true">
+      <g transform="translate(12 0) scale(-1 1)">
+        <rect width="12" height="100%" fill="url(#sheet-ticks)" />
+        <line class="sheet-tick" x1="0.5" y1="0" x2="0.5" y2="100%" />
+      </g>
+    </svg>
+    <header class="top">
+      <div class="strip">
+        <a class="cell mark" href="#top"><svg class="wordmark wm-nav" xmlns="http://www.w3.org/2000/svg" viewBox="-20 -760 3863 780" role="img" aria-label="detent"><defs><mask id="cut-nav" maskUnits="userSpaceOnUse" x="-20" y="-780" width="3863" height="900"><rect x="-20" y="-780" width="3863" height="900" fill="#fff"/><circle cx="250" cy="-530" r="148" fill="#000"/></mask></defs><path d="M574 0H190Q160 0 133.5 -11.5Q107 -23 87.0 -43.0Q67 -63 55.5 -89.5Q44 -116 44 -146V-388Q44 -418 55.5 -444.5Q67 -471 87.0 -491.0Q107 -511 133.5 -522.5Q160 -534 190 -534H420Q434 -534 444.0 -544.0Q454 -554 454 -568V-740H574ZM454 -138V-396Q454 -410 444.0 -420.0Q434 -430 420 -430H198Q184 -430 174.0 -420.0Q164 -410 164 -396V-138Q164 -124 174.0 -114.0Q184 -104 198 -104H420Q434 -104 444.0 -114.0Q454 -124 454 -138Z" fill="currentColor" mask="url(#cut-nav)"/><path d="M826 4Q796 4 769.5 -7.5Q743 -19 723.0 -39.0Q703 -59 691.5 -85.5Q680 -112 680 -142V-388Q680 -418 691.5 -444.5Q703 -471 723.0 -491.0Q743 -511 769.5 -522.5Q796 -534 826 -534H928V-488H952V-534H1054Q1084 -534 1110.5 -522.5Q1137 -511 1157.0 -491.0Q1177 -471 1188.5 -444.5Q1200 -418 1200 -388V-206H834Q820 -206 810.0 -196.0Q800 -186 800 -172V-134Q800 -120 810.0 -110.0Q820 -100 834 -100H1104V-5Q1080 4 1054 4ZM1080 -338V-396Q1080 -410 1070.0 -420.0Q1060 -430 1046 -430H834Q820 -430 810.0 -420.0Q800 -410 800 -396V-338Q800 -324 810.0 -314.0Q820 -304 834 -304H1046Q1060 -304 1070.0 -314.0Q1080 -324 1080 -338Z" fill="currentColor"/><path d="M1372 -564V-660H1492V-564Q1492 -550 1502.0 -540.0Q1512 -530 1526 -530H1622V-426H1526Q1512 -426 1502.0 -416.0Q1492 -406 1492 -392V-138Q1492 -124 1502.0 -114.0Q1512 -104 1526 -104H1612V0H1518Q1488 0 1461.5 -11.5Q1435 -23 1415.0 -43.0Q1395 -63 1383.5 -89.5Q1372 -116 1372 -146V-392Q1372 -406 1362.0 -416.0Q1352 -426 1338 -426H1262V-530H1338Q1352 -530 1362.0 -540.0Q1372 -550 1372 -564Z" fill="currentColor"/><path d="M1832 4Q1802 4 1775.5 -7.5Q1749 -19 1729.0 -39.0Q1709 -59 1697.5 -85.5Q1686 -112 1686 -142V-388Q1686 -418 1697.5 -444.5Q1709 -471 1729.0 -491.0Q1749 -511 1775.5 -522.5Q1802 -534 1832 -534H1934V-488H1958V-534H2060Q2090 -534 2116.5 -522.5Q2143 -511 2163.0 -491.0Q2183 -471 2194.5 -444.5Q2206 -418 2206 -388V-206H1840Q1826 -206 1816.0 -196.0Q1806 -186 1806 -172V-134Q1806 -120 1816.0 -110.0Q1826 -100 1840 -100H2110V-5Q2086 4 2060 4ZM2086 -338V-396Q2086 -410 2076.0 -420.0Q2066 -430 2052 -430H1840Q1826 -430 1816.0 -420.0Q1806 -410 1806 -396V-338Q1806 -324 1816.0 -314.0Q1826 -304 1840 -304H2052Q2066 -304 2076.0 -314.0Q2086 -324 2086 -338Z" fill="currentColor"/><path d="M2310 0V-530H2684Q2714 -530 2740.5 -518.5Q2767 -507 2787.0 -487.0Q2807 -467 2818.5 -440.5Q2830 -414 2830 -384V0H2710V-392Q2710 -406 2700.0 -416.0Q2690 -426 2676 -426H2464Q2450 -426 2440.0 -416.0Q2430 -406 2430 -392V0Z" fill="currentColor"/><path d="M3022 -564V-660H3142V-564Q3142 -550 3152.0 -540.0Q3162 -530 3176 -530H3272V-426H3176Q3162 -426 3152.0 -416.0Q3142 -406 3142 -392V-138Q3142 -124 3152.0 -114.0Q3162 -104 3176 -104H3262V0H3168Q3138 0 3111.5 -11.5Q3085 -23 3065.0 -43.0Q3045 -63 3033.5 -89.5Q3022 -116 3022 -146V-392Q3022 -406 3012.0 -416.0Q3002 -426 2988 -426H2912V-530H2988Q3002 -530 3012.0 -540.0Q3022 -550 3022 -564Z" fill="currentColor"/><g transform="translate(3382 0) scale(0.5)"><path d="M120 -530H240V54Q240 84 228.5 110.5Q217 137 197.0 157.0Q177 177 150.5 188.5Q124 200 94 200H10V96H86Q100 96 110.0 86.0Q120 76 120 62ZM132 -622Q127 -622 123.5 -625.5Q120 -629 120 -634V-728Q120 -733 123.5 -736.5Q127 -740 132 -740H228Q233 -740 236.5 -736.5Q240 -733 240 -728V-634Q240 -629 236.5 -625.5Q233 -622 228 -622Z" fill="currentColor"/><path d="M488 -217Q450 -220 419.5 -240.0Q389 -260 371.5 -292.0Q354 -324 354 -362V-388Q354 -418 365.5 -444.5Q377 -471 397.0 -491.0Q417 -511 443.5 -522.5Q470 -534 500 -534H684Q714 -534 740.5 -522.5Q767 -511 787.0 -491.0Q807 -471 818.5 -444.5Q830 -418 830 -388V-372H710V-396Q710 -410 700.0 -420.0Q690 -430 676 -430H508Q494 -430 484.0 -420.0Q474 -410 474 -396V-354Q474 -340 484.0 -330.0Q494 -320 508 -320H676Q681 -320 686.5 -319.0Q692 -318 696 -320Q726 -320 752.5 -308.5Q779 -297 799.0 -277.0Q819 -257 830.5 -230.5Q842 -204 842 -174V-142Q842 -112 830.5 -85.5Q819 -59 799.0 -39.0Q779 -19 752.5 -7.5Q726 4 696 4H488Q458 4 431.5 -7.5Q405 -19 385.0 -39.0Q365 -59 353.5 -85.5Q342 -112 342 -142V-158H462V-134Q462 -120 472.0 -110.0Q482 -100 496 -100H688Q702 -100 712.0 -110.0Q722 -120 722 -134V-182Q722 -196 712.0 -206.0Q702 -216 688 -216H496Q492 -216 488 -215Z" fill="currentColor"/></g><circle class="wm-ball" cx="250" cy="-530" r="104"/></svg></a>
+        <span class="cell ver">v0.3.0</span>
+        <span class="cell grow" aria-hidden="true"></span>
+        <nav aria-label="Main" class="cells">
+          <a class="cell" href="../docs/">Docs</a>
+          <a class="cell" href="https://github.com/hilmanhaikal/detent">GitHub</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero" id="top" data-mark="strong">
+        <div class="hero-head">
+          <svg class="geneva" viewBox="-112 -104 272 222" aria-hidden="true">
+            <g class="g-guide">
+              <line x1="-108" y1="0" x2="156" y2="0" />
+              <line x1="0" y1="-100" x2="0" y2="100" />
+              <line x1="100" y1="-52" x2="100" y2="52" />
+              <circle class="g-orbit" cx="100" cy="0" />
+              <circle class="g-wheel-ring" cx="0" cy="0" />
+            </g>
+            <g class="g-wheel">
+              <path class="g-wheel-edge" />
+              <circle cx="0" cy="0" r="11" />
+              <path d="M -3 -11 L -3 -15 L 3 -15 L 3 -11" />
+            </g>
+            <g class="g-driver">
+              <path class="g-disc-edge" />
+              <circle cx="100" cy="0" r="8" />
+              <circle class="g-boss" cy="0" r="10" />
+              <circle class="g-pin" cy="0" r="6" />
+            </g>
+            <g class="g-note">
+              <line x1="0" y1="104" x2="100" y2="104" />
+              <line x1="0" y1="100" x2="0" y2="108" />
+              <line x1="100" y1="100" x2="100" y2="108" />
+              <text x="50" y="100" text-anchor="middle">C 100</text>
+              <text x="-104" y="-92">6 slots, 60° a step</text>
+              <text x="148" y="-58" text-anchor="end">R 40</text>
+            </g>
+          </svg>
+          <h1>Controls that click into place.</h1>
+          <div class="hero-side">
+            <p class="lede">A tiny engine for the feel of real controls. Values pull onto marks, a flick glides and lands, and nothing bounces.</p>
+            <div class="chips">
+              <button type="button" class="chip cmd" data-copy="npm install @hlmnhkl/detent"><code>npm install @hlmnhkl/detent</code><span class="copy-icon" aria-hidden="true"><i></i><i></i></span><span class="vh">Copy</span></button>
+              <a class="chip" href="../docs/">Docs</a>
+              <a class="chip" href="https://github.com/hilmanhaikal/detent">GitHub</a>
+            </div>
+          </div>
+        </div>
+        <dl class="facts">
+          <div><dt>4.2 KB</dt><dd>for one control, gzipped</dd></div>
+          <div><dt>0</dt><dd>dependencies, MIT licence</dd></div>
+          <div><dt>Keyboard</dt><dd>and screen readers in every control</dd></div>
+        </dl>
+      </section>
+
+      <section class="machine" id="machine" aria-label="One machine, four features">
+        <div class="m-pin">
+          <svg class="m-pin-sheet" aria-hidden="true"><rect class="m-pin-grid" width="100%" height="100%" fill="url(#sheet-grid)" /></svg>
+          <div class="machine-sheet" data-active="ball">
+            <div class="rig r-ball">
+          <svg class="mech m-ball" viewBox="-112 -132 224 230" aria-hidden="true">
+          <g class="g-guide">
+            <line x1="-90" y1="0" x2="90" y2="0" />
+            <line x1="0" y1="-128" x2="0" y2="90" />
+          </g>
+          <g class="g-part mb-wheel">
+            <path class="mb-edge" />
+            <circle r="10" />
+            <path class="g-open" d="M -3 -10 L -3 -14 L 3 -14 L 3 -10" />
+          </g>
+          <path class="g-part" d="M -14 -74 L -14 -122 L 14 -122 L 14 -74 L 7 -74 L 7 -116 L -7 -116 L -7 -74 Z" />
+          <path class="g-spring mb-spring" />
+          <path class="g-part mb-seat" d="M -6.5 0 L 6.5 0" />
+          <circle class="g-hot mb-ball" cx="0" r="6" />
+          <g class="g-note">
+            <line x1="-70" y1="90" x2="70" y2="90" />
+            <line x1="-70" y1="84" x2="-70" y2="96" />
+            <line x1="70" y1="84" x2="70" y2="96" />
+            <text x="0" y="86" text-anchor="middle">Ø 140</text>
+            <text x="-108" y="-120">16 notches, 22.5° a step</text>
+            <text x="108" y="-60" text-anchor="end">deep 8, plain 4</text>
+          </g>
+        </svg>
+          <div class="hand round" id="ball-hand" aria-label="Index wheel"></div>
+        </div>
+            <div class="rig r-glide">
+          <svg class="mech m-glide" viewBox="-108 -104 222 216" aria-hidden="true">
+          <g class="g-guide">
+            <line x1="-80" y1="0" x2="80" y2="0" />
+            <line x1="0" y1="-80" x2="0" y2="80" />
+          </g>
+          <path class="g-tick mg-ticks" />
+          <g class="g-part mg-wheel">
+            <circle r="65" />
+            <circle class="g-open" r="55" />
+            <path class="g-open mg-spokes" />
+            <circle r="12" />
+            <circle class="g-open" r="4" />
+            <path class="g-hot" d="M 0 -64 L -3.5 -58 L 3.5 -58 Z" />
+          </g>
+          <path class="g-spring mg-spring" />
+          <g class="g-part mg-lever">
+            <path />
+          </g>
+          <circle class="g-part" cx="70" cy="70" r="2" />
+          <rect class="g-part" x="100" y="30" width="6" height="20" />
+          <g class="g-note">
+            <line x1="-65" y1="104" x2="65" y2="104" />
+            <line x1="-65" y1="98" x2="-65" y2="110" />
+            <line x1="65" y1="98" x2="65" y2="110" />
+            <text x="0" y="101" text-anchor="middle">Ø 130</text>
+            <text x="-104" y="-92">10 marks, 36° apart</text>
+            <text x="-104" y="-84">shoe lifts 0 to 3</text>
+          </g>
+        </svg>
+          <div class="hand round" id="glide-hand" aria-label="Flywheel"></div>
+        </div>
+            <div class="rig r-index">
+          <svg class="mech m-index" viewBox="-150 -58 230 140" aria-hidden="true">
+          <g class="g-guide">
+            <line x1="-146" y1="4.33" x2="-60" y2="4.33" />
+            <line x1="0" y1="-40" x2="0" y2="72" />
+          </g>
+          <g class="mi-scene"></g>
+          <g class="g-note">
+            <line x1="-64" y1="-44" x2="64" y2="-44" />
+            <line x1="-64" y1="-50" x2="-64" y2="-38" />
+            <line x1="64" y1="-50" x2="64" y2="-38" />
+            <text x="0" y="-47" text-anchor="middle">Ø 128</text>
+            <text x="-146" y="-50">8 slots, 45° a step, seen at 60°</text>
+            <text x="-100" y="-14" text-anchor="middle">stroke 10</text>
+          </g>
+        </svg>
+          <div class="hand round" id="index-hand" aria-label="Index plate"></div>
+        </div>
+            <div class="rig r-toggle">
+          <svg class="mech m-toggle" viewBox="-100 -112 190 204" aria-hidden="true">
+          <g class="g-guide">
+            <line x1="0" y1="-92" x2="0" y2="92" />
+            <line x1="-24" y1="30" x2="24" y2="30" />
+            <path class="g-ring" d="M -30 -21.96 A 60 60 0 0 1 30 -21.96" />
+          </g>
+          <circle class="g-part" cx="0" cy="-80" r="7" />
+          <circle class="g-part" cx="0" cy="30" r="11" />
+          <circle class="g-part" cx="16.56" cy="4.98" r="3" />
+          <circle class="g-part" cx="-16.56" cy="4.98" r="3" />
+          <g class="g-part mt-lever">
+            <path d="M -4 -30 A 4 4 0 0 1 4 -30 L 4 74 L -4 74 Z" />
+            <circle cx="0" cy="30" r="6" />
+            <circle cx="0" cy="78" r="8" />
+          </g>
+          <circle class="g-part" cx="0" cy="30" r="2" />
+          <g class="g-part mt-strut">
+            <path class="mt-rod" />
+            <path class="mt-tube" />
+          </g>
+          <circle class="g-part" cx="0" cy="-80" r="2" />
+          <path class="g-spring mt-spring" />
+          <circle class="g-hot mt-pin" r="2.5" />
+          <g class="g-note">
+            <line x1="-50" y1="-80" x2="-50" y2="30" />
+            <line x1="-56" y1="-80" x2="-12" y2="-80" />
+            <line x1="-56" y1="30" x2="-16" y2="30" />
+            <text x="-54" y="-23" text-anchor="end">110</text>
+            <text x="-96" y="-104">stops ±20°, centre 0°</text>
+            <text class="mt-far" x="-96" y="-96"></text>
+          </g>
+        </svg>
+          <div class="hand" id="toggle-hand" role="button" tabindex="0"></div>
+        </div>
+          </div>
+        </div>
+        <div class="m-steps">
+          <div class="m-frame" aria-hidden="true"></div>
+          <article class="m-step" id="marks" data-mark data-mech="ball" aria-labelledby="marks-title">
+            <div class="m-card">
+            <p class="api"><code>detent({ marks })</code></p>
+            <h2 id="marks-title"><span class="slide">Marks pull. Strong marks hold.</span></h2>
+            <p class="note">Near a notch, the ball pulls the wheel in. The deep notches are strong marks, and they pull from further away.</p>
+            <pre class="m-code">detent(wheel, { loop: true, count: 16, marks })</pre>
+            </div>
+            <p class="resting" aria-hidden="true">The page rests here</p>
+          </article>
+          <article class="m-step" id="glide" data-mark data-mech="glide" aria-labelledby="glide-title">
+            <div class="m-card">
+            <p class="api"><code>detent({ coast })</code></p>
+            <h2 id="glide-title"><span class="slide">Flick it. It glides, then lands.</span></h2>
+            <p class="note">Let go in the middle of a flick and it carries on, slows down, and stops on a mark. It never flies past and springs back.</p>
+            <pre class="m-code">detent(flywheel, { loop: true, count: 10, coast: 0.35 })</pre>
+            </div>
+            <p class="resting" aria-hidden="true">The page rests here</p>
+          </article>
+          <article class="m-step" id="throw" data-mark data-mech="toggle" aria-labelledby="throw-title">
+            <div class="m-card">
+            <p class="api"><code>detentThrow()</code></p>
+            <h2 id="throw-title"><span class="slide">Past the middle, it goes.</span></h2>
+            <p class="note">Let go past the middle and it snaps across. Short of it, it falls back, with no bounce.</p>
+            <pre class="m-code">detentThrow(lever, { onThrow: (way) => flip(way) })</pre>
+            </div>
+            <p class="resting" aria-hidden="true">The page rests here</p>
+          </article>
+          <article class="m-step" id="turn" data-mark data-mech="index" aria-labelledby="turn-title">
+            <div class="m-card">
+            <p class="api"><code>detent3d()</code></p>
+            <h2 id="turn-title"><span class="slide">Turn it, and it locks to a view.</span></h2>
+            <p class="note">Spin it sideways, and it lands on the nearest of eight views. The plunger drops into its slot.</p>
+            <pre class="m-code">detent3d(plate, { faces: 'turntable', views: 8 })</pre>
+            </div>
+            <p class="resting" aria-hidden="true">The page rests here</p>
+          </article>
+          <p class="m-more">Pull, hold, drag in 2D and the page scroll work the same way. <a href="../docs/">See all eight in the docs</a></p>
+        </div>
+      </section>
+
+      <section class="part p-next" id="next" data-mark aria-labelledby="next-title">
+        <div class="part-head">
+          <p class="api"><code>Revisions</code></p>
+          <h2 id="next-title">Coming next.</h2>
+          <p class="note">Planned for later versions. None of this is in detent yet.</p>
+          <table class="revs">
+            <caption class="vh">Planned versions of detent</caption>
+            <thead>
+              <tr><th scope="col">Rev</th><th scope="col">What</th><th scope="col">Status</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>0.4.0</td><td>Animate and Timeline</td><td>In progress</td></tr>
+              <tr><td>0.5.0</td><td>Morph and Text</td><td>Planned</td></tr>
+              <tr><td>0.6.0</td><td>Scroll scenes and Frame budget</td><td>Planned</td></tr>
+              <tr><td>Later</td><td>Reorder and pinch steps</td><td>Planned</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="resting" aria-hidden="true">The page rests here</p>
+      </section>
+
+      <section class="part p-end" id="start" data-mark aria-labelledby="end-title">
+        <svg class="mech m-cam" viewBox="-72 -72 220 144" aria-hidden="true">
+          <g class="g-guide">
+            <line x1="-66" y1="0" x2="146" y2="0" />
+            <line x1="0" y1="-66" x2="0" y2="66" />
+            <circle class="g-ring" r="52" />
+          </g>
+          <g class="g-part mc-cam">
+            <path class="mc-edge" />
+            <circle r="9" />
+            <path class="g-open" d="M -3 -9 L -3 -13 L 3 -13 L 3 -9" />
+          </g>
+          <g class="mc-follower">
+            <rect class="g-part" x="0" y="-3" width="84" height="6" />
+            <rect class="g-part" x="15" y="-9" width="2" height="18" />
+            <circle class="g-hot" r="7" />
+          </g>
+          <path class="g-spring mc-spring" />
+          <rect class="g-part" x="100" y="-9" width="18" height="18" />
+          <g class="g-note">
+            <line x1="-52" y1="64" x2="52" y2="64" />
+            <line x1="-52" y1="58" x2="-52" y2="70" />
+            <line x1="52" y1="58" x2="52" y2="70" />
+            <text x="0" y="61" text-anchor="middle">Ø 104</text>
+            <text x="146" y="-24" text-anchor="end">6 dips, 60° apart</text>
+            <text x="146" y="-16" text-anchor="end">lift 6, the deep dip 10</text>
+          </g>
+        </svg>
+        <p class="api"><code>detentScroll()</code></p>
+        <h2 id="end-title">This page clicks into place too.</h2>
+        <p class="note">On a computer, stop scrolling anywhere and the page settles on the nearest part. On a phone we leave your own scroll alone, so you can stop anywhere and use the controls. Any wheel or key stops a settle at once. With reduced motion there is no settle at all.</p>
+        <details class="code"><summary>Show code</summary><pre data-src="scroll.js"></pre><button type="button" class="copy-code">Copy code</button></details>
+        <div class="chips">
+          <button type="button" class="chip cmd" data-copy="npm install @hlmnhkl/detent"><code>npm install @hlmnhkl/detent</code><span class="copy-icon" aria-hidden="true"><i></i><i></i></span><span class="vh">Copy</span></button>
+          <a class="chip" href="../docs/">Read the docs</a>
+        </div>
+        <p class="small">MIT licence. No dependencies. 12.2 KB for everything. Every moving thing on this page runs on detent.</p>
+        <p class="resting" aria-hidden="true">The page rests here</p>
+      </section>
+    </main>
+
+    <footer class="foot">
+      <dl class="block">
+        <div class="b-name"><dt>Title</dt><dd><svg class="wordmark wm-foot" xmlns="http://www.w3.org/2000/svg" viewBox="-20 -760 3863 780" role="img" aria-label="detent"><defs><mask id="cut-foot" maskUnits="userSpaceOnUse" x="-20" y="-780" width="3863" height="900"><rect x="-20" y="-780" width="3863" height="900" fill="#fff"/><circle cx="250" cy="-530" r="148" fill="#000"/></mask></defs><path d="M574 0H190Q160 0 133.5 -11.5Q107 -23 87.0 -43.0Q67 -63 55.5 -89.5Q44 -116 44 -146V-388Q44 -418 55.5 -444.5Q67 -471 87.0 -491.0Q107 -511 133.5 -522.5Q160 -534 190 -534H420Q434 -534 444.0 -544.0Q454 -554 454 -568V-740H574ZM454 -138V-396Q454 -410 444.0 -420.0Q434 -430 420 -430H198Q184 -430 174.0 -420.0Q164 -410 164 -396V-138Q164 -124 174.0 -114.0Q184 -104 198 -104H420Q434 -104 444.0 -114.0Q454 -124 454 -138Z" fill="currentColor" mask="url(#cut-foot)"/><path d="M826 4Q796 4 769.5 -7.5Q743 -19 723.0 -39.0Q703 -59 691.5 -85.5Q680 -112 680 -142V-388Q680 -418 691.5 -444.5Q703 -471 723.0 -491.0Q743 -511 769.5 -522.5Q796 -534 826 -534H928V-488H952V-534H1054Q1084 -534 1110.5 -522.5Q1137 -511 1157.0 -491.0Q1177 -471 1188.5 -444.5Q1200 -418 1200 -388V-206H834Q820 -206 810.0 -196.0Q800 -186 800 -172V-134Q800 -120 810.0 -110.0Q820 -100 834 -100H1104V-5Q1080 4 1054 4ZM1080 -338V-396Q1080 -410 1070.0 -420.0Q1060 -430 1046 -430H834Q820 -430 810.0 -420.0Q800 -410 800 -396V-338Q800 -324 810.0 -314.0Q820 -304 834 -304H1046Q1060 -304 1070.0 -314.0Q1080 -324 1080 -338Z" fill="currentColor"/><path d="M1372 -564V-660H1492V-564Q1492 -550 1502.0 -540.0Q1512 -530 1526 -530H1622V-426H1526Q1512 -426 1502.0 -416.0Q1492 -406 1492 -392V-138Q1492 -124 1502.0 -114.0Q1512 -104 1526 -104H1612V0H1518Q1488 0 1461.5 -11.5Q1435 -23 1415.0 -43.0Q1395 -63 1383.5 -89.5Q1372 -116 1372 -146V-392Q1372 -406 1362.0 -416.0Q1352 -426 1338 -426H1262V-530H1338Q1352 -530 1362.0 -540.0Q1372 -550 1372 -564Z" fill="currentColor"/><path d="M1832 4Q1802 4 1775.5 -7.5Q1749 -19 1729.0 -39.0Q1709 -59 1697.5 -85.5Q1686 -112 1686 -142V-388Q1686 -418 1697.5 -444.5Q1709 -471 1729.0 -491.0Q1749 -511 1775.5 -522.5Q1802 -534 1832 -534H1934V-488H1958V-534H2060Q2090 -534 2116.5 -522.5Q2143 -511 2163.0 -491.0Q2183 -471 2194.5 -444.5Q2206 -418 2206 -388V-206H1840Q1826 -206 1816.0 -196.0Q1806 -186 1806 -172V-134Q1806 -120 1816.0 -110.0Q1826 -100 1840 -100H2110V-5Q2086 4 2060 4ZM2086 -338V-396Q2086 -410 2076.0 -420.0Q2066 -430 2052 -430H1840Q1826 -430 1816.0 -420.0Q1806 -410 1806 -396V-338Q1806 -324 1816.0 -314.0Q1826 -304 1840 -304H2052Q2066 -304 2076.0 -314.0Q2086 -324 2086 -338Z" fill="currentColor"/><path d="M2310 0V-530H2684Q2714 -530 2740.5 -518.5Q2767 -507 2787.0 -487.0Q2807 -467 2818.5 -440.5Q2830 -414 2830 -384V0H2710V-392Q2710 -406 2700.0 -416.0Q2690 -426 2676 -426H2464Q2450 -426 2440.0 -416.0Q2430 -406 2430 -392V0Z" fill="currentColor"/><path d="M3022 -564V-660H3142V-564Q3142 -550 3152.0 -540.0Q3162 -530 3176 -530H3272V-426H3176Q3162 -426 3152.0 -416.0Q3142 -406 3142 -392V-138Q3142 -124 3152.0 -114.0Q3162 -104 3176 -104H3262V0H3168Q3138 0 3111.5 -11.5Q3085 -23 3065.0 -43.0Q3045 -63 3033.5 -89.5Q3022 -116 3022 -146V-392Q3022 -406 3012.0 -416.0Q3002 -426 2988 -426H2912V-530H2988Q3002 -530 3012.0 -540.0Q3022 -550 3022 -564Z" fill="currentColor"/><g transform="translate(3382 0) scale(0.5)"><path d="M120 -530H240V54Q240 84 228.5 110.5Q217 137 197.0 157.0Q177 177 150.5 188.5Q124 200 94 200H10V96H86Q100 96 110.0 86.0Q120 76 120 62ZM132 -622Q127 -622 123.5 -625.5Q120 -629 120 -634V-728Q120 -733 123.5 -736.5Q127 -740 132 -740H228Q233 -740 236.5 -736.5Q240 -733 240 -728V-634Q240 -629 236.5 -625.5Q233 -622 228 -622Z" fill="currentColor"/><path d="M488 -217Q450 -220 419.5 -240.0Q389 -260 371.5 -292.0Q354 -324 354 -362V-388Q354 -418 365.5 -444.5Q377 -471 397.0 -491.0Q417 -511 443.5 -522.5Q470 -534 500 -534H684Q714 -534 740.5 -522.5Q767 -511 787.0 -491.0Q807 -471 818.5 -444.5Q830 -418 830 -388V-372H710V-396Q710 -410 700.0 -420.0Q690 -430 676 -430H508Q494 -430 484.0 -420.0Q474 -410 474 -396V-354Q474 -340 484.0 -330.0Q494 -320 508 -320H676Q681 -320 686.5 -319.0Q692 -318 696 -320Q726 -320 752.5 -308.5Q779 -297 799.0 -277.0Q819 -257 830.5 -230.5Q842 -204 842 -174V-142Q842 -112 830.5 -85.5Q819 -59 799.0 -39.0Q779 -19 752.5 -7.5Q726 4 696 4H488Q458 4 431.5 -7.5Q405 -19 385.0 -39.0Q365 -59 353.5 -85.5Q342 -112 342 -142V-158H462V-134Q462 -120 472.0 -110.0Q482 -100 496 -100H688Q702 -100 712.0 -110.0Q722 -120 722 -134V-182Q722 -196 712.0 -206.0Q702 -216 688 -216H496Q492 -216 488 -215Z" fill="currentColor"/></g><circle class="wm-ball" cx="250" cy="-530" r="104"/></svg></dd></div>
+        <div class="b-lic"><dt>Licence</dt><dd>MIT</dd></div>
+        <div class="b-ver"><dt>Version</dt><dd>0.3.0</dd></div>
+        <div class="b-size"><dt>Size</dt><dd>12.2 KB everything, gzipped</dd></div>
+        <div class="b-dep"><dt>Runtime</dt><dd>No dependencies</dd></div>
+        <div class="b-by"><dt>Drawn by</dt><dd>hilmanhaikal</dd></div>
+        <div class="b-links">
+          <dt class="vh">Links</dt>
+          <dd><a href="../docs/">Docs</a><a href="https://github.com/hilmanhaikal/detent">GitHub</a><a href="https://www.npmjs.com/package/@hlmnhkl/detent">npm</a></dd>
+        </div>
+      </dl>
+    </footer>
+    <p class="vh" id="say" role="status"></p>
+    <script type="module" src="./d/main.js"></script>
+  </body>
+</html>

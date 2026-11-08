@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>detent logo directions</title>
+    <style>
+      :root {
+        --sheet: #dde6eb;
+        --ink: #2f4858;
+        --steel: #33658a;
+        --sky: #86bbd8;
+        --orange: #f26419;
+        --light: #eef4f7;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        padding: 40px 20px 80px;
+        background: var(--sheet);
+        color: var(--ink);
+        font: 400 15px/20px 'IBM Plex Mono', ui-monospace, monospace;
+      }
+      main {
+        max-width: 1100px;
+        margin: 0 auto;
+        display: grid;
+        gap: 40px;
+      }
+      h1 {
+        margin: 0;
+        font-size: 15px;
+        font-weight: 500;
+        color: var(--steel);
+      }
+      .dir {
+        display: grid;
+        grid-template-columns: 220px 1fr;
+        gap: 20px 40px;
+        padding: 30px;
+        border: 1px solid var(--sky);
+      }
+      .dir h2 {
+        margin: 0 0 6px;
+        font: 600 17px/20px system-ui, sans-serif;
+      }
+      .dir p {
+        margin: 0;
+        color: var(--steel);
+        max-width: 46ch;
+      }
+      .big svg {
+        width: 160px;
+        height: 160px;
+      }
+      .row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        align-items: center;
+        margin-top: 20px;
+      }
+      .lock {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 20px 24px;
+        background: var(--sheet);
+        border: 1px solid var(--sky);
+      }
+      .lock.dark {
+        background: var(--ink);
+        border-color: var(--ink);
+      }
+      .lock .m {
+        width: 44px;
+        height: 44px;
+      }
+      .lock .w {
+        height: 30px;
+      }
+      .fav {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+      }
+      .fav span {
+        display: grid;
+        place-items: center;
+        background: var(--light);
+        border: 1px solid var(--sky);
+      }
+      .fav .s32 {
+        width: 48px;
+        height: 48px;
+      }
+      .fav .s32 svg {
+        width: 32px;
+        height: 32px;
+      }
+      .fav .s16 {
+        width: 32px;
+        height: 32px;
+      }
+      .fav .s16 svg {
+        width: 16px;
+        height: 16px;
+      }
+      .words .hero-word svg {
+        width: min(100%, 560px);
+        height: auto;
+      }
+      .words .lock .w {
+        height: 30px;
+        width: auto;
+      }
+      @media (max-width: 700px) {
+        .dir {
+          grid-template-columns: 1fr;
+          padding: 20px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>detent logo: five wordmark directions in Detent Machined, each with the d as its short form for favicons and app icons.</h1>
+    </main>
+    <script type="module">
+      import word from './logo/word.json'
+      import letters from './logo/letters.json'
+
+      const f = (v) => +v.toFixed(2)
+      const deg = Math.PI / 180
+      const pt = (r, a, cx = 0, cy = 0) => `${f(cx + r * Math.cos(a))} ${f(cy + r * Math.sin(a))}`
+
+      // A: ball detent. A wheel with 8 shallow notches and one deep strong notch on top; the ball sits in it.
+      function markA(ink, hot, bg) {
+        const R = 17
+        let d = ''
+        const n = 8
+        for (let k = 0; k < n; k++) {
+          const c = -90 + k * (360 / n)
+          const depth = k === 0 ? 5.5 : 2.2
+          const w = k === 0 ? 11 : 9
+          const a0 = (c - w) * deg
+          const a1 = (c + w) * deg
+          const next = (c + 360 / n - (k + 1 === n ? 11 : 9)) * deg
+          d += `${k ? 'L' : 'M'} ${pt(R, a0, 24, 27)} L ${pt(R - depth, c * deg, 24, 27)} L ${pt(R, a1, 24, 27)} A ${R} ${R} 0 0 1 ${pt(R, next, 24, 27)} `
+        }
+        return `<svg viewBox="0 0 48 48"><path d="${d}Z" fill="${ink}"/><circle cx="24" cy="27" r="4.5" fill="${bg}"/><circle cx="24" cy="${f(27 - R + 5.5 - 4.6)}" r="4.6" fill="${hot}"/></svg>`
+      }
+
+      // B: Geneva cross. A four slot Geneva wheel from its real proportions, with the driving pin.
+      function markB(ink, hot, bg) {
+        const C = 30
+        const a = C * Math.sin(Math.PI / 4)
+        const b = C * Math.cos(Math.PI / 4)
+        const half = 3.4
+        const lock = a * 0.62
+        const tip = Math.acos((b * b + C * C - lock * lock) / (2 * b * C))
+        const depth = C - a
+        let d = ''
+        for (let k = 0; k < 4; k++) {
+          const s = (45 + 90 * k) * deg
+          const e = [Math.cos(s), Math.sin(s)]
+          const nn = [-Math.sin(s), Math.cos(s)]
+          const out = Math.sqrt(b * b - half * half)
+          const p = (t, side) => `${f(24 + t * e[0] + side * half * nn[0])} ${f(24 + t * e[1] + side * half * nn[1])}`
+          d += k === 0 ? `M ${p(out, -1)} ` : `A ${f(b)} ${f(b)} 0 0 1 ${p(out, -1)} `
+          d += `L ${p(depth, -1)} A ${half} ${half} 0 0 0 ${p(depth, 1)} L ${p(out, 1)} `
+          const m = s + 45 * deg
+          d += `A ${f(b)} ${f(b)} 0 0 1 ${pt(b, m - tip, 24, 24)} A ${f(lock)} ${f(lock)} 0 0 0 ${pt(b, m + tip, 24, 24)} `
+        }
+        d += `A ${f(b)} ${f(b)} 0 0 1 ${pt(b, 45 * deg - Math.asin(half / b), 24, 24)} Z`
+        const pin = pt(depth + 0.2, 45 * deg, 24, 24)
+        return `<svg viewBox="0 0 48 48"><path d="${d}" fill="${ink}"/><circle cx="24" cy="24" r="3.6" fill="${bg}"/><circle cx="${pin.split(' ')[0]}" cy="${pin.split(' ')[1]}" r="2.8" fill="${hot}"/></svg>`
+      }
+
+      // C: the d of the font, with a ball seated in a notch cut into the top of its bowl.
+      function markC(ink, hot, bg) {
+        const g = word.words.d
+        const s = 40 / 1000
+        const x0 = 24 - (g.w * s) / 2
+        const y0 = 41
+        const bx = x0 + 250 * s
+        const by = y0 - 530 * s
+        const id = `mc${ink.slice(1)}${bg.slice(1)}`
+        return `<svg viewBox="0 0 48 48"><defs><mask id="${id}" maskUnits="userSpaceOnUse" x="0" y="0" width="48" height="48"><rect width="48" height="48" fill="#fff"/><circle cx="${f(bx)}" cy="${f(by)}" r="6.6" fill="#000"/></mask></defs><g mask="url(#${id})"><path d="${g.d}" transform="translate(${f(x0)} ${y0}) scale(${s})" fill="${ink}"/></g><circle cx="${f(bx)}" cy="${f(by)}" r="4.6" fill="${hot}"/></svg>`
+      }
+
+      // D: a ruler edge with one strong mark. Even ticks hang from the edge; the strong one is longer.
+      function markD(ink, hot) {
+        const xs = [7, 14.5, 24, 33.5, 41]
+        const r = xs.map((x, i) => {
+          const strong = i === 2
+          const w = strong ? 5 : 3
+          const h = strong ? 30 : i % 4 === 0 ? 14 : 9
+          return `<rect x="${f(x - w / 2)}" y="11" width="${w}" height="${h}" rx="1" fill="${strong ? hot : ink}"/>`
+        })
+        return `<svg viewBox="0 0 48 48"><rect x="3" y="7" width="42" height="4" rx="1" fill="${ink}"/>${r.join('')}</svg>`
+      }
+
+      function wordmark(ink) {
+        const g = word.words.detent
+        return `<svg class="w" viewBox="0 -760 ${g.w} 800"><path d="${g.d}" fill="${ink}"/></svg>`
+      }
+
+      const L = letters.letters
+      const W = letters.w
+      const hotOf = (c) => c
+
+      // The word drawn letter by letter, so one letter can carry the detail.
+      function lettering(ink, hot, bg, kind) {
+        const parts = []
+        let defs = ''
+        let extra = ''
+        let bottom = 60
+        L.forEach((l, i) => {
+          let fill = ink
+          let move = ''
+          let mask = ''
+          if (kind === 'ball' && i === 0) {
+            const id = `wb${ink.slice(1)}${bg.slice(1)}`
+            defs += `<mask id="${id}" maskUnits="userSpaceOnUse" x="-100" y="-900" width="${W + 200}" height="1200"><rect x="-100" y="-900" width="${W + 200}" height="1200" fill="#fff"/><circle cx="250" cy="-530" r="165" fill="#000"/></mask>`
+            mask = ` mask="url(#${id})"`
+            extra += `<circle cx="250" cy="-530" r="115" fill="${hot}"/>`
+          }
+          if (kind === 'drop' && l.ch === 'n') move = ' transform="translate(0 70)"'
+          if (kind === 'index' && l.ch === 'e') extra += `<rect x="${f(l.x + l.adv / 2 - 12)}" y="-534" width="24" height="46" fill="${hot}"/>`
+          parts.push(`<g${mask}><path d="${l.d}" fill="${fill}"${move}/></g>`)
+        })
+        if (kind === 'scale') {
+          bottom = 260
+          extra += `<rect x="0" y="90" width="${W}" height="26" fill="${ink}"/>`
+          L.forEach((l) => {
+            const cx = (l.box[0] + l.box[2]) / 2
+            const strong = l.ch === 'n'
+            extra += `<rect x="${f(cx - (strong ? 22 : 13))}" y="116" width="${strong ? 44 : 26}" height="${strong ? 130 : 60}" fill="${strong ? hot : ink}"/>`
+          })
+        }
+        if (kind === 'drop') {
+          bottom = 220
+          const n = L.find((l) => l.ch === 'n')
+          extra += `<path d="M 0 110 H ${f(n.box[0] - 30)} L ${f(n.box[0] + 40)} 180 H ${f(n.box[2] - 40)} L ${f(n.box[2] + 30)} 110 H ${W} V 136 H ${f(n.box[2] + 40)} L ${f(n.box[2] - 30)} 206 H ${f(n.box[0] + 30)} L ${f(n.box[0] - 40)} 136 H 0 Z" fill="${ink}"/>`
+          extra += `<rect x="${f(n.box[0])}" y="72" width="${f(n.box[2] - n.box[0])}" height="0" />`
+        }
+        return `<svg class="w" viewBox="-20 -780 ${W + 40} ${780 + bottom}" aria-hidden="true"><defs>${defs}</defs>${parts.join('')}${extra}</svg>`
+      }
+
+      const dirs = [
+        ['A. Plain', 'Only the word, in Detent Machined. The two slots cut into the e carry the idea quietly, like the index line on a knob. The calmest choice.', 'plain'],
+        ['B. Seated ball', 'The d holds the ball in a notch cut into its bowl, like a ball detent. The same d works alone as the app icon.', 'ball'],
+        ['C. On a scale', 'The word sits on a ruler edge. One tick is longer and orange: a strong mark under the n.', 'scale'],
+        ['D. Clicked in', 'The n has dropped one step into a notch in the line under the word, the way a part clicks into place.', 'drop'],
+        ['E. Index marks', 'The plain word, with the slots in both e filled orange: two index lines, the only touch of colour.', 'index'],
+      ]
+      const main = document.querySelector('main')
+      const C = getComputedStyle(document.documentElement)
+      const ink = C.getPropertyValue('--ink').trim()
+      const hot = C.getPropertyValue('--orange').trim()
+      const sheet = C.getPropertyValue('--sheet').trim()
+      const light = C.getPropertyValue('--light').trim()
+      const ballIcon = (i, h, b) => markC(i, h, b).replace('<svg', '<svg aria-hidden="true"')
+      // The short form: the d alone, with one index line cut into the top of its bowl.
+      const icon = (i, h) => {
+        const d = L[0]
+        return `<svg viewBox="-60 -800 760 840" aria-hidden="true"><path d="${d.d}" fill="${i}"/><rect x="${f(d.x + 0.48 * (d.box[2] - 130))}" y="-534" width="28" height="60" fill="${h}"/></svg>`
+      }
+      for (const [name, note, kind] of dirs) {
+        const el = document.createElement('section')
+        el.className = 'dir words'
+        el.innerHTML = `
+          <div>
+            <h2>${name}</h2>
+            <p>${note}</p>
+          </div>
+          <div>
+            <div class="hero-word">${lettering(ink, hot, sheet, kind)}</div>
+            <div class="row">
+              <div class="lock">${lettering(ink, hot, sheet, kind)}</div>
+              <div class="lock dark">${lettering(light, hot, ink, kind)}</div>
+              <div class="fav"><span class="s32">${kind === 'ball' ? ballIcon(ink, hot, light) : icon(ink, hot, light)}</span><span class="s16">${kind === 'ball' ? ballIcon(ink, hot, light) : icon(ink, hot, light)}</span></div>
+            </div>
+          </div>`
+        main.appendChild(el)
+      }
+    </script>
+  </body>
+</html>

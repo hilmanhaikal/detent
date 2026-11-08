@@ -1,0 +1,409 @@
+/* Mockup C, living letters. Type is the material: Anybody, a variable face with a width axis, so a
+   letter can stretch as it is pulled and come back to itself in its notch. Paper and ink; mustard
+   only when a letter clicks home, and in the focus ring. */
+:root {
+  --c-paper: #e8eddf;
+  --c-quiet: #cfdbd5;
+  --c-ink: #242423;
+  --c-dark: #333533;
+  --c-accent: #f5cb5c;
+  --c-muted: color-mix(in srgb, var(--c-ink) 80%, var(--c-paper));
+  --bg: var(--c-paper);
+  --ink: var(--c-ink);
+  --muted: var(--c-muted);
+  --line: var(--c-quiet);
+  --surface: var(--c-quiet);
+  --radius: 3px;
+  --display: 'Anybody', sans-serif;
+  --font: 'Schibsted Grotesk', system-ui, sans-serif;
+  --mono: 'Martian Mono', ui-monospace, monospace;
+  --pad: clamp(16px, 5vw, 88px);
+  color-scheme: light;
+}
+body {
+  font-size: 18px;
+  line-height: 1.55;
+}
+/* Focus: an ink ring with a mustard halo, so it reads on paper. */
+:focus-visible {
+  outline: 2px solid var(--c-ink);
+  outline-offset: 3px;
+  box-shadow: 0 0 0 7px var(--c-accent);
+}
+
+.c-top {
+  position: absolute;
+  top: 0;
+  right: var(--pad);
+  z-index: 5;
+  display: flex;
+  gap: 4px;
+  padding-top: 14px;
+}
+.c-top a {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  padding: 0 10px;
+  font-size: 16px;
+  color: var(--ink);
+  text-decoration-color: var(--c-quiet);
+  text-underline-offset: 5px;
+}
+
+/* The word: as wide as the screen, every letter its own control. */
+.c-first {
+  min-height: 100svh;
+  display: grid;
+  grid-template-rows: 1fr auto auto;
+  padding: 72px var(--pad) clamp(32px, 6vh, 64px);
+  overflow: hidden;
+}
+.c-word {
+  align-self: center;
+  display: flex;
+  justify-content: center;
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: clamp(96px, 26vw, 440px);
+  line-height: 0.82;
+  letter-spacing: -0.02em;
+  margin: 0 calc(-1 * var(--pad));
+}
+.c-letter {
+  position: relative;
+  display: inline-block;
+  font-stretch: calc(82% + var(--stretch, 0) * 130%);
+  translate: calc(var(--x, 0) * 0.26em) 0;
+  margin: 0 0.015em;
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+  border-radius: 0.04em;
+}
+.c-letter[data-held],
+.c-letter[data-moving] {
+  cursor: grabbing;
+  z-index: 1;
+  /* Lifted: a paper outline keeps it readable where it slides over its neighbour. */
+  text-shadow: 0.03em 0 0 var(--c-paper), -0.03em 0 0 var(--c-paper);
+}
+/* The click home: a short mustard notch under the letter, then gone. */
+.c-letter::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -0.06em;
+  width: 0.12em;
+  height: 0.035em;
+  translate: -50% 0;
+  background: var(--c-accent);
+  box-shadow: 0 0 0 1px var(--c-ink);
+  opacity: 0;
+}
+.c-letter[data-home]::after {
+  animation: home 0.5s steps(1, end);
+}
+@keyframes home {
+  0% {
+    opacity: 1;
+  }
+}
+.c-promise {
+  justify-self: end;
+  max-width: 30ch;
+  font-size: 17px;
+  margin-top: 28px;
+  text-align: right;
+}
+.c-try {
+  max-width: 46ch;
+  margin-top: 28px;
+  color: var(--muted);
+  font-size: 17px;
+}
+.c-cmd {
+  display: inline-block;
+  min-height: 44px;
+  margin: 2px 0;
+  padding: 10px 8px;
+  border: 0;
+  border-radius: 3px;
+  background: var(--c-quiet);
+  color: var(--c-ink);
+  font-family: var(--mono);
+  font-size: 0.78em;
+  line-height: 1.5;
+  cursor: copy;
+  overflow-wrap: anywhere;
+  text-align: left;
+}
+
+/* Parts: no boxes. Big type, rules and space, set off to one side or the other. */
+.c-part {
+  display: grid;
+  padding: clamp(96px, 18vh, 200px) var(--pad);
+  gap: 20px;
+}
+.c-left {
+  justify-items: start;
+}
+.c-right {
+  justify-items: end;
+  text-align: right;
+}
+.c-part h2 {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: clamp(42px, 7.2vw, 124px);
+  line-height: 0.92;
+  letter-spacing: -0.02em;
+  max-width: 11ch;
+}
+.c-push {
+  display: inline-block;
+  translate: calc(var(--x, 0) * 0.3em) 0;
+  rotate: calc(var(--x, 0) * 4deg);
+  transform: skewX(var(--lean, 0deg));
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.c-note {
+  max-width: 34ch;
+  color: var(--muted);
+}
+.c-object {
+  margin: clamp(24px, 6vh, 64px) 0 8px;
+  width: 100%;
+  display: grid;
+  overflow-x: clip;
+  padding-top: 16px;
+}
+.c-left .c-object {
+  justify-items: start;
+}
+.c-right .c-object {
+  justify-items: end;
+}
+
+/* The number is the slider. */
+#c-number {
+  display: inline-grid;
+  gap: 10px;
+  cursor: ew-resize;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.c-big {
+  font-family: var(--display);
+  font-weight: 300;
+  font-size: clamp(140px, 30vw, 420px);
+  line-height: 0.8;
+  letter-spacing: -0.04em;
+  font-variant-numeric: tabular-nums;
+  font-stretch: 70%;
+  transform: skewX(var(--lean, 0deg));
+}
+.c-rule {
+  position: relative;
+  display: block;
+  height: 1px;
+  background: var(--c-ink);
+}
+.c-rule b {
+  position: absolute;
+  left: calc(var(--value, 50) * 1%);
+  top: -9px;
+  width: 2px;
+  height: 19px;
+  margin-left: -1px;
+  background: var(--c-ink);
+}
+
+/* A ring of numbers, turned like a knob. The top one is the value. */
+#c-ring {
+  position: relative;
+  width: min(420px, 86vw);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.c-digits {
+  position: absolute;
+  inset: 0;
+  rotate: calc(var(--turn, 15) * -10.8deg);
+}
+.c-digits span {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  font-family: var(--display);
+  font-size: clamp(18px, 2.2vw, 26px);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  translate: -50% -50%;
+  transform: rotate(calc(var(--i) * 10.8deg)) translateY(calc(min(420px, 86vw) * -0.44));
+}
+.c-now {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-family: var(--display);
+  font-weight: 300;
+  font-size: clamp(64px, 9vw, 120px);
+  letter-spacing: -0.03em;
+}
+.c-index {
+  position: absolute;
+  left: 50%;
+  top: -14px;
+  width: 1px;
+  height: 22px;
+  background: var(--c-ink);
+}
+
+/* Hours: one face, the middle row at full size, the others smaller and lighter. */
+#c-hours {
+  position: relative;
+  width: min(560px, 100%);
+  height: 280px;
+  overflow: hidden;
+  cursor: grab;
+  border-top: 1px solid var(--c-ink);
+  border-bottom: 1px solid var(--c-ink);
+  user-select: none;
+  -webkit-user-select: none;
+}
+#c-hours span {
+  position: absolute;
+  left: 0;
+  top: 112px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  font-family: var(--display);
+  font-size: 56px;
+  font-weight: calc(600 - min(1, max(var(--y, 0), -1 * var(--y, 0))) * 350);
+  font-stretch: calc(120% - min(1, max(var(--y, 0), -1 * var(--y, 0))) * 40%);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  color: color-mix(in srgb, var(--c-ink) calc(100% - min(2, max(var(--y, 0), -1 * var(--y, 0))) * 22%), var(--c-paper));
+  translate: 0 calc(var(--y, 0) * 56px);
+}
+
+/* A page of words that rests at three heights. */
+#c-sheet {
+  position: relative;
+  width: min(380px, 100%);
+  height: 460px;
+  overflow: hidden;
+  border-bottom: 1px solid var(--c-ink);
+  text-align: left;
+}
+.c-under {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-family: var(--display);
+  font-size: 34px;
+  font-weight: 300;
+  line-height: 1.25;
+  color: color-mix(in srgb, var(--c-ink) 70%, var(--c-paper));
+}
+.c-page {
+  position: absolute;
+  inset: 0;
+  background: var(--c-paper);
+  border-top: 1px solid var(--c-ink);
+  translate: 0 calc((1 - var(--h, 0.22)) * 100%);
+}
+.c-handle {
+  min-height: 56px;
+  display: flex;
+  align-items: center;
+  font-family: var(--display);
+  font-size: 26px;
+  font-weight: 600;
+  cursor: grab;
+}
+.c-page p:not(.c-handle) {
+  color: var(--muted);
+}
+
+/* The code, folded away under each part. */
+.c-code {
+  width: min(640px, 100%);
+  text-align: left;
+}
+.c-code summary {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-color: var(--c-quiet);
+  text-underline-offset: 5px;
+}
+.c-code pre {
+  margin: 8px 0 0;
+  padding: 18px 20px;
+  border-radius: 3px;
+  background: var(--c-ink);
+  color: var(--c-paper);
+  font-size: 12.5px;
+  line-height: 1.7;
+  overflow-x: auto;
+}
+
+.c-end {
+  padding: clamp(96px, 18vh, 200px) var(--pad) 64px;
+  border-top: 1px solid var(--c-ink);
+}
+.c-last {
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: clamp(30px, 4.4vw, 64px);
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+  max-width: 22ch;
+}
+.c-last .c-cmd {
+  font-size: 0.42em;
+  vertical-align: middle;
+}
+.c-last a {
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.12em;
+}
+.c-sign {
+  margin-top: 48px;
+  color: var(--muted);
+  font-size: 15px;
+}
+
+@media (max-width: 700px) {
+  .c-first {
+    min-height: 0;
+    grid-template-rows: auto auto auto;
+    padding-top: 120px;
+  }
+  .c-word {
+    font-size: 31vw;
+    margin-bottom: 24px;
+  }
+  .c-right {
+    justify-items: start;
+    text-align: left;
+  }
+  .c-right .c-object {
+    justify-items: start;
+  }
+  .c-promise {
+    justify-self: start;
+    text-align: left;
+  }
+}

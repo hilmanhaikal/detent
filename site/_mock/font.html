@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="dark" />
+    <title>Detent Machined specimen</title>
+    <style>
+      @font-face {
+        font-family: 'Detent Machined';
+        src: url('/@fs/Users/hilmanhaikal/Documents/GitHub/detent/font/dist/DetentMachined-Bold.woff2') format('woff2');
+        font-weight: 700;
+        font-style: normal;
+        font-display: block;
+      }
+      :root {
+        --ground: #11151c;
+        --panel: #212d40;
+        --ink: #ece6e1;
+        --muted: #a9a4ab;
+        --accent: #d66853;
+        --line: color-mix(in srgb, var(--muted) 22%, transparent);
+        --face: 'Detent Machined', system-ui, sans-serif;
+        --ui: system-ui, -apple-system, 'Segoe UI', sans-serif;
+        --mono: ui-monospace, 'SF Mono', Menlo, monospace;
+        --gutter: clamp(16px, 4vw, 56px);
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--ground);
+        color: var(--ink);
+        font-family: var(--ui);
+        font-size: 15px;
+        line-height: 1.5;
+        overflow-x: clip;
+        -webkit-font-smoothing: antialiased;
+      }
+      main {
+        max-width: 1320px;
+        margin: 0 auto;
+        padding: 40px var(--gutter) 96px;
+      }
+      header {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 8px 24px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid var(--line);
+        color: var(--muted);
+        font-family: var(--mono);
+        font-size: 13px;
+      }
+      header b {
+        color: var(--ink);
+        font-weight: 500;
+      }
+      section {
+        padding: 48px 0;
+        border-bottom: 1px solid var(--line);
+      }
+      .label {
+        margin: 0 0 20px;
+        color: var(--muted);
+        font-family: var(--mono);
+        font-size: 13px;
+      }
+      .face {
+        font-family: var(--face);
+        font-weight: 700;
+      }
+      .hero {
+        margin: 0;
+        font-size: 88px;
+        line-height: 1;
+        letter-spacing: -0.005em;
+        overflow-wrap: anywhere;
+      }
+      .mid {
+        margin: 24px 0 0;
+        font-size: 40px;
+        line-height: 1.1;
+      }
+      .hero .tick {
+        color: var(--accent);
+      }
+      .chars {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(76px, 1fr));
+        gap: 1px;
+        background: var(--line);
+        border: 1px solid var(--line);
+      }
+      .chars span {
+        display: grid;
+        place-items: center;
+        aspect-ratio: 1;
+        background: var(--ground);
+        font-size: 44px;
+        line-height: 1;
+      }
+      .readout {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+      .readout div {
+        flex: 1 1 240px;
+        padding: 20px 22px 18px;
+        background: var(--panel);
+        border-radius: 10px;
+      }
+      .readout p {
+        margin: 0;
+        font-size: 64px;
+        line-height: 1;
+      }
+      .readout small {
+        display: block;
+        margin-top: 10px;
+        color: var(--muted);
+        font-family: var(--mono);
+        font-size: 12px;
+      }
+      .stack p {
+        margin: 0;
+        font-size: 64px;
+        line-height: 1.05;
+        width: max-content;
+        border-right: 2px solid var(--accent);
+        padding-right: 4px;
+      }
+      .waterfall p {
+        margin: 0 0 6px;
+        line-height: 1.1;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: clip;
+      }
+      .waterfall i {
+        display: inline-block;
+        width: 52px;
+        color: var(--muted);
+        font-family: var(--mono);
+        font-size: 12px;
+        font-style: normal;
+        vertical-align: middle;
+      }
+      .pairs {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 12px;
+      }
+      .pairs div {
+        padding: 14px 16px 12px;
+        background: var(--panel);
+        border-radius: 10px;
+      }
+      .pairs p {
+        margin: 0;
+        font-size: 56px;
+        line-height: 1;
+      }
+      .pairs small {
+        color: var(--muted);
+        font-family: var(--mono);
+        font-size: 12px;
+      }
+      .off {
+        font-kerning: none;
+        font-feature-settings: 'kern' 0;
+        opacity: 0.45;
+      }
+      .text p.face {
+        margin: 0 0 12px;
+        font-size: 32px;
+        line-height: 1.2;
+        max-width: 26ch;
+      }
+      @media (max-width: 640px) {
+        .hero {
+          font-size: 56px;
+        }
+        .mid {
+          font-size: 32px;
+        }
+        .readout p,
+        .stack p {
+          font-size: 48px;
+        }
+        .chars {
+          grid-template-columns: repeat(auto-fill, minmax(56px, 1fr));
+        }
+        .chars span {
+          font-size: 34px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header>
+        <span><b>Detent Machined</b> Bold 700, v0.1</span>
+        <span>SIL Open Font License 1.1</span>
+      </header>
+
+      <section>
+        <p class="label">Headline at 88px and 40px</p>
+        <h1 class="face hero">Controls that click into place.</h1>
+        <p class="face mid">Controls that click into place.</p>
+      </section>
+
+      <section>
+        <p class="label">Figures are tabular: every digit has the same width</p>
+        <div class="readout face">
+          <div><p>0.20 s</p><small>duration</small></div>
+          <div><p>280 ms</p><small>settle</small></div>
+          <div><p>120 cm</p><small>travel</small></div>
+        </div>
+        <div class="stack face" style="margin-top: 28px" aria-label="Digits stacked to show equal width">
+          <p>1111.11</p>
+          <p>8888.88</p>
+          <p>4070.29</p>
+        </div>
+      </section>
+
+      <section>
+        <p class="label">Character set</p>
+        <div class="chars face" id="chars"></div>
+      </section>
+
+      <section class="waterfall">
+        <p class="label">Waterfall, 16 to 120px</p>
+        <div id="fall"></div>
+      </section>
+
+      <section>
+        <p class="label">Kerning pairs (dim copy: kerning off)</p>
+        <div class="pairs face" id="pairs"></div>
+      </section>
+
+      <section class="text">
+        <p class="label">Headings</p>
+        <p class="face">Snap to the nearest mark, then rest.</p>
+        <p class="face">Pull to refresh, hold to confirm.</p>
+        <p class="face">Every detent is 12.5% of the dial.</p>
+      </section>
+    </main>
+    <script>
+      const set = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.,:;!?\'"-()[]{}/&@#%+=×_*<>'
+      document.getElementById('chars').innerHTML = [...set].map((c) => `<span>${c.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')}</span>`).join('')
+      document.getElementById('fall').innerHTML = [16, 20, 24, 32, 40, 48, 64, 80, 96, 120]
+        .map((s) => `<p><i>${s}px</i><span class="face" style="font-size:${s}px">Controls that click into place. 0.20 s</span></p>`)
+        .join('')
+      const pairs = ['AV', 'AT', 'LT', 'To', 'Ty', 'Va', 'Yo', 'P.', 'F.', 'r.', 'Wa', 'Te', 'LY', 'y.', 'Ky', '"A']
+      document.getElementById('pairs').innerHTML = pairs.map((p) => `<div><p>${p}</p><p class="off">${p}</p><small>${p}</small></div>`).join('')
+    </script>
+  </body>
+</html>
