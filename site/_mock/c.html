@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light" />
+    <title>detent mockup c: living letters</title>
+    <meta name="description" content="A tiny JavaScript engine that makes sliders, pickers and sheets feel like native apps: magnetic, calm, and accessible by default." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Anybody:wdth,wght@50..150,100..900&family=Schibsted+Grotesk:wght@400..700&family=Martian+Mono:wght@400&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../shared/base.css" />
+    <link rel="stylesheet" href="./c.css" />
+  </head>
+  <body>
+    <nav class="c-top" aria-label="Main">
+      <a href="../docs/">Docs</a><a href="https://github.com/hilmanhaikal/detent">GitHub</a><a href="https://www.npmjs.com/package/@hlmnhkl/detent">npm</a>
+    </nav>
+    <main>
+      <section class="c-first" id="top" data-mark="strong">
+        <h1 class="vh">detent</h1>
+        <div class="c-word" role="group" aria-label="The word detent. Each letter is a control: drag it sideways, or use the arrow keys.">detent</div>
+        <p class="c-promise">A tiny JavaScript engine that makes sliders, pickers and sheets feel like native apps: magnetic, calm, and accessible by default.</p>
+        <p class="c-try">Pull a letter. It stretches, finds a notch, and clicks home when you let it go near one. To keep the feeling, run <button type="button" class="c-cmd" data-copy="npm install @hlmnhkl/detent">npm install @hlmnhkl/detent</button> in your project.</p>
+      </section>
+
+      <section class="c-part c-left" id="number" data-mark>
+        <h2 data-push>The number is the slider</h2>
+        <p class="c-note">Drag the number sideways. Every ten is a step, and fifty pulls a little harder, so it is easy to hit.</p>
+        <div class="c-object" data-run="number.js">
+          <div id="c-number" aria-label="Volume"><span class="c-big">50</span><i class="c-rule"><b></b></i></div>
+        </div>
+        <details class="c-code"><summary>See the code</summary><pre data-src="number.js"></pre></details>
+      </section>
+
+      <section class="c-part c-right" id="ring" data-mark>
+        <h2 data-push>A ring you turn</h2>
+        <p class="c-note">Turn it like a knob. Ten, fifteen and twenty are the usual tips, so they catch first.</p>
+        <div class="c-object" data-run="ring.js">
+          <div id="c-ring" aria-label="Tip"><div class="c-digits" aria-hidden="true"></div><span class="c-now" aria-hidden="true">15%</span><i class="c-index" aria-hidden="true"></i></div>
+        </div>
+        <details class="c-code"><summary>See the code</summary><pre data-src="ring.js"></pre></details>
+      </section>
+
+      <section class="c-part c-left c-wide" id="hours" data-mark>
+        <h2 data-push>Hours that go round</h2>
+        <p class="c-note">Flick up or down. It glides, slows, and stops on an hour, never between two.</p>
+        <div class="c-object" data-run="hours.js">
+          <div id="c-hours" aria-label="Alarm hour"><span></span><span></span><span></span><span></span><span></span></div>
+        </div>
+        <details class="c-code"><summary>See the code</summary><pre data-src="hours.js"></pre></details>
+      </section>
+
+      <section class="c-part c-right" id="sheet" data-mark>
+        <h2 data-push>A page of words that rests</h2>
+        <p class="c-note">Pull the first line up, or tap it. It rests at a peek, a half or the full height.</p>
+        <div class="c-object" data-run="sheet.js">
+          <div id="c-sheet">
+            <ol class="c-under" aria-hidden="true"><li>Chicken rice</li><li>Iced lemon tea</li><li>Roti canai</li><li>Teh tarik</li></ol>
+            <div class="c-page"><p class="c-handle" aria-label="Order sheet height">Your rider is 6 min away</p><p>2 chicken rice, 1 iced lemon tea. Total RM 29.30.</p></div>
+          </div>
+        </div>
+        <details class="c-code"><summary>See the code</summary><pre data-src="sheet.js"></pre></details>
+      </section>
+
+      <section class="c-end" id="end" data-mark="strong">
+        <p class="c-last">Make every control click into place. Start with <button type="button" class="c-cmd" data-copy="npm install @hlmnhkl/detent">npm install @hlmnhkl/detent</button>, then read the <a href="../docs/">docs</a>.</p>
+        <p class="c-sign">Free and open, MIT. Made by Hilman Haikal. It powers <a href="https://ui.hlmnhkl.my">hlmnhkl/ui</a>.</p>
+      </section>
+    </main>
+    <script type="module" src="./c.ts"></script>
+  </body>
+</html>

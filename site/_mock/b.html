@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light" />
+    <title>detent mockup b: Editorial</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,300..500&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../shared/base.css" />
+    <link rel="stylesheet" href="./mock-b.css" />
+  </head>
+  <body class="mock-b">
+    <header class="m-top">
+      <a class="m-brand" href="#top">detent <span>v0.1.0</span></a>
+      <nav class="m-links" aria-label="Main"><a href="#demo">Docs</a><a href="#demo">Examples</a><a href="https://github.com/hilmanhaikal/detent">GitHub</a><a href="https://www.npmjs.com/package/@hlmnhkl/detent">npm</a></nav>
+      <button class="m-chip" type="button" data-copy="npm i @hlmnhkl/detent" aria-label="Copy the install command"><code>npm i @hlmnhkl/detent</code></button>
+    </header>
+    <nav class="m-page-ruler" aria-label="Sections"><div class="m-scale"></div><i class="m-index" aria-hidden="true"></i></nav>
+    <main>
+      <section class="m-hero" id="top" data-mark="strong" data-name="Top">
+        <div class="m-hero-text">
+          <h1>Controls that click into place.</h1>
+          <p class="m-promise">A tiny JavaScript engine that makes sliders, pickers and sheets feel like native apps: magnetic, calm, and accessible by default.</p>
+          <div class="m-install"><code>npm install @hlmnhkl/detent</code><button type="button" data-copy="npm install @hlmnhkl/detent">Copy</button></div>
+        </div>
+        <div class="m-ruler-wrap">
+          <div class="m-ruler" aria-label="Ruler"><div class="m-track" aria-hidden="true"></div><i class="m-pin" aria-hidden="true"></i></div>
+          <p class="m-caption"><span>Value</span> <b class="m-readout">50.0</b> <span>Drag, flick or use the arrow keys. 0, 50 and 100 pull harder.</span></p>
+        </div>
+      </section>
+
+      <section class="m-section" id="demo" data-mark data-name="detent()">
+        <div class="m-head">
+          <p class="m-label">Docs, detent()</p>
+          <h2>One value under a hand</h2>
+          <p>A slider, a dial and a picker wheel are the same thing. Only the path the hand takes changes. Each demo runs the file it shows.</p>
+        </div>
+        <div class="m-body">
+          <div class="m-tabs" role="tablist" aria-label="Demos" data-slide><button type="button" role="tab" id="tab-slider" aria-controls="panel-slider" aria-selected="true">Slider</button><button type="button" role="tab" id="tab-dial" aria-controls="panel-dial" aria-selected="false">Dial</button><button type="button" role="tab" id="tab-wheel" aria-controls="panel-wheel" aria-selected="false">Wheel</button></div>
+          <div class="m-demo" role="tabpanel" id="panel-slider" aria-labelledby="tab-slider" data-run="demos/slider.js">
+            <div class="m-bar"><span class="m-file">demos/slider.js</span><div class="m-view" data-view data-slide role="group" aria-label="Show"><button type="button" data-v="preview" aria-pressed="true">Preview</button><button type="button" data-v="code" aria-pressed="false">Code</button></div></div>
+            <div class="m-stage"><div class="d-slider" id="demo-slider" aria-label="Volume"><div class="d-fill"></div><div class="d-thumb"></div></div><output id="demo-slider-out" class="d-out">0%</output></div>
+            <pre class="m-code" data-src="demos/slider.js"></pre>
+          </div>
+          <div class="m-demo" role="tabpanel" id="panel-dial" aria-labelledby="tab-dial" data-run="demos/dial.js" hidden>
+            <div class="m-bar"><span class="m-file">demos/dial.js</span><div class="m-view" data-view data-slide role="group" aria-label="Show"><button type="button" data-v="preview" aria-pressed="true">Preview</button><button type="button" data-v="code" aria-pressed="false">Code</button></div></div>
+            <div class="m-stage"><div class="d-dial" id="demo-dial" aria-label="Tip"><div class="d-knurl"></div><div class="d-cap"><b></b></div></div><output id="demo-dial-out" class="d-out">15%</output></div>
+            <pre class="m-code" data-src="demos/dial.js"></pre>
+          </div>
+          <div class="m-demo" role="tabpanel" id="panel-wheel" aria-labelledby="tab-wheel" data-run="demos/wheel.js" hidden>
+            <div class="m-bar"><span class="m-file">demos/wheel.js</span><div class="m-view" data-view data-slide role="group" aria-label="Show"><button type="button" data-v="preview" aria-pressed="true">Preview</button><button type="button" data-v="code" aria-pressed="false">Code</button></div></div>
+            <div class="m-stage"><div class="d-wheel" id="demo-wheel" aria-label="Alarm hour"><div class="d-band"></div><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div></div>
+            <pre class="m-code" data-src="demos/wheel.js"></pre>
+          </div>
+        </div>
+      </section>
+
+      <section class="m-section" id="options" data-mark data-name="Options">
+        <div class="m-head">
+          <p class="m-label">Reference</p>
+          <h2>Options</h2>
+          <p>Read from the types in src/detent.ts when the page is built.</p>
+        </div>
+        <div class="m-body"><!-- @props src/detent.ts Base --></div>
+      </section>
+
+      <section class="m-section m-end" id="end" data-mark data-name="Get started">
+        <div class="m-head">
+          <p class="m-label">Get started</p>
+          <h2>Click into place.</h2>
+        </div>
+        <div class="m-body">
+          <div class="m-install"><code>npm install @hlmnhkl/detent</code><button type="button" data-copy="npm install @hlmnhkl/detent">Copy</button></div>
+          <p class="m-small">MIT licence. Made by Hilman Haikal. It powers hlmnhkl/ui.</p>
+        </div>
+      </section>
+    </main>
+    <script type="module" src="./mock.ts"></script>
+  </body>
+</html>

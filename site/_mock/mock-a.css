@@ -1,0 +1,610 @@
+/* Mockup A, Instrument: hairlines, small radii, mono for numbers and labels, mustard only as a signal. */
+:root {
+  --c-paper: #e8eddf;
+  --c-quiet: #cfdbd5;
+  --c-ink: #242423;
+  --c-dark: #333533;
+  --c-accent: #f5cb5c;
+  --c-muted: color-mix(in srgb, var(--c-ink) 78%, var(--c-paper));
+  --c-muted-dark: color-mix(in srgb, var(--c-paper) 72%, var(--c-ink));
+  --bg: var(--c-paper);
+  --ink: var(--c-ink);
+  --muted: var(--c-muted);
+  --line: var(--c-quiet);
+  --surface: color-mix(in srgb, var(--c-quiet) 35%, var(--c-paper));
+  --focus: var(--c-ink);
+  --radius: 4px;
+  --font: 'Geist', system-ui, sans-serif;
+  --mono: 'Geist Mono', ui-monospace, monospace;
+  --pad: clamp(16px, 4vw, 56px);
+  --rail: 0px;
+  color-scheme: light;
+}
+body {
+  font-size: 16px;
+  letter-spacing: -0.005em;
+}
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+html {
+  scroll-padding-top: 56px;
+}
+
+/* Header */
+.m-top {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 var(--pad);
+  background: var(--c-paper);
+  border-bottom: 1px solid var(--c-quiet);
+}
+.m-brand {
+  font-family: var(--mono);
+  font-weight: 500;
+  font-size: 15px;
+  text-decoration: none;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.m-brand span {
+  color: var(--muted);
+  font-weight: 400;
+  font-size: 12px;
+}
+.m-links {
+  margin-left: auto;
+  display: flex;
+}
+.m-links a {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  padding: 0 12px;
+  font-size: 14px;
+  color: var(--muted);
+  text-decoration: none;
+}
+.m-links a:hover {
+  color: var(--ink);
+}
+.m-chip {
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+.m-chip code {
+  display: inline-block;
+  padding: 6px 10px;
+  font-size: 12.5px;
+  border: 1px solid var(--c-quiet);
+  border-radius: 4px;
+  color: var(--ink);
+}
+
+/* The page ruler down the left edge: engraved ticks, the section numbers, one mustard index line. */
+.m-page-ruler {
+  position: fixed;
+  left: 0;
+  top: 56px;
+  bottom: 0;
+  width: 56px;
+  z-index: 10;
+  border-right: 1px solid var(--c-quiet);
+  background: var(--c-paper);
+}
+.m-scale {
+  position: absolute;
+  inset: 28px 0;
+}
+.m-scale i {
+  position: absolute;
+  right: 0;
+  top: calc(var(--t) * 100%);
+  width: 8px;
+  height: 1px;
+  background: color-mix(in srgb, var(--c-ink) 45%, var(--c-paper));
+  box-shadow: 0 1px 0 var(--c-quiet);
+}
+.m-scale i.five {
+  width: 14px;
+}
+.m-scale a {
+  position: absolute;
+  left: 0;
+  top: calc(var(--t) * 100%);
+  width: 40px;
+  height: 44px;
+  translate: 0 -50%;
+  display: grid;
+  place-items: center;
+  text-decoration: none;
+}
+.m-scale a span {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  color: color-mix(in srgb, var(--c-ink) calc(70% + var(--p, 0) * 30%), var(--c-paper));
+  font-weight: calc(400 + var(--p, 0) * 200);
+  transform: scale(calc(1 + var(--p, 0) * 0.45));
+}
+.m-index {
+  position: absolute;
+  right: -1px;
+  top: calc(28px + var(--at, 0) * (100% - 56px));
+  width: 22px;
+  height: 2px;
+  margin-top: -1px;
+  background: var(--c-accent);
+  box-shadow: 0 0 0 0.5px var(--c-ink);
+}
+
+main {
+  padding-left: 56px;
+}
+
+/* Hero: one dark band, the ruler running across it. */
+.m-hero {
+  background: var(--c-ink);
+  color: var(--c-paper);
+  --focus: var(--c-accent);
+  padding: clamp(56px, 8vw, 112px) var(--pad) 40px;
+  display: grid;
+  gap: 56px;
+}
+.m-hero-text {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  gap: 24px 64px;
+  align-items: end;
+}
+.m-hero h1 {
+  font-size: clamp(40px, 5.4vw, 76px);
+  line-height: 1;
+  letter-spacing: -0.035em;
+  font-weight: 500;
+  max-width: 13ch;
+}
+.m-promise {
+  color: var(--c-muted-dark);
+  font-size: 17px;
+  max-width: 46ch;
+}
+.m-install {
+  grid-column: 2;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 6px 6px 6px 14px;
+  border: 1px solid color-mix(in srgb, var(--c-paper) 22%, var(--c-ink));
+  border-radius: 4px;
+  max-width: 100%;
+  justify-self: start;
+}
+.m-install code {
+  font-size: 13.5px;
+  white-space: nowrap;
+  overflow-x: auto;
+  min-width: 0;
+}
+.m-install button {
+  flex: none;
+  min-height: 44px;
+  padding: 0 14px;
+  border-radius: 3px;
+  border: 1px solid color-mix(in srgb, var(--c-paper) 35%, var(--c-ink));
+  background: transparent;
+  color: inherit;
+  font-size: 14px;
+  cursor: pointer;
+}
+.m-install button:hover {
+  background: var(--c-dark);
+}
+
+.m-ruler-wrap {
+  margin: 0 calc(-1 * var(--pad));
+}
+.m-ruler {
+  --unit: 12px;
+  position: relative;
+  height: 112px;
+  overflow: hidden;
+  cursor: grab;
+  border-top: 1px solid var(--c-dark);
+  border-bottom: 1px solid var(--c-dark);
+}
+.m-ruler:focus-visible {
+  outline-offset: -3px;
+}
+.m-track {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  translate: calc(var(--v, 50) * var(--unit) * -1) 0;
+}
+.m-track i {
+  position: absolute;
+  top: 0;
+  left: calc(var(--x) * var(--unit));
+  width: 1px;
+  height: 14px;
+  background: color-mix(in srgb, var(--c-paper) 38%, var(--c-ink));
+  box-shadow: 1px 0 0 var(--c-dark);
+}
+.m-track i.ten {
+  height: 26px;
+  background: color-mix(in srgb, var(--c-paper) 70%, var(--c-ink));
+}
+.m-track i.strong {
+  height: 38px;
+}
+.m-track span {
+  position: absolute;
+  top: 44px;
+  left: calc(var(--x) * var(--unit));
+  translate: -50% 0;
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+  font-size: calc(13px + var(--p, 0) * 15px);
+  font-weight: calc(300 + var(--p, 0) * 300);
+  color: color-mix(in srgb, var(--c-paper) calc(55% + var(--p, 0) * 45%), var(--c-ink));
+}
+.m-pin {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 1px;
+  height: 100%;
+  background: var(--c-accent);
+}
+.m-caption {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  padding: 14px var(--pad) 0;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--c-muted-dark);
+}
+.m-caption b {
+  color: var(--c-paper);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Sections: a 12 column grid with a hairline on top. */
+.m-section {
+  display: grid;
+  grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+  gap: 32px 56px;
+  padding: clamp(56px, 8vw, 112px) var(--pad);
+  border-top: 1px solid var(--c-quiet);
+}
+.m-head {
+  align-self: start;
+  position: sticky;
+  top: 88px;
+}
+.m-label {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 12px;
+}
+.m-section h2 {
+  font-size: 30px;
+  letter-spacing: -0.025em;
+  line-height: 1.1;
+  font-weight: 500;
+  margin-bottom: 12px;
+}
+.m-head p:not(.m-label) {
+  color: var(--muted);
+  font-size: 15px;
+  max-width: 38ch;
+}
+.m-body {
+  min-width: 0;
+}
+
+/* Segmented controls: the chosen item is filled by a block that slides there and stops. */
+.m-tabs,
+.m-view {
+  position: relative;
+  display: inline-flex;
+  border: 1px solid var(--c-quiet);
+  border-radius: 6px;
+  padding: 2px;
+  isolation: isolate;
+}
+.m-tabs button,
+.m-view button {
+  position: relative;
+  z-index: 1;
+  min-height: 44px;
+  padding: 0 16px;
+  border: 0;
+  background: none;
+  font-size: 14px;
+  color: var(--muted);
+  cursor: pointer;
+  transition: color 0.15s;
+}
+.m-tabs [aria-selected='true'] {
+  color: var(--c-paper);
+}
+.m-view button {
+  min-height: 44px;
+  padding: 0 10px;
+  font-size: 13px;
+}
+.m-view [aria-pressed='true'] {
+  color: var(--ink);
+}
+.m-slide {
+  position: absolute;
+  left: 0;
+  top: 2px;
+  bottom: 2px;
+  z-index: 0;
+  border-radius: 4px;
+  background: var(--c-ink);
+}
+.m-view .m-slide {
+  background: var(--c-quiet);
+}
+.m-tabs {
+  margin-bottom: 16px;
+}
+.m-tabs button {
+  min-height: 44px;
+}
+
+.m-demo {
+  border: 1px solid var(--c-quiet);
+  border-radius: 6px;
+  overflow: hidden;
+  background: var(--c-paper);
+}
+.m-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 4px 4px 4px 14px;
+  border-bottom: 1px solid var(--c-quiet);
+}
+.m-file {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--muted);
+}
+/* The stage: a machined plate with a soft shadow under it. */
+.m-stage {
+  display: grid;
+  place-items: center;
+  gap: 16px;
+  min-height: 300px;
+  padding: 40px 20px;
+  margin: 20px;
+  border-radius: 4px;
+  background: var(--surface);
+  box-shadow: inset 0 1px 0 var(--c-paper), 0 1px 0 var(--c-quiet), 0 14px 22px -18px color-mix(in srgb, var(--c-ink) 55%, transparent);
+}
+.m-code {
+  display: none;
+  margin: 0;
+  background: var(--c-ink);
+  color: var(--c-paper);
+  padding: 18px 20px;
+  font-size: 13px;
+  line-height: 1.65;
+  overflow-x: auto;
+  min-height: 300px;
+}
+.m-demo[data-code] .m-stage {
+  display: none;
+}
+.m-demo[data-code] .m-code {
+  display: block;
+}
+.d-out {
+  font-family: var(--mono);
+  font-size: 20px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Slider: a 2px rail and a machined thumb with one signal line. */
+.d-slider {
+  position: relative;
+  width: min(420px, calc(100% - 40px));
+  height: 44px;
+  cursor: grab;
+}
+.d-slider::before,
+.d-fill {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 21px;
+  height: 2px;
+  background: color-mix(in srgb, var(--c-ink) 22%, var(--c-paper));
+}
+.d-fill {
+  right: auto;
+  width: calc(var(--value, 0) * 1%);
+  background: var(--c-ink);
+}
+.d-thumb {
+  position: absolute;
+  left: calc(var(--value, 0) * 1%);
+  top: 22px;
+  width: 16px;
+  height: 28px;
+  translate: -50% -50%;
+  border-radius: 3px;
+  background: var(--c-ink);
+  box-shadow: 0 1px 0 var(--c-paper) inset, 0 4px 8px -4px color-mix(in srgb, var(--c-ink) 60%, transparent);
+}
+.d-thumb::after {
+  content: '';
+  position: absolute;
+  left: 7px;
+  top: 6px;
+  bottom: 6px;
+  width: 2px;
+  background: var(--c-accent);
+}
+
+/* Dial: a fine knurled edge and a dark cap with one signal line. */
+.d-dial {
+  position: relative;
+  width: 180px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  cursor: grab;
+}
+.d-knurl {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: repeating-conic-gradient(var(--c-ink) 0 0.8deg, var(--c-dark) 0.8deg 3deg);
+  box-shadow: 0 12px 20px -14px color-mix(in srgb, var(--c-ink) 70%, transparent);
+}
+.d-cap {
+  position: absolute;
+  inset: 9%;
+  border-radius: 50%;
+  background: var(--c-dark);
+  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--c-paper) 25%, var(--c-dark)), 0 0 0 1px var(--c-ink);
+  rotate: 25deg;
+}
+.d-cap b {
+  position: absolute;
+  left: 50%;
+  top: 7%;
+  width: 2px;
+  height: 22%;
+  margin-left: -1px;
+  background: var(--c-accent);
+}
+
+/* Wheel: hairlines mark the chosen row; every row uses the same face. */
+.d-wheel {
+  position: relative;
+  width: min(220px, 100%);
+  height: 220px;
+  overflow: hidden;
+  cursor: grab;
+}
+.d-band {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 88px;
+  height: 44px;
+  border-top: 1px solid var(--c-ink);
+  border-bottom: 1px solid var(--c-ink);
+}
+.d-wheel span {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 88px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  font-family: var(--mono);
+  font-size: 20px;
+  font-variant-numeric: tabular-nums;
+  translate: 0 calc(var(--y, 0) * 44px);
+  opacity: calc(1 - min(1, max(var(--y, 0), -1 * var(--y, 0)) * 0.3));
+}
+
+/* Table: hairline rows, mono names. */
+.table {
+  overflow-x: auto;
+  border-top: 1px solid var(--c-ink);
+}
+.table table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+.table th,
+.table td {
+  text-align: left;
+  vertical-align: top;
+  padding: 12px 12px 12px 0;
+  border-bottom: 1px solid var(--c-quiet);
+}
+.table th {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--muted);
+}
+.table td:first-child code {
+  font-family: var(--mono);
+  font-weight: 500;
+}
+.table td:nth-child(2) code {
+  font-family: var(--mono);
+  color: var(--muted);
+  font-size: 13px;
+}
+.m-end .m-install {
+  border-color: var(--c-quiet);
+}
+.m-end .m-install button {
+  border-color: var(--c-ink);
+}
+.m-end .m-install button:hover {
+  background: var(--surface);
+}
+.m-small {
+  margin-top: 16px;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+@media (max-width: 1099px) {
+  .m-page-ruler {
+    display: none;
+  }
+  main {
+    padding-left: 0;
+  }
+}
+@media (max-width: 860px) {
+  .m-links,
+  .m-chip {
+    display: none;
+  }
+  .m-hero-text,
+  .m-section {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .m-install {
+    grid-column: 1;
+  }
+  .m-head {
+    position: static;
+  }
+  .m-stage {
+    margin: 12px;
+  }
+}
