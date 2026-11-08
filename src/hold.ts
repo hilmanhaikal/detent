@@ -1,3 +1,4 @@
+import { frame } from './frame.js'
 import { hand } from './hand.js'
 import { haptics, type Haptics } from './haptics.js'
 import { reduced, type Motion } from './motion.js'
@@ -70,7 +71,7 @@ export function detentHold(el: HTMLElement, options: HoldOptions = {}): Hold {
 
   let p = 0
   let done = false
-  let raf = 0
+  let raf = () => {}
   let tapTimer = 0
   let press: { t0: number; key?: string } | null = null
 
@@ -83,7 +84,7 @@ export function detentHold(el: HTMLElement, options: HoldOptions = {}): Hold {
   }
 
   const finish = () => {
-    cancelAnimationFrame(raf)
+    raf()
     press = null
     el.removeAttribute('data-held')
     paint(1)
@@ -95,21 +96,21 @@ export function detentHold(el: HTMLElement, options: HoldOptions = {}): Hold {
   }
 
   const run = () => {
-    cancelAnimationFrame(raf)
+    raf()
     let last = performance.now()
     const step = (now: number) => {
       const next = Math.min(1, p + Math.max(0, now - last) / (o.time ?? 1500))
       last = now
       paint(next)
       if (next >= 1) return finish()
-      raf = requestAnimationFrame(step)
+      raf = frame(step)
     }
-    raf = requestAnimationFrame(step)
+    raf = frame(step)
   }
 
   // Back fast and easing out: a rubber band, not a clock.
   const rewind = () => {
-    cancelAnimationFrame(raf)
+    raf()
     const from = p
     const length = reduced(o.motion) ? 0 : (o.rewind ?? 140)
     if (!length || !from) return paint(0)
@@ -117,9 +118,9 @@ export function detentHold(el: HTMLElement, options: HoldOptions = {}): Hold {
     const step = (now: number) => {
       const t = Math.min(1, (now - t0) / length)
       paint(from * Math.pow(1 - t, 3))
-      if (t < 1) raf = requestAnimationFrame(step)
+      if (t < 1) raf = frame(step)
     }
-    raf = requestAnimationFrame(step)
+    raf = frame(step)
   }
 
   const tapped = () => {
@@ -210,7 +211,7 @@ export function detentHold(el: HTMLElement, options: HoldOptions = {}): Hold {
     if (signal.aborted) return
     ac.abort()
     buzz.off()
-    cancelAnimationFrame(raf)
+    raf()
     clearTimeout(tapTimer)
     press = null
     for (const n of ['data-held', 'data-done']) el.removeAttribute(n)
@@ -228,7 +229,7 @@ export function detentHold(el: HTMLElement, options: HoldOptions = {}): Hold {
     },
     reset() {
       if (signal.aborted) return
-      cancelAnimationFrame(raf)
+      raf()
       clearTimeout(tapTimer)
       tapTimer = 0
       press = null

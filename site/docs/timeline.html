@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light" />
+    <meta name="theme-color" content="#e8eddf" />
+    <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
+    <title>timeline() · detent docs</title>
+    <meta property="og:description" content="A tiny JavaScript engine that makes sliders, pickers and sheets feel like native apps: magnetic, calm, and accessible by default." />
+    <meta name="description" content="Many animations on one clock. Play, reverse and seek it, and scrub it with a detent that settles on its labels." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@200..800&family=Spline+Sans+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../shared/base.css" />
+    <link rel="stylesheet" href="../home/style.css" />
+    <link rel="stylesheet" href="./docs.css" />
+  </head>
+  <body>
+    <!-- @header -->
+    <div class="docs">
+      <aside class="docs-side"><!-- @sidebar --></aside>
+      <main class="docs-main" id="main">
+        <section data-mark="strong" id="top">
+          <p class="crumb">Docs</p>
+          <h1>timeline()</h1>
+          <p class="lede">Many animations on one clock. Each step starts at its place in time, and the whole can play, pause, reverse and seek. Its labels are detent marks, so a control can scrub it and settle on them.</p>
+        </section>
+        <section data-mark id="demo">
+          <h2 id="demo-h">A sequence</h2>
+          <div class="stage" data-run="demos/sequence.js">
+            <div class="tl-card" id="tl-card"><span class="tl-tick" aria-hidden="true"></span><b>Payment received</b><p>RM 60.50 to Corner Kitchen</p><p>Order 1042, paid by card</p></div>
+            <div class="tl-buttons"><button type="button" class="toggle tl-primary" id="tl-play">Play</button><button type="button" class="toggle" id="tl-back">Reverse</button></div>
+          </div>
+          <figure class="code"><figcaption>demos/sequence.js</figcaption><pre data-src="demos/sequence.js"></pre></figure>
+        </section>
+        <section data-mark id="positions">
+          <h2 id="positions-h">Where a step starts</h2>
+          <p>The third argument of <code>add()</code> places the step. Leave it out and the step starts at the end so far.</p>
+          <div class="table" tabindex="0" role="region" aria-label="Positions"><table><thead><tr><th>Position</th><th>Starts</th></tr></thead><tbody>
+            <tr><td><code>500</code></td><td>At 500 ms from the start.</td></tr>
+            <tr><td><code>'+=200'</code></td><td>200 ms after the end so far, so there is a gap.</td></tr>
+            <tr><td><code>'-=200'</code></td><td>200 ms before the end so far, so it overlaps.</td></tr>
+            <tr><td><code>'&lt;'</code></td><td>With the step added before it.</td></tr>
+            <tr><td><code>'open'</code></td><td>At the label <code>open</code>. A label it does not know yet is made at the end so far.</td></tr>
+          </tbody></table></div>
+          <p>A step with no <code>from</code> starts where the step before it on the same property ends, so seeking anywhere shows the right state. A spring step lasts until it settles, to a 0.5 px rest, so the timeline always has a length.</p>
+        </section>
+        <section data-mark id="scrub">
+          <h2 id="scrub-h">Scrub it with a detent</h2>
+          <p>Only detent does this. <code>marks()</code> gives the labels as detent marks, so a slider can scrub the timeline and settle on a label, never between two. Drag it, flick it, or tab to it and press the arrow keys.</p>
+          <div class="stage" data-run="recipes/tracker.js">
+            <div class="r-route" id="tl-route"><div class="r-line" aria-hidden="true"><i class="r-done"></i><span class="r-run"><b class="r-parcel"></b></span></div><ol><li>Ordered</li><li>Packed</li><li>Shipped</li><li>Out for delivery</li><li>Delivered</li></ol></div>
+            <div class="d-slider" id="tl-scrub" aria-label="Delivery progress"><div class="d-fill"></div><div class="d-thumb"></div></div>
+          </div>
+          <figure class="code"><figcaption>recipes/tracker.js</figcaption><pre data-src="recipes/tracker.js"></pre></figure>
+          <p>The slider says the stop's name, such as "Shipped", because <code>text</code> maps each label time back to its name. The same recipe, with React, is on <a href="recipes.html#tracker">Recipes</a>.</p>
+        </section>
+        <section data-mark id="a11y">
+          <h2 id="a11y-h">Accessible by default</h2>
+          <ul class="rules">
+            <li><b>Reduced motion.</b> <code>play()</code> and <code>reverse()</code> land on the end at once, and every step's <code>onUpdate</code> and <code>onDone</code> still run. <code>seek()</code> still works, so a scrubbing control keeps working with no motion of its own.</li>
+            <li><b>Hidden tabs.</b> Time stops while the tab is hidden and goes on from the same place.</li>
+            <li><b>Never layout.</b> Steps move what <a href="animate.html">animate()</a> moves: transform, opacity and custom properties.</li>
+            <li><b>Keys and screen readers.</b> A timeline has no role. When people control it, give them a real control: a detent slider, as above, or buttons. Keep the final words in the page; the timeline only moves them.</li>
+          </ul>
+        </section>
+        <section data-mark id="options">
+          <h2 id="options-h">Options</h2>
+          <!-- @props src/timeline.ts TimelineOptions -->
+          <p>Each step takes the same options as <a href="animate.html#options">animate()</a>, except <code>motion</code> and <code>signal</code>, which belong to the timeline. A step's <code>delay</code> adds to its position.</p>
+        </section>
+        <section data-mark id="result">
+          <h2 id="result-h">What it gives back</h2>
+          <!-- @api src/timeline.ts Timeline -->
+        </section>
+        <nav class="pager" aria-label="Next and previous"><a href="animate.html" rel="prev"><span>Previous</span>animate()</a><a href="frame.html" rel="next"><span>Next</span>Frame budget</a></nav>
+      </main>
+      <aside class="docs-toc"><!-- @toc --></aside>
+    </div>
+    <!-- @footer -->
+    <script type="module" src="./docs.ts"></script>
+  </body>
+</html>

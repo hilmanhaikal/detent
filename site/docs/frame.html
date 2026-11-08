@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light" />
+    <meta name="theme-color" content="#e8eddf" />
+    <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
+    <title>Frame budget · detent docs</title>
+    <meta property="og:description" content="A tiny JavaScript engine that makes sliders, pickers and sheets feel like native apps: magnetic, calm, and accessible by default." />
+    <meta name="description" content="One shared frame for every detent module. It stops in hidden tabs and eases off on slow phones, and never lands anywhere wrong." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@200..800&family=Spline+Sans+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../shared/base.css" />
+    <link rel="stylesheet" href="../home/style.css" />
+    <link rel="stylesheet" href="./docs.css" />
+  </head>
+  <body>
+    <!-- @header -->
+    <div class="docs">
+      <aside class="docs-side"><!-- @sidebar --></aside>
+      <main class="docs-main" id="main">
+        <section data-mark="strong" id="top">
+          <p class="crumb">Docs</p>
+          <h1>Frame budget</h1>
+          <p class="lede">Every detent module moves on one shared frame: one <code>requestAnimationFrame</code> however much moves. It stops in a hidden tab. When frames run long, as on a low-end phone, it eases off, and every motion still lands exactly where it should.</p>
+        </section>
+        <section data-mark id="demo">
+          <h2 id="demo-h">A busy page</h2>
+          <p>Make the page busy and watch the spring. It draws fewer frames, keeps to the clock and lands on the same place.</p>
+          <div class="stage" data-run="demos/budget.js">
+            <div class="fb-lane" aria-hidden="true"><b class="fb-ball" id="fb-ball"></b></div>
+            <button type="button" class="toggle" id="fb-busy" aria-pressed="false">Make the page busy</button>
+            <p class="d-out small" id="fb-out">Measuring.</p>
+          </div>
+          <figure class="code"><figcaption>demos/budget.js</figcaption><pre data-src="demos/budget.js"></pre></figure>
+        </section>
+        <section data-mark id="rules">
+          <h2 id="rules-h">What it does</h2>
+          <ul class="rules">
+            <li><b>One frame.</b> Controls, page settles, animations and timelines all ask the same frame. Ten things moving cost one <code>requestAnimationFrame</code>, not ten.</li>
+            <li><b>Hidden tabs.</b> Browsers stop frames in a hidden tab, so nothing is drawn there. <code>animate()</code> and <code>timeline()</code> stop their time too and go on from the same place. A control that was settling lands where it was going.</li>
+            <li><b>Stalled frames.</b> If no frame comes for 100 ms while the page is shown (some phones, CI WebKit), a timer stands in, so motion still ends on time.</li>
+            <li><b>Slow phones.</b> It keeps a running average of the time between frames. Past 28 ms a frame the budget is low, and motion is drawn every other frame, which halves the style writes. Below 20 ms it is back to every frame. Two lines, so it does not flip back and forth.</li>
+            <li><b>Never a wrong end.</b> Every motion runs on real elapsed time and writes its end value when it lands. A skipped frame changes how smooth it looks, never where it ends. Your hand is never skipped: a drag follows the pointer events, not the frame.</li>
+          </ul>
+        </section>
+        <section data-mark id="read">
+          <h2 id="read-h">Read it in your app</h2>
+          <pre class="static" data-lang="js"><code>import { frame, frameBudget } from '@hlmnhkl/detent'
+
+frameBudget.low // true when recent frames run long: show fewer effects
+frameBudget.frameMs // the recent time between frames, in ms
+frameBudget.force(true) // a "save power" setting in your app; null measures again
+
+const cancel = frame((now) =&gt; draw(now)) // your own work, on the same shared frame</code></pre>
+          <!-- @exports src/frame.ts -->
+        </section>
+        <nav class="pager" aria-label="Next and previous"><a href="timeline.html" rel="prev"><span>Previous</span>timeline()</a><a href="scene.html" rel="next"><span>Next</span>scrollScene()</a></nav>
+      </main>
+      <aside class="docs-toc"><!-- @toc --></aside>
+    </div>
+    <!-- @footer -->
+    <script type="module" src="./docs.ts"></script>
+  </body>
+</html>

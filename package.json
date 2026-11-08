@@ -20,7 +20,7 @@
   "sideEffects": false,
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "test": "tsc -p tsconfig.json && node --test test/core.test.mjs test/rules.test.mjs test/turn.test.mjs",
+    "test": "tsc -p tsconfig.json && node --test test/core.test.mjs test/rules.test.mjs test/turn.test.mjs test/animate.test.mjs test/frame.test.mjs test/scene.test.mjs test/morph.test.mjs",
     "test:browser": "node test/browser.mjs chromium,firefox",
     "prepublishOnly": "npm run build && node scripts/check-publish.mjs"
   },

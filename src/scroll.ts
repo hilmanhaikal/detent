@@ -2,8 +2,8 @@ import { attract, clamp, nearestMark, springTo, type Mark } from './core.js'
 import { reduced, type Motion } from './motion.js'
 
 export type ScrollOptions = {
-  /** The sections the page rests on, as a selector or a list. data-mark="strong" pulls harder. Default '[data-mark]'. */
-  marks?: string | HTMLElement[]
+  /** The sections the page rests on, as a selector or a list. data-mark="strong" pulls harder. Numbers are scroll positions in px, and a function is read again on each measure, as for `scrollScene().marks`. Default '[data-mark]'. */
+  marks?: string | Rest[] | (() => Rest[])
   /** Space a sticky header covers at the top, in px, or the header itself. */
   offset?: number | HTMLElement
   /** In-page links glide to their section, then focus its heading. Default true. */
@@ -16,8 +16,8 @@ export type ScrollOptions = {
   signal?: AbortSignal
   /** Every frame of a settle or a link glide: where the page is, and where it is going. */
   onInput?: (y: number, to: number) => void
-  /** It came to rest on a section. */
-  onChange?: (index: number, section: HTMLElement) => void
+  /** It came to rest on a section, or on a scroll position given as a number. */
+  onChange?: (index: number, section: Rest) => void
 }
 
 export type ScrollDetent = {
@@ -32,6 +32,8 @@ export type ScrollDetent = {
 }
 
 type Stop = { at: number; strong: boolean; i: number }
+/** A section, or a scroll position in px. */
+export type Rest = HTMLElement | number
 
 /**
  * Magnetic page scroll. When a wheel, trackpad or finger stops, the page settles onto the nearest
@@ -43,10 +45,11 @@ export function detentScroll(options: ScrollOptions = {}): ScrollDetent {
   const ac = new AbortController()
   const signal = ac.signal
   const opts = { signal, passive: true }
-  const sections = typeof o.marks === 'object' ? o.marks : [...document.querySelectorAll<HTMLElement>(o.marks ?? '[data-mark]')]
+  const list = () => (typeof o.marks === 'function' ? o.marks() : typeof o.marks === 'object' ? o.marks : [...document.querySelectorAll<HTMLElement>(o.marks ?? '[data-mark]')])
+  let sections = list()
   const idleWheel = o.idle?.wheel ?? 140
   const idleTouch = o.idle?.touch ?? 160
-  if (!sections.length) return { index: null, go: () => {}, measure: () => {}, destroy: () => {} }
+  if (!sections.length && typeof o.marks !== 'function') return { index: null, go: () => {}, measure: () => {}, destroy: () => {} }
 
   let stops: Stop[] = []
   let H = innerHeight
@@ -54,8 +57,10 @@ export function detentScroll(options: ScrollOptions = {}): ScrollDetent {
   const offset = () => (typeof o.offset === 'number' ? o.offset : (o.offset?.offsetHeight ?? 0))
   function measure() {
     H = innerHeight
+    sections = list()
     const head = offset()
-    stops = sections.map((s, i) => ({ at: Math.min(max(), i ? Math.round(s.getBoundingClientRect().top + scrollY - head) : 0), strong: s.dataset.mark === 'strong', i }))
+    const top = (s: Rest, i: number) => (typeof s === 'number' ? s : i ? Math.round(s.getBoundingClientRect().top + scrollY - head) : 0)
+    stops = sections.map((s, i) => ({ at: Math.min(max(), top(s, i)), strong: typeof s !== 'number' && s.dataset.mark === 'strong', i })).sort((a, b) => a.at - b.at)
     stops.push({ at: max(), strong: false, i: sections.length - 1 })
   }
   measure()
@@ -65,6 +70,8 @@ export function detentScroll(options: ScrollOptions = {}): ScrollDetent {
   // Between two tops that are close, the page always lands on one of them, and a strong top reaches
   // further. In a section taller than the screen, the middle is free; only its edges pull.
   function rest(y: number): Stop | null {
+    // Above a first rest that is not the page top (a scene lower down), the page is free until close to it.
+    if (y < stops[0].at) return stops[0].at - y < H * 0.25 ? stops[0] : null
     const i = stops.findIndex((s, k) => k === stops.length - 1 || (y >= s.at && y < stops[k + 1].at))
     const a = stops[i]
     const b = stops[i + 1]
@@ -148,7 +155,7 @@ export function detentScroll(options: ScrollOptions = {}): ScrollDetent {
 
   function go(i: number, opts?: { instant?: boolean }, done = () => {}) {
     measure()
-    const to = stops[clamp(i, 0, sections.length - 1)]
+    const to = stops.find((s) => s.i === clamp(i, 0, sections.length - 1))!
     stop()
     forget()
     const finish = () => {
@@ -217,10 +224,11 @@ export function detentScroll(options: ScrollOptions = {}): ScrollDetent {
         const a = (e.target as Element).closest?.<HTMLAnchorElement>('a[href^="#"]')
         if (!a || e.metaKey || e.ctrlKey || e.shiftKey || e.defaultPrevented) return
         const target = document.getElementById(decodeURIComponent(a.hash.slice(1)))
-        const i = target ? sections.findIndex((s) => s.contains(target)) : -1
+        const i = target ? sections.findIndex((s) => typeof s !== 'number' && s.contains(target)) : -1
         if (i < 0) return
         e.preventDefault()
-        const heading = sections[i].querySelector<HTMLElement>('h1, h2') ?? sections[i]
+        const section = sections[i] as HTMLElement
+        const heading = section.querySelector<HTMLElement>('h1, h2') ?? section
         if (!heading.hasAttribute('tabindex')) {
           heading.setAttribute('tabindex', '-1')
           headings.push(heading)

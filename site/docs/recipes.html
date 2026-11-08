@@ -8,7 +8,7 @@
     <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
     <title>Recipes · detent docs</title>
     <meta property="og:description" content="A tiny JavaScript engine that makes sliders, pickers and sheets feel like native apps: magnetic, calm, and accessible by default." />
-    <meta name="description" content="Product controls built with detent: a price filter, a booking time picker, a bottom sheet, a tip dial, a floating video, a notification you swipe away, a list you pull to refresh, a hold to delete, a card that flips and a three.js model you turn." />
+    <meta name="description" content="Product controls built with detent: a price filter, a booking time picker, a bottom sheet, a tip dial, a floating video, a notification you swipe away, a list you pull to refresh, a hold to delete, a card that flips, a three.js model you turn and a delivery tracker you scrub." />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@200..800&family=Spline+Sans+Mono:wght@400;500&display=swap" rel="stylesheet" />
@@ -244,6 +244,41 @@ detent3d(view, {
     renderer.render(scene, camera)
   },
 })</code></pre></figure>
+        </section>
+        <section data-mark id="tracker">
+          <h2 id="tracker-h">A delivery tracker you scrub</h2>
+          <p>A <a href="timeline.html">timeline</a> moves the parcel from stop to stop, and a detent slider scrubs it. The stops are the timeline's labels, and <code>marks()</code> turns them into marks, so the slider settles on a stop and says its name.</p>
+          <div class="stage" data-run="recipes/tracker.js">
+            <div class="r-route" id="tl-route"><div class="r-line" aria-hidden="true"><i class="r-done"></i><span class="r-run"><b class="r-parcel"></b></span></div><ol><li>Ordered</li><li>Packed</li><li>Shipped</li><li>Out for delivery</li><li>Delivered</li></ol></div>
+            <div class="d-slider" id="tl-scrub" aria-label="Delivery progress"><div class="d-fill"></div><div class="d-thumb"></div></div>
+          </div>
+          <div class="tabs"><div role="tablist" aria-label="A delivery tracker you scrub, code"><button type="button" role="tab" id="t-tracker-js" aria-controls="p-tracker-js" aria-selected="true">Plain JS</button><button type="button" role="tab" id="t-tracker-react" aria-controls="p-tracker-react" aria-selected="false">React</button></div>
+            <div role="tabpanel" id="p-tracker-js" aria-labelledby="t-tracker-js">          <figure class="code"><figcaption>recipes/tracker.js</figcaption><pre data-src="recipes/tracker.js"></pre></figure>
+          <pre class="static" data-lang="css"><code>.route { --p: 0; }
+.done { transform-origin: left; scale: var(--p) 1; }
+.run { position: absolute; inset: 0; translate: calc(var(--p) * 100%) 0; }</code></pre></div>
+            <div role="tabpanel" id="p-tracker-react" aria-labelledby="t-tracker-react" hidden><pre class="static" data-lang="tsx"><code>function Tracker({ stops }) {
+  const route = useRef(null)
+  const scrub = useRef(null)
+  useEffect(() =&gt; {
+    const tl = timeline({ paused: true }).label(stops[0])
+    stops.slice(1).forEach((name, i) =&gt; tl.add(route.current, { to: { '--p': (i + 1) / (stops.length - 1) }, duration: 700, ease: 'inOut' }).label(name))
+    const marks = tl.marks()
+    const control = detent(scrub.current, {
+      min: 0, max: tl.duration, marks, snap: 'marks',
+      text: (ms) =&gt; stops[marks.findIndex((m) =&gt; m.at === ms)],
+      onInput: (ms) =&gt; tl.seek(ms),
+    })
+    return () =&gt; (control.destroy(), tl.destroy())
+  }, [stops])
+  return (
+    &lt;&gt;
+      &lt;div ref={route} className="route"&gt;…&lt;/div&gt;
+      &lt;div ref={scrub} aria-label="Delivery progress" className="slider" /&gt;
+    &lt;/&gt;
+  )
+}</code></pre></div>
+          </div>
         </section>
         <nav class="pager" aria-label="Next and previous"><a href="low-level.html" rel="prev"><span>Previous</span>Low level</a><a href="accessibility.html" rel="next"><span>Next</span>Accessibility</a></nav>
       </main>

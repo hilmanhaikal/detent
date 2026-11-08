@@ -237,6 +237,94 @@ A face is `{ yaw, pitch, roll, name, strong }` in degrees. `yaw` turns round the
 
 On one axis it is a `slider`: the value is the face's place in turning order, the text its name. Arrows go one face, Page Up and Page Down a quarter turn, Home and End to the ends, and it goes round. Free, it is a `group` described as rotatable: the arrows turn it to the next face that way, and the shared polite live region says the face's name when it lands. Mark the faces you draw `aria-hidden="true"`.
 
+## Move it: `animate()`
+
+Move an element, an object's numbers or one number. By default it is a spring that settles with no bounce. Give it a `duration` and it runs on an ease.
+
+```js
+import { animate } from '@hlmnhkl/detent'
+
+animate(card, { to: { y: 0, opacity: 1 } }) // a spring, no bounce
+animate(card, { to: { x: 120, rotate: 8 }, period: 600, damping: 1.4 }) // slower and softer
+animate(bar, { to: { '--fill': 1 }, duration: 300, ease: 'inOut' }) // a custom property on an ease
+animate(0, { to: 128, duration: 700, onUpdate: (v) => (total.textContent = v.toFixed(2)) }) // a number
+
+const a = animate(card, { from: { scale: 0.9 }, to: { scale: 1 }, delay: 100 })
+a.pause(); a.seek(120); a.play(); a.stop()
+await a.finished // true when it lands, false when stopped or taken over; it never rejects
+```
+
+On an element, `x` and `y` (px), `scale` and `rotate` (degrees) make one `transform`, in that order, and `opacity` and `--custom` properties are written as they are. Nothing else: layout properties such as `width` are skipped with a console warning, so the page never lays out again mid-flight. A later animation of `x` keeps the `y` an earlier one left. It writes the element's `transform`, so keep your own offsets in the CSS `translate` property or on a wrapper.
+
+| Option | Default | What it does |
+| --- | --- | --- |
+| `to`, `from` | `from`: where it is now | The values. A number for a number target. |
+| `period` | 400 | One spring swing, in ms. |
+| `damping` | 1 | 1 is as quick as it can be with no bounce. Higher is softer. Below 1 counts as 1. |
+| `duration`, `ease` | none, `'out'` | A fixed time in ms on `'linear'`, `'in'`, `'out'`, `'inOut'`, `[x1, y1, x2, y2]` or a function. |
+| `delay` | 0 | Wait this long before it starts. Values are read when it starts. |
+| `onUpdate`, `onDone` | none | Every frame with the values, and once when it lands. |
+| `motion` | `'auto'` | `'auto'` follows reduced motion. `'reduce'` or `'full'` force it. |
+| `signal` | none | Aborting it stops it. |
+
+A spring ends when it is within 0.5 of its target, or 0.5% of the way for small values such as opacity. A new animation of the same property takes over from where the old one is, at its speed, so there is no jump. With reduced motion it lands on the end at once, and `onUpdate` and `onDone` still run. Time stops while the tab is hidden. `destroy()` is `stop()`, bound.
+
+## Choreograph it: `timeline()`
+
+Many animations on one clock. Each step starts at its place in time, and the whole can play, pause, reverse and seek.
+
+```js
+import { timeline } from '@hlmnhkl/detent'
+
+const tl = timeline()
+  .add(card, { from: { y: 10, opacity: 0 }, to: { y: 0, opacity: 1 } })
+  .add(tick, { from: { scale: 0.6 }, to: { scale: 1 } }, '-=300')
+  .label('shown')
+  .add(note, { to: { opacity: 1 }, duration: 200 }, '+=100')
+
+tl.pause(); tl.seek('shown'); tl.reverse(); tl.play()
+tl.duration // ms; a spring step lasts until it settles
+```
+
+A position is ms from the start, `'+=ms'` or `'-=ms'` from the end so far, `'<'` with the step before, or a label (an unknown label is made at the end). Leave it out to start at the end so far. A step with no `from` starts where the step before it on the same property ends, so seeking is exact. It plays once your steps are added, unless you pass `paused: true`. With reduced motion `play()` lands on the end at once, and `seek()` still works.
+
+`tl.marks()` gives the labels as detent marks. So a detent control can scrub a timeline and settle on its labels, with keys and a screen reader for free:
+
+```js
+const marks = tl.marks()
+detent(slider, { min: 0, max: tl.duration, marks, snap: 'marks', text: (t) => names[marks.findIndex((m) => m.at === t)], onInput: (t) => tl.seek(t) })
+```
+
+## Scroll scenes: `scrollScene()`
+
+A scene is a timeline whose time is the page's scroll through a range. It only reads the scroll, never moves it, so the wheel, the finger and the keys stay the reader's. Scroll back and it plays back.
+
+```js
+import { detentScroll, scrollScene, timeline } from '@hlmnhkl/detent'
+
+const tl = timeline({ paused: true }).add(card, { from: { y: 40, opacity: 0 }, to: { y: 0, opacity: 1 } }).label('in')
+const scene = scrollScene(tl, { target: section, start: 'top bottom', end: 'bottom top' })
+
+detentScroll({ marks: scene.marks }) // optional: the page settles onto the scene's labels
+```
+
+`start` and `end` name the target's edge, then the screen's: `top`, `center`, `bottom` or a percentage. Each frame works out the time from where the page is, so a fast fling past a scene still lands on its end or start. With reduced motion a scene jumps to its end as it comes in, and back to its start once it is gone above. `detentScroll`'s `marks` now also takes scroll positions as numbers, or a function it reads again on each measure.
+
+## Frame budget: `frameBudget`
+
+Every detent module moves on one shared frame: one `requestAnimationFrame` however much moves. Frames stop in a hidden tab, and `animate()` and `timeline()` stop their time too. If no frame comes for 100 ms while the page is shown, a timer stands in, so motion still ends on time.
+
+When frames run long (past 28 ms on average, as on a low-end phone), the budget is low and motion is drawn every other frame, which halves the style writes. Below 20 ms it is back to every frame. Every motion runs on real elapsed time and writes its end value when it lands, so a skipped frame never changes where it ends. A drag follows the pointer, not the frame, so the hand is never skipped.
+
+```js
+import { frame, frameBudget } from '@hlmnhkl/detent'
+
+frameBudget.low // true when recent frames run long: show fewer effects
+frameBudget.frameMs // the recent time between frames, in ms
+frameBudget.force(true) // a "save power" setting; null measures again
+const cancel = frame((now) => draw(now)) // your own work on the same frame
+```
+
 ## Haptics
 
 `detent()`, `detent2d()`, `detent3d()`, `detentThrow()`, `detentPull()` and `detentHold()` take `haptics`, off by default. `true` ticks only on strong marks and key moments: a pull that arms, a hold that completes, a throw past its line. `'all'` also ticks every plain value, for wheels with few rows. A tick is about 8 ms, a strong one about 12 ms, at most one every 80 ms, and only for the person's own moves, never for `go()`. It works on Android, not on iPhone, because Safari has no vibration API. Use it for the clicks that matter, not every step.

@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light" />
+    <meta name="theme-color" content="#e8eddf" />
+    <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
+    <title>animate() · detent docs</title>
+    <meta property="og:description" content="A tiny JavaScript engine that makes sliders, pickers and sheets feel like native apps: magnetic, calm, and accessible by default." />
+    <meta name="description" content="Move an element, an object or a number with a spring that never bounces, or on an ease. Reduced motion, hidden tabs and take-overs are handled for you." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@200..800&family=Spline+Sans+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../shared/base.css" />
+    <link rel="stylesheet" href="../home/style.css" />
+    <link rel="stylesheet" href="./docs.css" />
+  </head>
+  <body>
+    <!-- @header -->
+    <div class="docs">
+      <aside class="docs-side"><!-- @sidebar --></aside>
+      <main class="docs-main" id="main">
+        <section data-mark="strong" id="top">
+          <p class="crumb">Docs</p>
+          <h1>animate()</h1>
+          <p class="lede">Move an element, an object's numbers or one number. By default it is a spring that settles with no bounce. Give it a <code>duration</code> and it runs on an ease instead. Reduced motion, hidden tabs and a new target mid-flight are handled for you.</p>
+        </section>
+        <section data-mark id="demo">
+          <h2 id="demo-h">Move an element</h2>
+          <p>Press the button twice quickly. The card turns round from where it is, at the speed it had, with no jump.</p>
+          <div class="stage" data-run="demos/move.js">
+            <div class="an-card" id="an-card" inert><b>Your rider is 6 min away</b><span>2 × Chicken rice, 1 × Iced lemon tea</span></div>
+            <button type="button" class="toggle" id="an-go" aria-pressed="false" aria-controls="an-card">Show the order card</button>
+            <p class="d-out small" id="an-out" aria-live="polite">Hidden.</p>
+          </div>
+          <figure class="code"><figcaption>demos/move.js</figcaption><pre data-src="demos/move.js"></pre></figure>
+          <p>On an element, <code>x</code> and <code>y</code> (px), <code>scale</code> and <code>rotate</code> (degrees) make one <code>transform</code>, always in that order. A later animation of <code>x</code> keeps the <code>y</code> an earlier one left. It writes the element's <code>transform</code>, so keep your own offsets in the CSS <code>translate</code> property or on a wrapper.</p>
+        </section>
+        <section data-mark id="number">
+          <h2 id="number-h">A number</h2>
+          <p>Pass a number and draw it yourself in <code>onUpdate</code>. A plain object works the same way: its numbers change in place.</p>
+          <div class="stage" data-run="demos/count.js">
+            <p class="d-out" id="an-total" aria-hidden="true">RM 48.00</p>
+            <p class="vh" id="an-said" aria-live="polite">Total RM 48.00</p>
+            <button type="button" class="toggle" id="an-add">Add a side (RM 12.50)</button>
+          </div>
+          <figure class="code"><figcaption>demos/count.js</figcaption><pre data-src="demos/count.js"></pre></figure>
+        </section>
+        <section data-mark id="timing">
+          <h2 id="timing-h">Springs and eases</h2>
+          <ul class="rules">
+            <li>The default is a spring with <code>period: 400</code> and <code>damping: 1</code>: as quick as it can be with no bounce. Higher damping is softer. Below 1 counts as 1, so it never overshoots.</li>
+            <li>A spring ends when it is within 0.5 of its target (or 0.5% of the way, for small values such as opacity). A 100 px move with the default takes about 470 ms.</li>
+            <li><code>duration</code> turns the spring off. <code>ease</code> is <code>'out'</code> (the default), <code>'in'</code>, <code>'inOut'</code>, <code>'linear'</code>, a cubic-bezier as <code>[x1, y1, x2, y2]</code>, or your own function.</li>
+          </ul>
+          <pre class="static" data-lang="js"><code>animate(el, { to: { x: 120 } }) // spring
+animate(el, { to: { x: 120 }, period: 600, damping: 1.4 }) // slower, softer
+animate(el, { to: { opacity: 0 }, duration: 200, ease: 'in' }) // a fixed time
+animate(el, { to: { '--fill': 1 }, duration: 300, ease: [0.2, 0, 0, 1] }) // a custom property</code></pre>
+          <!-- @props src/ease.ts Timing -->
+        </section>
+        <section data-mark id="a11y">
+          <h2 id="a11y-h">Accessible by default</h2>
+          <ul class="rules">
+            <li><b>Reduced motion.</b> With <code>prefers-reduced-motion: reduce</code> it lands on the end at once, delay and all. <code>onUpdate</code> runs once with the end values and <code>onDone</code> still runs, so the result is never lost. It is read live. Set <code>motion: 'full'</code> or <code>'reduce'</code> to choose yourself.</li>
+            <li><b>Hidden tabs.</b> Time stops while the tab is hidden, and it goes on from the same place when it comes back. If frames stall while the page is shown, a timer steps in, so it still ends on time.</li>
+            <li><b>Never layout.</b> On an element it moves only <code>transform</code>, <code>opacity</code> and custom properties, which phones can draw without laying out the page again. Anything else, such as <code>width</code>, is skipped with a warning in the console.</li>
+            <li><b>No jump.</b> A new animation of the same property takes over from where the old one is, at its speed. The old one's <code>finished</code> gives <code>false</code>.</li>
+            <li><b>Screen readers.</b> Motion is not content. Keep the final words in the page, or say the result once in a polite live region from <code>onDone</code>, as the number above does.</li>
+          </ul>
+        </section>
+        <section data-mark id="options">
+          <h2 id="options-h">Options</h2>
+          <!-- @props src/animate.ts AnimateOptions -->
+        </section>
+        <section data-mark id="result">
+          <h2 id="result-h">What it gives back</h2>
+          <!-- @api src/animate.ts Animate -->
+          <p><code>await animate(el, { to: { x: 0 } }).finished</code> waits for it. It never rejects, so a take-over never throws.</p>
+        </section>
+        <nav class="pager" aria-label="Next and previous"><a href="3d.html" rel="prev"><span>Previous</span>detent3d()</a><a href="timeline.html" rel="next"><span>Next</span>timeline()</a></nav>
+      </main>
+      <aside class="docs-toc"><!-- @toc --></aside>
+    </div>
+    <!-- @footer -->
+    <script type="module" src="./docs.ts"></script>
+  </body>
+</html>

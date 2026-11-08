@@ -12,6 +12,14 @@ const fixture = async (page) => {
   await page.goto(`${base}/test/fixture.html`)
   await settled(page, () => window.ready)
 }
+// Browsers shorten a transform as they store it, so compare it the way the browser writes it.
+const css = (t) => {
+  const d = document.createElement('div')
+  d.style.transform = t
+  return d.style.transform
+}
+const transform = (page) => page.evaluate(() => document.getElementById('mover').style.transform)
+const sameTransform = async (page, want, msg) => assert.equal(await transform(page), await page.evaluate(css, want), msg)
 const attr = (page, sel, name) => page.locator(sel).getAttribute(name)
 
 const tests = {
@@ -883,6 +891,329 @@ const tests = {
     await page.keyboard.press('End')
     await page.waitForTimeout(300)
     assert.equal(await page.evaluate(() => t3.index), 0)
+  },
+
+  async 'animate: x, y, scale and rotate compose into one transform'(page) {
+    await fixture(page)
+    const opacity = await page.evaluate(async () => {
+      await animate(mover, { to: { x: 100, y: 20, scale: 2, rotate: 90 }, duration: 120 }).finished
+      await animate(mover, { to: { x: 60, opacity: 0.5 }, period: 200 }).finished
+      return mover.style.opacity
+    })
+    await sameTransform(page, 'translate(60px, 20px) rotate(90deg) scale(2)', 'a later x keeps y, scale and rotate')
+    assert.equal(opacity, '0.5')
+    const box = await page.locator('#mover').boundingBox()
+    assert.ok(Math.abs(box.width - 80) < 0.5 && Math.abs(box.x + 20 - 60) < 0.5, `drawn at ${box.x}, ${box.width} wide`)
+    const custom = await page.evaluate(async () => {
+      await animate(mover, { to: { '--fill': 0.75 }, duration: 60 }).finished
+      return getComputedStyle(mover).getPropertyValue('--fill')
+    })
+    assert.equal(Number(custom), 0.75)
+  },
+
+  async 'animate: never layout, and says so in the console'(page) {
+    await fixture(page)
+    const warnings = []
+    page.on('console', (m) => m.type() === 'warning' && warnings.push(m.text()))
+    await page.evaluate(() => animate(mover, { to: { width: 300, x: 10 }, duration: 30 }).finished)
+    assert.equal(await page.evaluate(() => mover.style.width), '')
+    await sameTransform(page, 'translate(10px, 0px) rotate(0deg) scale(1)')
+    assert.ok(warnings.some((w) => w.includes('width')), 'a warning names the property')
+  },
+
+  async 'animate: reduced motion lands on the end state at once, with onUpdate and onDone'(page) {
+    await page.emulateMedia({ reducedMotion: 'reduce' })
+    await fixture(page)
+    const got = await page.evaluate(() => {
+      const seen = []
+      const a = animate(mover, { to: { x: 50, opacity: 0.4 }, delay: 400, onUpdate: (v) => seen.push(v.x), onDone: () => seen.push('done') })
+      return a.finished.then((landed) => [mover.style.opacity, seen, landed, a.progress])
+    })
+    assert.deepEqual(got, ['0.4', [50, 'done'], true, 1])
+    await sameTransform(page, 'translate(50px, 0px) rotate(0deg) scale(1)')
+    const tl = await page.evaluate(() => {
+      const box = { x: 0 }
+      const t = timeline({ paused: true }).add(box, { to: { x: 10 }, duration: 800 })
+      t.play()
+      const end = box.x
+      t.seek(400)
+      return [end, box.x]
+    })
+    assert.equal(tl[0], 10, 'play lands on the end')
+    assert.ok(tl[1] > 0 && tl[1] < 10, 'seek still scrubs')
+  },
+
+  async 'animate: a hidden tab pauses it, and it resumes where it was'(page) {
+    await fixture(page)
+    await page.evaluate(() => (window.a = animate(mover, { to: { x: 200 }, duration: 600, ease: 'linear' })))
+    await page.waitForTimeout(150)
+    const at = await page.evaluate(() => {
+      setHidden(true)
+      return a.progress
+    })
+    await page.waitForTimeout(700)
+    assert.equal(await page.evaluate(() => a.progress), at, 'no time passes while hidden')
+    await page.evaluate(() => setHidden(false))
+    await page.waitForTimeout(120)
+    const after = await page.evaluate(() => a.progress)
+    assert.ok(after > at && after < 1, `goes on from ${at}, now ${after}`)
+    assert.equal(await page.evaluate(() => a.finished), true)
+    await sameTransform(page, 'translate(200px, 0px) rotate(0deg) scale(1)')
+  },
+
+  async 'animate: a new target mid-flight starts from where it is, at the speed it had'(page) {
+    await fixture(page)
+    const r = await page.evaluate(async () => {
+      const xs = []
+      const x = () => new DOMMatrix(getComputedStyle(mover).transform).m41
+      const first = animate(mover, { to: { x: 600 }, period: 600, onUpdate: (v) => xs.push(v.x) })
+      await new Promise((r) => setTimeout(r, 120))
+      const before = x()
+      const turn = xs.length
+      let live = false
+      const next = animate(mover, { to: { x: 0 }, period: 600, onUpdate: (v) => live && xs.push(v.x) })
+      next.pause()
+      next.seek(0)
+      const at0 = x()
+      next.seek(16)
+      const at16 = x()
+      next.seek(0)
+      live = true
+      next.play()
+      await next.finished
+      return { before, at0, at16, xs, turn, first: await first.finished }
+    })
+    assert.ok(Math.abs(r.at0 - r.before) < 1, `no jump: ${r.before} then ${r.at0}`)
+    assert.ok(r.at16 > r.at0, 'still moving the old way for a moment')
+    assert.equal(r.first, false, 'the first one is taken over')
+    // Frame by frame, the step at the hand-over is no bigger than the steps around it, plus 1 px.
+    const steps = r.xs.slice(1).map((x, i) => Math.abs(x - r.xs[i]))
+    const around = Math.max(...steps.slice(r.turn - 4, r.turn - 1), ...steps.slice(r.turn, r.turn + 3))
+    assert.ok(steps[r.turn - 1] <= around + 1, `hand-over step ${steps[r.turn - 1]}, around ${around}`)
+    assert.equal(r.xs.at(-1), 0)
+  },
+
+  async 'timeline: plays in order, reverses, and finished resolves'(page) {
+    await fixture(page)
+    const r = await page.evaluate(async () => {
+      const order = []
+      const tl = timeline({ onDone: () => order.push('end') })
+        .add(mover, { to: { x: 100 }, duration: 80, onDone: () => order.push('x') })
+        .label('moved')
+        .add(mover, { to: { opacity: 0.2 }, duration: 80, onDone: () => order.push('fade') })
+      const landed = await tl.finished
+      const there = [mover.style.transform, mover.style.opacity]
+      tl.reverse()
+      await tl.finished
+      return { order, landed, there, back: [mover.style.transform, mover.style.opacity], marks: tl.marks() }
+    })
+    const want = await page.evaluate(css, 'translate(100px, 0px) rotate(0deg) scale(1)')
+    const zero = await page.evaluate(css, 'translate(0px, 0px) rotate(0deg) scale(1)')
+    assert.deepEqual(r.order, ['x', 'fade', 'end', 'end'])
+    assert.equal(r.landed, true)
+    assert.deepEqual(r.there, [want, '0.2'])
+    assert.deepEqual(r.back, [zero, '1'])
+    assert.deepEqual(r.marks, [{ at: 80 }])
+  },
+
+  async 'docs: animate and timeline demos run, and the scrub settles on labels'(page) {
+    await page.goto(`${base}/site/docs/animate.html`)
+    await page.locator('#an-go').click()
+    await settled(page, () => document.getElementById('an-out').textContent.includes('Landed'))
+    await page.goto(`${base}/site/docs/timeline.html`)
+    const scrub = page.locator('#tl-scrub')
+    await scrub.focus()
+    await page.keyboard.press('ArrowRight')
+    await settled(page, () => document.getElementById('tl-scrub').getAttribute('aria-valuetext') === 'Packed')
+    await page.keyboard.press('End')
+    await settled(page, () => document.getElementById('tl-scrub').getAttribute('aria-valuetext') === 'Delivered')
+    assert.equal(await page.locator('#tl-route li:last-child').getAttribute('data-on'), '')
+  },
+
+  async 'frame: every module shares one requestAnimationFrame'(page) {
+    await fixture(page)
+    const r = await page.evaluate(async () => {
+      T.slider({ value: 0 })
+      let asked = 0
+      const real = window.requestAnimationFrame
+      window.requestAnimationFrame = (fn) => (asked++, real(fn))
+      const start = performance.now()
+      let frames = 0
+      const count = () => (frames++, performance.now() - start < 300 && real(count))
+      real(count)
+      s.go(100)
+      animate(mover, { to: { x: 200 }, duration: 300 })
+      timeline().add({ v: 0 }, { to: { v: 1 }, duration: 300 })
+      await new Promise((r) => setTimeout(r, 300))
+      window.requestAnimationFrame = real
+      return { asked, frames }
+    })
+    assert.ok(r.asked <= r.frames + 2, `${r.asked} requests in ${r.frames} frames`)
+  },
+
+  async 'frame: long frames lower the budget, and motion still lands exactly'(page) {
+    await fixture(page)
+    const r = await page.evaluate(async () => {
+      // A busy page: every frame takes about 45 ms of work.
+      let busy = true
+      const hog = () => {
+        const end = performance.now() + 45
+        while (performance.now() < end);
+        if (busy) frame(hog)
+      }
+      frame(hog)
+      await new Promise((r) => setTimeout(r, 900))
+      const low = frameBudget.low
+      const landed = await animate(mover, { to: { x: 120, opacity: 0.5 }, period: 300 }).finished
+      busy = false
+      const end = [new DOMMatrix(getComputedStyle(mover).transform).m41, getComputedStyle(mover).opacity]
+      await new Promise((r) => {
+        const spin = () => (frameBudget.low ? frame(spin) : r())
+        frame(spin)
+      })
+      return { low, landed, end, after: frameBudget.low }
+    })
+    assert.equal(r.low, true, 'long frames make it low')
+    assert.equal(r.landed, true)
+    assert.deepEqual(r.end, [120, '0.5'], 'never a wrong end state')
+    assert.equal(r.after, false, 'short frames bring it back')
+  },
+
+  async 'docs: the frame budget demo eases off when the page is busy'(page) {
+    await page.goto(`${base}/site/docs/frame.html`)
+    await page.locator('#fb-busy').click()
+    await settled(page, () => document.getElementById('fb-out').textContent.includes('low'))
+    await page.locator('#fb-busy').click()
+    await settled(page, () => document.getElementById('fb-out').textContent.includes('keeping up'))
+  },
+
+  async 'scene: the scroll is the clock, both ways, and a fling never stops halfway'(page) {
+    await fixture(page)
+    const r = await page.evaluate(async () => {
+      makeScene()
+      const at = async (y) => {
+        scrollTo(0, y)
+        await nextFrame()
+        return [Math.round(scene.progress * 1000) / 1000, Math.round(box.v)]
+      }
+      // The range runs from 1000 - 700 = 300 (top meets bottom) to 1600 (bottom meets top).
+      return [await at(0), await at(950), await at(1600), await at(5000), await at(950), await at(0)]
+    })
+    assert.deepEqual(r, [[0, 0], [0.5, 150], [1, 300], [1, 300], [0.5, 150], [0, 0]])
+  },
+
+  async 'scene: it never takes the wheel and never scrolls the page'(page) {
+    await fixture(page)
+    await page.evaluate(() => makeScene())
+    await page.mouse.move(200, 200)
+    const prevented = await page.evaluate(() => {
+      const e = new WheelEvent('wheel', { deltaY: 100, cancelable: true, bubbles: true })
+      document.body.dispatchEvent(e)
+      return e.defaultPrevented
+    })
+    assert.equal(prevented, false)
+    await page.mouse.wheel(0, 700)
+    await settled(page, () => scrollY > 600)
+    await page.waitForTimeout(400)
+    const y = await page.evaluate(() => scrollY)
+    await page.waitForTimeout(400)
+    assert.equal(await page.evaluate(() => scrollY), y, 'the page stays where the hand left it')
+    assert.ok(await page.evaluate(() => scene.progress > 0 && scene.progress < 1))
+  },
+
+  async 'scene: reduced motion jumps to the end as it comes in, and back once gone above'(page) {
+    await page.emulateMedia({ reducedMotion: 'reduce' })
+    await fixture(page)
+    const r = await page.evaluate(async () => {
+      makeScene()
+      const at = async (y) => (scrollTo(0, y), await nextFrame(), box.v)
+      return [await at(0), await at(320), await at(950), await at(0)]
+    })
+    assert.deepEqual(r, [0, 300, 300, 0])
+  },
+
+  async 'scene: with detentScroll it settles onto a label'(page) {
+    await fixture(page)
+    await page.evaluate(() => {
+      makeScene()
+      window.settle = detentScroll({ marks: scene.marks })
+    })
+    assert.deepEqual(await page.evaluate(() => scene.marks()), [733, 1600])
+    await page.mouse.move(200, 200)
+    for (let i = 0; i < 6; i++) await page.mouse.wheel(0, 110)
+    await settled(page, () => Math.round(scrollY) === 733)
+    const y = await page.evaluate(() => Math.round(scrollY))
+    assert.equal(y, 733, 'it lands on the label nearest the stop')
+    assert.equal(await page.evaluate(() => Math.round(box.v)), 100)
+    await page.evaluate(() => (settle.destroy(), scene.destroy()))
+  },
+
+  async 'docs: the scene demo runs'(page) {
+    await page.goto(`${base}/site/docs/scene.html`)
+    await page.evaluate(() => document.getElementById('sc-stage').scrollIntoView())
+    await settled(page, () => !document.getElementById('sc-out').textContent.startsWith('0%'))
+  },
+
+  async 'morph: it plays from the old place to the new one with no jump, and lays out once'(page) {
+    await fixture(page)
+    const r = await page.evaluate(async () => {
+      const before = rect()
+      const m = morph(mover, () => Object.assign(mover.style, { left: '300px', width: '120px' }))
+      const start = rect()
+      await nextFrame()
+      const mid = rect()
+      const layout = [mover.offsetLeft, mover.offsetWidth]
+      const landed = await m.finished
+      return { before, start, mid, layout, end: rect(), landed, transform: mover.style.transform }
+    })
+    assert.deepEqual(r.start, r.before, 'drawn at its old place first')
+    assert.ok(r.mid[0] > 0 && r.mid[0] < 300, `moving, at ${r.mid[0]}`)
+    assert.deepEqual(r.layout, [300, 120], 'the layout is the new one the whole way')
+    assert.deepEqual(r.end, [300, 400, 120, 40])
+    assert.equal(r.landed, true)
+    assert.equal(r.transform, '')
+  },
+
+  async 'morph: a new change mid-flight starts from where it is, at its speed'(page) {
+    await fixture(page)
+    const r = await page.evaluate(async () => {
+      morph(mover, () => (mover.style.left = '400px'), { period: 600 })
+      await new Promise((r) => setTimeout(r, 120))
+      const before = rect()
+      const next = morph(mover, () => (mover.style.left = '0px'), { period: 600 })
+      const after = rect()
+      await nextFrame()
+      const soon = rect()
+      await next.finished
+      return { before, after, soon, end: rect() }
+    })
+    assert.ok(Math.abs(r.after[0] - r.before[0]) < 1, `no jump: ${r.before[0]} then ${r.after[0]}`)
+    assert.ok(r.soon[0] >= r.after[0] - 0.5, 'still going the old way for a moment')
+    assert.equal(r.end[0], 0)
+  },
+
+  async 'morph: a shared element grows out of another one'(page) {
+    await fixture(page)
+    const r = await page.evaluate(async () => {
+      const from = rect(thumb)
+      const m = morph(mover, () => (mover.style.width = '200px'), { from: thumb })
+      const start = rect()
+      await m.finished
+      return { from, start, end: rect() }
+    })
+    assert.deepEqual(r.start, r.from)
+    assert.deepEqual(r.end, [0, 400, 200, 40])
+  },
+
+  async 'morph: reduced motion shows the change at once'(page) {
+    await page.emulateMedia({ reducedMotion: 'reduce' })
+    await fixture(page)
+    const r = await page.evaluate(() => {
+      let done = false
+      morph(mover, () => (mover.style.left = '250px'), { onDone: () => (done = true) })
+      return [rect()[0], mover.style.transform, done]
+    })
+    assert.deepEqual(r, [250, '', true])
   },
 }
 
