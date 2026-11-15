@@ -3,7 +3,7 @@
 detent is a general motion engine that is accessible and natural by default (owner, 8 Nov 2026). It
 does what people expect from a motion engine, and every module comes with keyboard support, screen
 readers, reduced motion, care for low-end phones and the calm no-bounce feel, where other engines leave
-that to the developer. It draws nothing. Components (like those in [Gooee UI](https://ui.hlmnhkl.my))
+that to the developer. It draws nothing. Components (like those in [Gooee UI](https://gooee.dev))
 are built on it. First users: developers building web apps for phones.
 
 | Version | What | Why |
