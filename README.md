@@ -397,7 +397,7 @@ Minified and gzipped, with tree-shaking. 1 KB is 1,024 bytes.
 
 ## Low level
 
-Everything detent is built from stays public: `createScrub`, `glide`, `springTo`, `follow`, `attract`, `magnetTo`, `pull`, `rubber`, `stepKey`, `wheelSteps`, `speedTracker`, `roundTo`, `steps` and more. Use them when you wire the hand yourself. [hlmnhkl/ui](https://ui.hlmnhkl.my) does, for its Dial, RulerScrubber and PickerWheel.
+Everything detent is built from stays public: `createScrub`, `glide`, `springTo`, `follow`, `attract`, `magnetTo`, `pull`, `rubber`, `stepKey`, `wheelSteps`, `speedTracker`, `roundTo`, `steps` and more. Use them when you wire the hand yourself. [Gooee UI](https://ui.hlmnhkl.my) does, for its Dial, RulerScrubber and PickerWheel.
 
 ## Site and tests
 
